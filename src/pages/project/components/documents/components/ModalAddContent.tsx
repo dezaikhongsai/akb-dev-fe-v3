@@ -228,7 +228,6 @@ const ModalAddContent: React.FC<ModalAddContentProps> = ({
         style={{ display: 'none' }}
         accept=".doc,.docx,.pdf,.xls,.xlsx,.jpg,.jpeg,.png,.gif"
         multiple
-        showUploadList={false}
         fileList={uploadFileList}
         beforeUpload={(file) => {
           const isValidType = [
@@ -242,11 +241,12 @@ const ModalAddContent: React.FC<ModalAddContentProps> = ({
           }
           return false;
         }}
-        onChange={({ fileList }) => {
-          // Không cần check duplicate, để BE xử lý
-          setFiles(fileList);
-        }}
-      />
+        onChange={({ fileList }) => handleUploadFiles(fileList)}
+      >
+        <Button type="primary" icon={<UploadOutlined />}>
+          {t('document.content.select_files')}
+        </Button>
+      </Upload>
     </Modal>
   );
 };
