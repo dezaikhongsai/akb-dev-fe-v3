@@ -18,7 +18,7 @@ import {
   WarningFilled
 } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import type { UploadFile } from 'antd/es/upload/interface';
 import type { RcFile } from 'antd/es/upload';
 import dayjs from 'dayjs';
@@ -52,16 +52,16 @@ interface ModalContentProps {
   onContentChange?: (newContent: string) => void;
 }
 
-const getSafeFileName = (file: RcFile | UploadFile): string => {
-  // Lấy tên file gốc
-  const originalName = file instanceof File ? file.name : file.originFileObj?.name || file.name;
+// const getSafeFileName = (file: RcFile | UploadFile): string => {
+//   // Lấy tên file gốc
+//   const originalName = file instanceof File ? file.name : file.originFileObj?.name || file.name;
   
-  // Chuyển đổi tên file thành chuỗi UTF-8 an toàn
-  const encoder = new TextEncoder();
-  const decoder = new TextDecoder('utf-8');
-  const bytes = encoder.encode(originalName);
-  return decoder.decode(bytes);
-};
+//   // Chuyển đổi tên file thành chuỗi UTF-8 an toàn
+//   const encoder = new TextEncoder();
+//   const decoder = new TextDecoder('utf-8');
+//   const bytes = encoder.encode(originalName);
+//   return decoder.decode(bytes);
+// };
 
 const ModalContent: React.FC<ModalContentProps> = ({
   open,
@@ -100,48 +100,53 @@ const ModalContent: React.FC<ModalContentProps> = ({
     return `${parseFloat((bytes / Math.pow(k, i)).toFixed(2))} ${sizes[i]}`;
   };
 
-  // Reset state when modal opens/closes
+  // Reset state when modal opens
   useEffect(() => {
+    setEditedContent(contentName);
+    setCurrentFiles(initialFiles);
+    setOriginalContent(contentName);
+    setOriginalFiles(initialFiles);
+    setHasChanges(false);
+  }, [contentName, initialFiles]);
+
+  // Reset data khi đóng modal
+  const handleClose = () => {
     setEditedContent(contentName);
     setCurrentFiles(initialFiles.map(f => ({
       ...f,
-      originFileObj: undefined // Đảm bảo file cũ không có trường này
+      originFileObj: undefined
     })));
     setOriginalContent(contentName);
     setOriginalFiles(initialFiles.map(f => ({
       ...f,
       originFileObj: undefined
     })));
+    setIsEditingContent(false);
+    setPreviewOpen(false);
+    setPreviewUrl('');
+    setPreviewTitle('');
     setHasChanges(false);
-  }, [contentName, initialFiles]);
-
-  // Kiểm tra thay đổi
+    onClose();
+  };
+  
+  // Logic duy nhất để kiểm tra thay đổi
   useEffect(() => {
-    // Kiểm tra thay đổi content
     const contentChanged = editedContent !== originalContent;
 
-    // Kiểm tra thay đổi files
-    let filesChanged = false;
-    if (currentFiles.length !== originalFiles.length) {
-      filesChanged = true;
-    } else {
-      const currentFileIds = new Set(currentFiles.map(f => f.uid));
-      const originalFileIds = new Set(originalFiles.map(f => f.uid));
-      for (const id of currentFileIds) {
-        if (!originalFileIds.has(id)) {
-          filesChanged = true;
-          break;
-        }
+    const filesChanged = (() => {
+      if (currentFiles.length !== originalFiles.length) return true;
+      const originalFileUids = new Set(originalFiles.map(f => f.uid));
+      const currentFileUids = new Set(currentFiles.map(f => f.uid));
+      if (originalFileUids.size !== currentFileUids.size) return true;
+      for (const id of originalFileUids) {
+        if (!currentFileUids.has(id)) return true;
       }
-      for (const id of originalFileIds) {
-        if (!currentFileIds.has(id)) {
-          filesChanged = true;
-          break;
-        }
-      }
-    }
-    setHasChanges( filesChanged);
+      return false;
+    })();
+
+    setHasChanges(contentChanged || filesChanged);
   }, [editedContent, currentFiles, originalContent, originalFiles]);
+
 
   const handleContentSubmit = () => {
     setIsEditingContent(false);
@@ -153,18 +158,8 @@ const ModalContent: React.FC<ModalContentProps> = ({
       title: t('document.content.delete_file_confirm_title'),
       icon: <WarningFilled style={{ color: '#faad14' }} />,
       content: t('document.content.delete_file_confirm_content', { fileName }),
-      okText: (
-        <Space>
-          <DeleteOutlined />
-          {t('common.confirm')}
-        </Space>
-      ),
-      cancelText: (
-        <Space>
-          <CloseOutlined />
-          {t('common.cancel')}
-        </Space>
-      ),
+      okText: t('common.confirm'),
+      cancelText: t('common.cancel'),
       okButtonProps: { 
         danger: true,
         icon: <DeleteOutlined />
@@ -177,12 +172,8 @@ const ModalContent: React.FC<ModalContentProps> = ({
             setDeletedFileIds(prev => [...prev, fileId]);
           }
           
-          // Cập nhật danh sách file hiện tại
-          setCurrentFiles(prev => {
-            const updated = prev.filter(file => file.uid !== fileId);
-            setHasChanges(true);
-            return updated;
-          });
+          // Chỉ cần cập nhật state, useEffect sẽ xử lý hasChanges
+          setCurrentFiles(prev => prev.filter(file => file.uid !== fileId));
           message.success(t('document.content.delete_success'));
         } catch (error) {
           console.error('Error deleting file:', error);
@@ -243,13 +234,10 @@ const ModalContent: React.FC<ModalContentProps> = ({
         originFileObj: file.originFileObj as File // Chỉ file mới có trường này
       }));
     
-    // Cập nhật danh sách file hiện tại
-    setCurrentFiles(prev => {
-      const updated = [...prev, ...uniqueNewFiles];
-      if (uniqueNewFiles.length > 0) setHasChanges(true);
-      return updated;
-    });
+    // Chỉ cần cập nhật state, useEffect sẽ xử lý hasChanges
+    setCurrentFiles(prev => [...prev, ...uniqueNewFiles]);
     onUploadFiles(newFiles);
+    if(uniqueNewFiles.length > 0) setHasChanges(true);
   };
 
   const handleConfirmChanges = () => {
@@ -399,26 +387,6 @@ const ModalContent: React.FC<ModalContentProps> = ({
       }
     };
   }, [previewUrl]);
-
-  // Reset data khi đóng modal
-  const handleClose = () => {
-    setEditedContent(contentName);
-    setCurrentFiles(initialFiles.map(f => ({
-      ...f,
-      originFileObj: undefined
-    })));
-    setOriginalContent(contentName);
-    setOriginalFiles(initialFiles.map(f => ({
-      ...f,
-      originFileObj: undefined
-    })));
-    setIsEditingContent(false);
-    setPreviewOpen(false);
-    setPreviewUrl('');
-    setPreviewTitle('');
-    setHasChanges(false);
-    onClose();
-  };
 
   return (
     <>

@@ -1,4 +1,4 @@
-import { Card, Steps, Space, Typography, Tooltip, Tag } from 'antd';
+import { Card, Steps, Space, Typography, Tooltip } from 'antd';
 import { IPhase } from '../../interfaces/project.interface';
 import {
   ProjectOutlined,
@@ -7,7 +7,6 @@ import {
   CheckCircleOutlined,
   LoadingOutlined,
   ClockCircleOutlined,
-  StarFilled
 } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
 import dayjs from 'dayjs';

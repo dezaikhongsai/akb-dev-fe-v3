@@ -13,9 +13,7 @@ import {
   PlusOutlined,
   MoreOutlined,
   FileAddOutlined,
-  ExclamationCircleFilled,
   WarningFilled,
-  CloseOutlined
 } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
 import dayjs from 'dayjs';
@@ -29,7 +27,6 @@ import {
   deleteContent, 
   deleteDocument, 
   updateContent,
-  deleteFile 
 } from '../../../../services/document/document.service';
 import ModalContent from './components/ModalContent';
 import type { UploadFile } from 'antd/es/upload/interface';
@@ -122,23 +119,13 @@ const DocumentInproject: React.FC<DocumentInprojectProps> = () => {
     setIsModalOpen(true);
   };
 
-  const handleDeleteContent = async (documentId: string, contentId: string) => {
+  const handleDeleteContent = async (contentId: string) => {
     Modal.confirm({
       title: t('document.content.delete_confirm_title'),
       icon: <WarningFilled style={{ color: '#faad14' }} />,
       content: t('document.content.delete_confirm_content'),
-      okText: (
-        <Space>
-          <DeleteOutlined />
-          {t('common.confirm')}
-        </Space>
-      ),
-      cancelText: (
-        <Space>
-          <CloseOutlined />
-          {t('common.cancel')}
-        </Space>
-      ),
+      okText: t('common.confirm'),
+      cancelText: t('common.cancel'),
       okButtonProps: { 
         danger: true,
         icon: <DeleteOutlined />
@@ -160,18 +147,8 @@ const DocumentInproject: React.FC<DocumentInprojectProps> = () => {
       title: t('document.delete_confirm_title'),
       icon: <WarningFilled style={{ color: '#faad14' }} />,
       content: t('document.delete_confirm_content'),
-      okText: (
-        <Space>
-          <DeleteOutlined />
-          {t('common.confirm')}
-        </Space>
-      ),
-      cancelText: (
-        <Space>
-          <CloseOutlined />
-          {t('common.cancel')}
-        </Space>
-      ),
+      okText: t('common.confirm'),
+      cancelText: t('common.cancel'),
       okButtonProps: { 
         danger: true,
         icon: <DeleteOutlined />
@@ -232,16 +209,16 @@ const DocumentInproject: React.FC<DocumentInprojectProps> = () => {
     });
   };
 
-  const handleConfirmContent = async () => {
-    try {
-      // TODO: Call API to save changes if needed
-      setIsModalOpen(false);
-      // Refresh lại data table nếu cần
-      fetchDocuments();
-    } catch (error) {
-      console.error('Error saving content:', error);
-    }
-  };
+  // const handleConfirmContent = async () => {
+  //   try {
+  //     // TODO: Call API to save changes if needed
+  //     setIsModalOpen(false);
+  //     // Refresh lại data table nếu cần
+  //     fetchDocuments();
+  //   } catch (error) {
+  //     console.error('Error saving content:', error);
+  //   }
+  // };
 
   const handleModalSuccess = () => {
     setIsModalOpen(false);
@@ -268,7 +245,7 @@ const DocumentInproject: React.FC<DocumentInprojectProps> = () => {
       label: t('document.content.delete'),
       icon: <DeleteOutlined />,
       danger: true,
-      onClick: () => handleDeleteContent(record._id, content._id)
+      onClick: () => handleDeleteContent(content._id)
     }
   ];
 

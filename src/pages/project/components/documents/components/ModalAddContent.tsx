@@ -5,16 +5,12 @@ import {
   FilePdfOutlined,
   FileExcelOutlined,
   FileImageOutlined,
-  EyeOutlined,
   DeleteOutlined,
-  DownloadOutlined,
   CloseOutlined,
   UploadOutlined,
-  CheckOutlined,
   FileTextOutlined,
   UserOutlined,
   CalendarOutlined,
-  EditOutlined,
   WarningFilled,
   PlusOutlined
 } from '@ant-design/icons';
@@ -36,7 +32,6 @@ interface ModalAddContentProps {
 const ModalAddContent: React.FC<ModalAddContentProps> = ({
   open,
   onClose,
-  documentId,
   documentName,
   onConfirm
 }) => {
