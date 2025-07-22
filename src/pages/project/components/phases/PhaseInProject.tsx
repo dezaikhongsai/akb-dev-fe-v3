@@ -1,4 +1,4 @@
-import { Card, Steps, Space, Typography, Tooltip, Tag, Button } from 'antd';
+import { Card, Steps, Space, Typography, Tooltip, Tag } from 'antd';
 import { IPhase } from '../../interfaces/project.interface';
 import {
   ProjectOutlined,
@@ -7,9 +7,7 @@ import {
   CheckCircleOutlined,
   LoadingOutlined,
   ClockCircleOutlined,
-  StarFilled,
-  PlusOutlined,
-  EditOutlined
+  StarFilled
 } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
 import dayjs from 'dayjs';
@@ -18,13 +16,11 @@ import type { StepProps } from 'antd';
 interface PhaseInProjectProps {
   phases: IPhase[];
   currentPhase: number;
-  onAdd?: () => void;
-  onEdit?: () => void;
 }
 
 const { Text } = Typography;
 
-const PhaseInProject: React.FC<PhaseInProjectProps> = ({ phases, currentPhase, onAdd, onEdit }) => {
+const PhaseInProject: React.FC<PhaseInProjectProps> = ({ phases, currentPhase }) => {
   const { t } = useTranslation(['project', 'common']);
 
   const getPhaseStatus = (index: number) => {
@@ -92,30 +88,9 @@ const PhaseInProject: React.FC<PhaseInProjectProps> = ({ phases, currentPhase, o
   return (
     <Card
       title={
-        <Space style={{ width: '100%', justifyContent: 'space-between' }}>
-          <Space>
-            <ProjectOutlined />
-            {t('project.phases')}
-          </Space>
-          {phases.length > 0 ? (
-            <Button 
-              type="primary" 
-              icon={<EditOutlined />}
-              onClick={onEdit}
-              size="middle"
-            >
-              {t('common.edit')}
-            </Button>
-          ) : (
-            <Button 
-              type="primary" 
-              icon={<PlusOutlined />}
-              onClick={onAdd}
-              size="middle"
-            >
-              {t('common.add')}
-            </Button>
-          )}
+        <Space>
+          <ProjectOutlined />
+          {t('project.phases')}
         </Space>
       }
       style={{ marginBottom: 24 }}

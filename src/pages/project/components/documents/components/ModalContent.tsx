@@ -1,4 +1,4 @@
-import { Modal, Typography, Space, Button, Upload, List, Tooltip, message, Divider } from 'antd';
+import { Modal, Typography, Space, Button, Upload, List, Tooltip, message, Divider, Input } from 'antd';
 import {
   FileOutlined,
   FileWordOutlined,
@@ -14,10 +14,11 @@ import {
   FileTextOutlined,
   UserOutlined,
   CalendarOutlined,
-  EditOutlined
+  EditOutlined,
+  WarningFilled
 } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
-import { useState } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import type { UploadFile } from 'antd/es/upload/interface';
 import dayjs from 'dayjs';
 
@@ -31,9 +32,11 @@ interface ModalContentProps {
   files: Array<{
     uid: string;
     name: string;
-    filepath: string; // Đường dẫn file từ server
+    filepath: string;
     type: string;
     size?: number;
+    originFileObj?: File;
+    isNew?: boolean;
   }>;
   creator: string;
   createdAt: string;
@@ -41,6 +44,7 @@ interface ModalContentProps {
   onDeleteFile: (fileId: string) => void;
   onUploadFiles: (files: UploadFile[]) => void;
   onConfirm: () => void;
+  onContentChange?: (newContent: string) => void;
 }
 
 const ModalContent: React.FC<ModalContentProps> = ({
@@ -54,12 +58,18 @@ const ModalContent: React.FC<ModalContentProps> = ({
   updatedAt,
   onDeleteFile,
   onUploadFiles,
-  onConfirm
+  onConfirm,
+  onContentChange
 }) => {
   const { t } = useTranslation(['project', 'common']);
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewUrl, setPreviewUrl] = useState('');
   const [previewTitle, setPreviewTitle] = useState('');
+  const [isEditingContent, setIsEditingContent] = useState(false);
+  const [editedContent, setEditedContent] = useState(contentName);
+  const [currentFiles, setCurrentFiles] = useState(files);
+  const [originalContent] = useState(contentName);
+  const [originalFiles] = useState(files);
   const URL_UPLOAD = import.meta.env.VITE_API_UPLOAD_URL;
   const formatFileSize = (bytes: number): string => {
     if (!bytes) return '0 B';
@@ -68,6 +78,92 @@ const ModalContent: React.FC<ModalContentProps> = ({
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return `${parseFloat((bytes / Math.pow(k, i)).toFixed(2))} ${sizes[i]}`;
   };
+
+  // Cập nhật state khi props thay đổi
+  useEffect(() => {
+    setEditedContent(contentName);
+    setCurrentFiles(files);
+  }, [contentName, files]);
+
+  // Reset data khi đóng modal
+  const handleClose = () => {
+    setEditedContent(contentName);
+    setCurrentFiles(files);
+    setIsEditingContent(false);
+    setPreviewOpen(false);
+    setPreviewUrl('');
+    setPreviewTitle('');
+    onClose();
+  };
+
+  // Kiểm tra xem có thay đổi gì không
+  const hasChanges = useMemo(() => {
+    const contentChanged = editedContent !== originalContent;
+    const filesChanged = JSON.stringify(currentFiles) !== JSON.stringify(originalFiles);
+    return contentChanged || filesChanged;
+  }, [editedContent, currentFiles, originalContent, originalFiles]);
+
+  const handleContentSubmit = () => {
+    setIsEditingContent(false);
+    onContentChange?.(editedContent);
+  };
+
+  const handleDeleteFileClick = (fileId: string, fileName: string) => {
+    Modal.confirm({
+      title: t('document.content.delete_file_confirm_title'),
+      icon: <WarningFilled style={{ color: '#faad14' }} />,
+      content: t('document.content.delete_file_confirm_content', { fileName }),
+      okText: (
+        <Space>
+          <DeleteOutlined />
+          {t('common.confirm')}
+        </Space>
+      ),
+      cancelText: (
+        <Space>
+          <CloseOutlined />
+          {t('common.cancel')}
+        </Space>
+      ),
+      okButtonProps: { 
+        danger: true,
+        icon: <DeleteOutlined />
+      },
+      onOk: () => {
+        onDeleteFile(fileId);
+        setCurrentFiles(prev => prev.filter(file => file.uid !== fileId));
+      }
+    });
+  };
+
+  const handleUploadFiles = (newFiles: UploadFile[]) => {
+    // Lọc ra các file mới chưa có trong danh sách
+    const uniqueNewFiles = newFiles.filter(newFile => 
+      !currentFiles.some(existingFile => existingFile.uid === newFile.uid)
+    ).map(file => ({
+      uid: file.uid,
+      name: file.name,
+      filepath: file.name,
+      type: file.type || file.name.split('.').pop() || '',
+      size: file.size,
+      originFileObj: file.originFileObj,
+      isNew: true
+    }));
+    
+    setCurrentFiles(prev => [...prev, ...uniqueNewFiles]);
+  };
+
+  // Chuyển đổi currentFiles sang định dạng UploadFile cho antd Upload
+  const uploadFileList = currentFiles
+    .filter(file => file.isNew)
+    .map(file => ({
+      uid: file.uid,
+      name: file.name,
+      status: 'done' as const,
+      url: file.filepath,
+      type: file.type,
+      size: file.size,
+    }));
 
   const getFileIcon = (fileType: string) => {
     const type = fileType.toLowerCase();
@@ -117,7 +213,7 @@ const ModalContent: React.FC<ModalContentProps> = ({
     <>
       <Modal
         open={open}
-        onCancel={onClose}
+        onCancel={handleClose}
         width={800}
         title={
           <Space direction="vertical" size={4}>
@@ -125,13 +221,34 @@ const ModalContent: React.FC<ModalContentProps> = ({
               <FileTextOutlined />
               <Text>{documentName}</Text>
             </Space>
-            <Text type="secondary" style={{ fontSize: '14px', marginLeft: 24 }}>
-              {contentName}
-            </Text>
+            <Space align="center" style={{ fontSize: '14px', marginLeft: 24 }}>
+              {isEditingContent ? (
+                <Input
+                  value={editedContent}
+                  onChange={(e) => setEditedContent(e.target.value)}
+                  onPressEnter={handleContentSubmit}
+                  onBlur={handleContentSubmit}
+                  autoFocus
+                  style={{ width: '300px' }}
+                />
+              ) : (
+                <>
+                  <Text type="secondary">{editedContent}</Text>
+                  <Tooltip title={t('document.content.edit')}>
+                    <Button
+                      type="text"
+                      icon={<EditOutlined />}
+                      onClick={() => setIsEditingContent(true)}
+                      style={{ marginLeft: 8 }}
+                    />
+                  </Tooltip>
+                </>
+              )}
+            </Space>
           </Space>
         }
         footer={[
-          <Button key="close" icon={<CloseOutlined />} onClick={onClose}>
+          <Button key="close" icon={<CloseOutlined />} onClick={handleClose}>
             {t('common.close')}
           </Button>,
           <Button
@@ -150,6 +267,7 @@ const ModalContent: React.FC<ModalContentProps> = ({
             type="primary"
             icon={<CheckOutlined />}
             onClick={onConfirm}
+            disabled={!hasChanges}
           >
             {t('common.confirm')}
           </Button>
@@ -203,7 +321,7 @@ const ModalContent: React.FC<ModalContentProps> = ({
                     type="text"
                     danger
                     icon={<DeleteOutlined />}
-                    onClick={() => onDeleteFile(file.uid)}
+                    onClick={() => handleDeleteFileClick(file.uid, file.name)}
                   />
                 </Tooltip>
               ].filter(Boolean)}
@@ -227,6 +345,8 @@ const ModalContent: React.FC<ModalContentProps> = ({
           style={{ display: 'none' }}
           accept=".doc,.docx,.pdf,.xls,.xlsx,.jpg,.jpeg,.png,.gif"
           multiple
+          showUploadList={false}
+          fileList={uploadFileList}
           beforeUpload={(file) => {
             const isValidType = [
               'doc', 'docx', 'pdf', 'xls', 'xlsx',
@@ -239,12 +359,20 @@ const ModalContent: React.FC<ModalContentProps> = ({
             }
             return false;
           }}
-          onChange={({ fileList }) => onUploadFiles(fileList)}
-        >
-          <Button type="primary" icon={<UploadOutlined />}>
-            {t('document.content.select_files')}
-          </Button>
-        </Upload>
+          onChange={({ fileList }) => {
+            // Không cần check duplicate, để BE xử lý
+            const newFiles = fileList.map(file => ({
+              uid: file.uid,
+              name: file.name,
+              filepath: file.name,
+              type: file.type || file.name.split('.').pop() || '',
+              size: file.size,
+              originFileObj: file.originFileObj,
+              isNew: true
+            }));
+            setCurrentFiles(prev => [...prev, ...newFiles]);
+          }}
+        />
 
         <Modal
           open={previewOpen}
