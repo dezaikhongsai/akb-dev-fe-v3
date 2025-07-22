@@ -30,7 +30,7 @@ import AppFooter from './components/AppFooter';
 import { useDebounce } from '../../common/hooks/useDebounce';
 import { autoSearchProject } from '../../services/home/home.service';
 import SearchBox from '../components/SearchBox';
-
+import Notification from '../components/Notification';
 import type { ItemType } from 'antd/es/menu/interface'; // Correct import for Ant Design types
 
 const { Header, Sider, Content } = Layout;
@@ -327,7 +327,7 @@ const MainLayout: React.FC = () => {
       Cookies.remove('refreshToken', { path: '/' });
       navigate('/login', { replace: true });
       message.success(t('common:messages.success.logout'));
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Logout error:', error);
       dispatch(logoutRedux());
       Cookies.remove('accessToken', { path: '/' });
@@ -373,15 +373,18 @@ const MainLayout: React.FC = () => {
     return colors[index];
   }, [user]);
 
+
+
   return (
     <Layout style={{ minHeight: '100vh' }}>
+      {/* Thanh Header */}
       <Header
         style={{
           position: 'fixed',
           top: 0,
           zIndex: 100,
           width: '100%',
-          background: '#001529',
+          background: '#222D32',
           padding: '0 24px',
           height: '64px',
           color: '#fff',
@@ -396,6 +399,7 @@ const MainLayout: React.FC = () => {
           width: '100%',
           gap: 16
         }}>
+          {/* Header bên trái */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
             {React.createElement(collapsed ? MenuUnfoldOutlined : MenuFoldOutlined, {
               className: 'trigger',
@@ -407,6 +411,9 @@ const MainLayout: React.FC = () => {
               alt="avatar"
               style={{ width: 32, height: 32, borderRadius: 6, objectFit: 'cover' }}
             />
+          </div>
+          {/* Header bên phải */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
             <div ref={searchRef} style={{ position: 'relative' }}>
               <SearchBox
                 options={searchResults.map(project => ({
@@ -414,7 +421,7 @@ const MainLayout: React.FC = () => {
                   alias: project.alias
                 }))}
                 placeholder={t('search_placeholder')}
-                style={{ width: 300 }}
+                style={{ width: 200 }}
                 value={searchValue}
                 onChange={(value) => {
                   handleSearch(value);
@@ -427,8 +434,8 @@ const MainLayout: React.FC = () => {
                 noDataMessage={t('no_results')}
               />
             </div>
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+            <Notification />
+            <LanguageSwitcher />
             <Dropdown
               menu={{
                 items: [
@@ -464,7 +471,7 @@ const MainLayout: React.FC = () => {
                   },
                   {
                     key: 'action',
-                    icon: <EditOutlined style={{ color: '#722ed1'} } />,
+                    icon: <EditOutlined style={{ color: '#722ed1' }} />,
                     label: (
                       <Button
                         onClick={() => { handleUserProfile(user?._id ?? '') }}
@@ -485,7 +492,7 @@ const MainLayout: React.FC = () => {
                     icon: <GlobalOutlined style={{ color: '#13c2c2' }} />,
                     label: (
                       <div style={{ padding: '4px 0' }}>
-                        <LanguageSwitcher />
+
                       </div>
                     ),
                   },
@@ -523,6 +530,7 @@ const MainLayout: React.FC = () => {
             >
               {t('logout')}
             </Button>
+
           </div>
         </div>
       </Header>
