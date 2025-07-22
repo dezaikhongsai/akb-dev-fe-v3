@@ -1,0 +1,261 @@
+{
+  "modal_add_user": {
+    "title": "Thêm người dùng mới",
+    "ok_text": "Thêm",
+    "cancel_text": "Hủy",
+    "email_label": "Email",
+    "email_required": "Vui lòng nhập email",
+    "email_invalid": "Email không đúng định dạng",
+    "password_label": "Mật khẩu",
+    "password_required": "Vui lòng nhập mật khẩu",
+    "password_min_length": "Mật khẩu phải có ít nhất 6 ký tự",
+    "confirm_password_label": "Nhập lại mật khẩu",
+    "confirm_password_required": "Vui lòng xác nhận mật khẩu",
+    "confirm_password_mismatch": "Mật khẩu xác nhận không khớp",
+    "role_label": "Quyền",
+    "role_required": "Vui lòng chọn quyền",
+    "role_admin": "Quản trị viên",
+    "role_pm": "Quản lý dự án",
+    "role_guest": "Khách hàng",
+    "email_placeholder": "Nhập email",
+    "password_placeholder": "Nhập mật khẩu",
+    "confirm_password_placeholder": "Nhập lại mật khẩu",
+    "role_placeholder": "Chọn quyền"
+  },
+  "modal_profile_form": {
+    "add_title": "Thêm thông tin cá nhân",
+    "edit_title": "Sửa thông tin cá nhân",
+    "ok_text": "Xác nhận",
+    "cancel_text": "Đóng",
+    "save_button": "Lưu thông tin",
+    "cancel_button": "Hủy bỏ",
+    "alias_label": "Mã",
+    "name_label": "Họ tên",
+    "name_required": "Vui lòng nhập họ tên",
+    "email_contact_label": "Email liên hệ",
+    "email_contact_required": "Vui lòng nhập email",
+    "email_contact_invalid": "Email không hợp lệ",
+    "phone_contact_label": "Số điện thoại",
+    "phone_contact_required": "Vui lòng nhập số điện thoại",
+    "dob_label": "Ngày sinh",
+    "company_name_label": "Công ty",
+    "address_label": "Địa chỉ",
+    "note_label": "Ghi chú",
+    "note_placeholder": "Nhập ghi chú (không bắt buộc)",
+    "address_placeholder": "Nhập địa chỉ",
+    "company_placeholder": "Nhập tên công ty",
+    "phone_placeholder": "Nhập số điện thoại",
+    "email_placeholder": "Nhập email liên hệ",
+    "name_placeholder": "Nhập họ và tên"
+  },
+  "modal_user_detail": {
+    "title_prefix": "Thông tin người dùng",
+    "alias_label": "Mã",
+    "updated_at_label": "Ngày cập nhật",
+    "role_label": "Quyền",
+    "created_at_label": "Ngày tạo",
+    "email_label": "Email",
+    "profile_section_title": "Thông tin cá nhân",
+    "edit_profile_button": "Sửa thông tin",
+    "add_profile_button": "Thêm profile",
+    "no_profile_text": "Không có thông tin cá nhân",
+    "close_button": "Đóng",
+    "role_admin": "Quản trị viên",
+    "role_pm": "Quản lý dự án",
+    "role_guest": "Khách hàng",
+    "dob_label": "Ngày sinh",
+    "email_contact_label": "Email liên hệ",
+    "phone_contact_label": "Số điện thoại",
+    "company_name_label": "Công ty",
+    "address_label": "Địa chỉ",
+    "note_label": "Ghi chú",
+    "name_label": "Họ tên"
+  },
+  "user_page": {
+    "add_user_button": "Đăng ký người dùng",
+    "search_placeholder": "Tìm kiếm người dùng",
+    "search_tooltip": "Tìm kiếm theo mã",
+    "filter_role_placeholder": "Lọc quyền",
+    "filter_role_tooltip": "Lọc theo quyền",
+    "filter_status_placeholder": "Lọc trạng thái",
+    "filter_status_tooltip": "Lọc theo trạng thái",
+    "sort_placeholder": "Sắp xếp theo mã",
+    "sort_asc": "Mã tăng dần",
+    "sort_desc": "Mã giảm dần",
+    "status_active": "Đã kích hoạt",
+    "status_inactive": "Chưa kích hoạt",
+    "role_admin": "Quản trị viên",
+    "role_pm": "Quản lý dự án",
+    "role_guest": "Khách hàng",
+    "table": {
+      "stt": "STT",
+      "alias": "Mã",
+      "email": "Email",
+      "role": "Quyền",
+      "status": "Trạng thái",
+      "created_at": "Ngày tạo",
+      "updated_at": "Ngày cập nhật",
+      "action": "Chức năng",
+      "view_button": "Chi tiết",
+      "delete_button": "Xóa"
+    },
+    "delete_confirm_title": "Xác nhận xóa người dùng",
+    "delete_confirm_content_prefix": "Bạn có chắc chắn muốn xóa người dùng",
+    "delete_ok_text": "Xóa",
+    "delete_cancel_text": "Hủy",
+    "delete_confirm_content": "bạn có xác nhận xóa người dùng không ?"
+  },
+  "userStatisticCard": {
+    "accountTotal": "Tổng số tài khoản",
+    "activatedAccountTotal": "Tổng số tài khoản kích hoạt",
+    "PMAccountTotal": "Tổng số tài khoản quản lý dự án",
+    "customerAccountTotal": "Tổng số tài khoản khách hàng"
+  },
+  "userProfile": {
+    "title": "Thông tin người dùng",
+    "alias": "Mã",
+    "email": "Email",
+    "status": "Trạng thái",
+    "isActiveStatus": "Đã kích hoạt",
+    "inActiveStatus": "Chưa kích hoạt",
+    "personalInformation": {
+      "Title": " Thông tin cá nhân",
+      "alias": "Mã",
+      "email": "Email",
+      "phoneNumber": "Số điện thoại",
+      "birth": "Ngày sinh",
+      "company": "Công ty",
+      "address": "Địa chỉ"
+    }
+  },
+  "profile": {
+    "title": "Thông tin cá nhân",
+    "name": "Họ và tên",
+    "email": "Email",
+    "emailContact": "Email liên hệ",
+    "phoneContact": "Số điện thoại",
+    "company": "Công ty",
+    "address": "Địa chỉ",
+    "note": "Ghi chú",
+    "role": "Vai trò",
+    "alias": "Mã người dùng",
+    "status": "Trạng thái",
+    "createdAt": "Ngày tạo",
+    "notUpdated": "Chưa cập nhật",
+    "edit": "Chỉnh sửa thông tin",
+    "add": "Thêm thông tin cá nhân",
+    "created_by": "Tạo bởi",
+    "updated_by": "Cập nhật cuối bởi",
+    "created_info": "Tạo bởi {{name}} ({{email}}) vào ngày {{date}}",
+    "updated_info": "Cập nhật cuối bởi {{name}} ({{email}}) vào ngày {{date}}"
+  },
+  "table": {
+    "title": "Danh sách người dùng",
+    "alias": "Mã",
+    "name": "Họ và tên",
+    "email": "Email đăng nhập",
+    "emailContact": "Email liên hệ",
+    "phoneContact": "Số điện thoại",
+    "status": "Trạng thái",
+    "role": "Vai trò",
+    "actions": "Thao tác",
+    "company": "Tên công ty",
+    "address": "Địa chỉ",
+    "note": "Ghi chú"
+  },
+  "action": {
+    "create": "Thêm mới",
+    "edit": "Chỉnh sửa",
+    "delete": "Xóa"
+  },
+  "modal": {
+    "detail": {
+      "title": "Thông tin chi tiết người dùng"
+    },
+    "delete": {
+      "title": "Xóa người dùng",
+      "content": "Bạn có chắc chắn muốn xóa người dùng này không?",
+      "ok": "Xóa",
+      "cancel": "Hủy"
+    }, 
+    "update": {
+      "title": "Cập nhật người dùng",
+      "content": "Bạn có chắc chắn muốn cập nhật người dùng này không?",
+      "button" : {
+        "update": "Xác nhận",
+        "cancel": "Hủy"
+      }
+    },
+    "create": {
+      "title": "Thêm người dùng",
+      "content": "Bạn có chắc chắn muốn thêm người dùng này không?",
+      "button" : {
+        "create": "Xác nhận",
+        "cancel": "Hủy"
+      }
+    }
+  },
+  "form": {
+    "email": "Email đăng nhập",
+    "email.required": "Vui lòng nhập email đăng nhập",
+    "email.invalid": "Email không hợp lệ",
+    "email.placeholder": "Nhập email đăng nhập",
+    "password": "Mật khẩu",
+    "password.required": "Vui lòng nhập mật khẩu",
+    "password.min": "Mật khẩu phải có ít nhất 6 ký tự",
+    "password.placeholder": "Nhập mật khẩu",
+    "role": "Vai trò",
+    "role.required": "Vui lòng chọn vai trò",
+    "role.placeholder": "Chọn vai trò",
+    "name": "Họ và tên",
+    "name.required": "Vui lòng nhập họ và tên",
+    "name.placeholder": "Nhập họ và tên",
+    "dob": "Ngày sinh",
+    "dob.placeholder": "Chọn ngày sinh",
+    "emailContact": "Email liên hệ",
+    "emailContact.required": "Vui lòng nhập email liên hệ",
+    "emailContact.invalid": "Email không hợp lệ",
+    "emailContact.placeholder": "Nhập email liên hệ",
+    "phoneContact": "Số điện thoại",
+    "phoneContact.required": "Vui lòng nhập số điện thoại",
+    "phoneContact.placeholder": "Nhập số điện thoại",
+    "companyName": "Tên công ty",
+    "companyName.placeholder": "Nhập tên công ty",
+    "address": "Địa chỉ",
+    "address.placeholder": "Nhập địa chỉ",
+    "note": "Ghi chú",
+    "note.placeholder": "Nhập ghi chú"
+  },
+  "role": {
+    "admin": "Quản trị viên",
+    "customer": "Khách hàng",
+    "pm": "Quản lý dự án",
+    "unknown": "Chưa xác định"
+  },
+  "filter": {
+    "all": "Tất cả",
+    "role": "Lọc theo vai trò",
+    "active": "Hoạt động",
+    "inactive": "Không hoạt động"
+  },
+  "sort": {
+    "asc": "Tăng dần",
+    "desc": "Giảm dần"
+  },
+  "search": {
+    "placeholder": "Tìm kiếm theo tên, email, số điện thoại..."
+  },
+  "statistic": {
+    "title": "Thống kê người dùng",
+    "roleDistribution": "Phân bố vai trò",
+    "totalUser": "Tổng số người dùng",
+    "totalCustomer": "Tổng số khách hàng",
+    "totalAdmin": "Tổng số quản trị viên",
+    "totalPM": "Tổng số quản lý dự án",
+    "fullActivation": "Tất cả người dùng đang hoạt động",
+    "inactiveUsers": "Có {{count}} người dùng không hoạt động"
+  },
+  "pagination": {
+    "total": "{start}-{end} trên tổng số {total} bản ghi"
+  }
+}

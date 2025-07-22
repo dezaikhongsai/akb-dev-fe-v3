@@ -1,0 +1,262 @@
+{
+  "modal_add_user": {
+    "title": "新しいユーザーを追加",
+    "ok_text": "追加",
+    "cancel_text": "キャンセル",
+    "email_label": "メールアドレス",
+    "email_required": "メールアドレスを入力してください",
+    "email_invalid": "メールアドレスの形式が正しくありません",
+    "password_label": "パスワード",
+    "password_required": "パスワードを入力してください",
+    "password_min_length": "パスワードは少なくとも6文字以上である必要があります",
+    "confirm_password_label": "パスワードの確認",
+    "confirm_password_required": "パスワードを確認してください",
+    "confirm_password_mismatch": "確認パスワードが一致しません",
+    "role_label": "権限",
+    "role_required": "権限を選択してください",
+    "role_admin": "管理者",
+    "role_pm": "プロジェクトマネージャー",
+    "role_guest": "顧客",
+    "email_placeholder": "メールアドレスを入力",
+    "password_placeholder": "パスワードを入力",
+    "confirm_password_placeholder": "パスワードを再入力",
+    "role_placeholder": "権限を選択"
+  },
+  "modal_profile_form": {
+    "add_title": "個人情報を追加",
+    "edit_title": "個人情報を編集",
+    "ok_text": "確認",
+    "cancel_text": "閉じる",
+    "save_button": "保存",
+    "cancel_button": "キャンセル",
+    "alias_label": "コード",
+    "name_label": "氏名",
+    "name_required": "氏名を入力してください",
+    "email_contact_label": "連絡用メール",
+    "email_contact_required": "メールアドレスを入力してください",
+    "email_contact_invalid": "メールアドレスが無効です",
+    "phone_contact_label": "電話番号",
+    "phone_contact_required": "電話番号を入力してください",
+    "dob_label": "生年月日",
+    "company_name_label": "会社名",
+    "address_label": "住所",
+    "note_label": "メモ",
+    "note_placeholder": "メモを入力（任意）",
+    "address_placeholder": "住所を入力",
+    "company_placeholder": "会社名を入力",
+    "phone_placeholder": "電話番号を入力",
+    "email_placeholder": "連絡先メールを入力",
+    "name_placeholder": "氏名を入力"
+  },
+  "modal_user_detail": {
+    "title_prefix": "ユーザー情報",
+    "alias_label": "コード",
+    "updated_at_label": "更新日",
+    "role_label": "権限",
+    "created_at_label": "作成日",
+    "email_label": "メールアドレス",
+    "profile_section_title": "個人情報",
+    "edit_profile_button": "情報を編集",
+    "add_profile_button": "プロフィールを追加",
+    "no_profile_text": "個人情報がありません",
+    "close_button": "閉じる",
+    "role_admin": "管理者",
+    "role_pm": "プロジェクトマネージャー",
+    "role_guest": "顧客",
+    "dob_label": "生年月日",
+    "email_contact_label": "連絡用メール",
+    "phone_contact_label": "電話番号",
+    "company_name_label": "会社名",
+    "address_label": "住所",
+    "note_label": "メモ",
+    "name_label": "フルネーム"
+  },
+  "user_page": {
+    "add_user_button": "ユーザーを登録",
+    "search_placeholder": "ユーザーを検索",
+    "search_tooltip": "コードで検索",
+    "filter_role_placeholder": "権限でフィルター",
+    "filter_role_tooltip": "権限でフィルター",
+    "filter_status_placeholder": "状態でフィルター",
+    "filter_status_tooltip": "状態でフィルター",
+    "sort_placeholder": "コードで並べ替え",
+    "sort_asc": "コード昇順",
+    "sort_desc": "コード降順",
+    "status_active": "有効",
+    "status_inactive": "未有効",
+    "role_admin": "管理者",
+    "role_pm": "プロジェクトマネージャー",
+    "role_guest": "顧客",
+    "table": {
+      "stt": "番号",
+      "alias": "コード",
+      "email": "メールアドレス",
+      "role": "権限",
+      "status": "状態",
+      "created_at": "作成日",
+      "updated_at": "更新日",
+      "action": "機能",
+      "view_button": "詳細",
+      "delete_button": "削除"
+    },
+    "delete_confirm_title": "ユーザーの削除確認",
+    "delete_confirm_content_prefix": "ユーザー",
+    "delete_ok_text": "削除",
+    "delete_cancel_text": "キャンセル",
+    "delete_confirm_content": "ユーザーの削除を確認しますか?"
+  },
+  "userStatisticCard": {
+    "accountTotal": "総アカウント数",
+    "activatedAccountTotal": "有効化されたアカウント数",
+    "PMAccountTotal": "プロジェクトマネージャーアカウント数",
+    "customerAccountTotal": "顧客アカウント数"
+  },
+  "userProfile": {
+    "title": "ユーザー情報",
+    "alias": "コード",
+    "email": "メールアドレス",
+    "status": "ステータス",
+    "isActiveStatus": "有効",
+    "inActiveStatus": "無効",
+    "personalInformation": {
+      "Title": "個人情報",
+      "alias": "コード",
+      "email": "メールアドレス",
+      "phoneNumber": "電話番号",
+      "birth": "生年月日",
+      "company": "会社",
+      "address": "住所"
+    }
+  },
+  "profile": {
+    "title": "プロフィール",
+    "name": "氏名",
+    "email": "メール",
+    "emailContact": "連絡先メール",
+    "phoneContact": "電話番号",
+    "company": "会社",
+    "address": "住所",
+    "note": "メモ",
+    "role": "役割",
+    "alias": "ユーザーコード",
+    "status": "ステータス",
+    "createdAt": "作成日",
+    "notUpdated": "未更新",
+    "edit": "プロフィールを編集",
+    "add": "プロフィールを追加",
+    "created_by": "作成者",
+    "updated_by": "最終更新者",
+    "created_info": "{{date}}に{{name}}（{{email}}）が作成",
+    "updated_info": "{{date}}に{{name}}（{{email}}）が最終更新"
+  },
+  "table": {
+    "title": "ユーザー一覧",
+    "alias": "ユーザーID",
+    "name": "氏名",
+    "email": "ログインメール",
+    "emailContact": "連絡先メール",
+    "phoneContact": "電話番号",
+    "status": "ステータス",
+    "role": "役割",
+    "actions": "アクション",
+    "company": "会社名",
+    "address": "住所",
+    "note": "備考"
+  },
+  "action": {
+    "create": "新規作成",
+    "edit": "編集",
+    "delete": "削除"
+  },
+  "modal": {
+    "delete": {
+      "title": "削除確認",
+      "content": "このユーザーを削除してもよろしいですか？",
+      "ok": "削除",
+      "cancel": "キャンセル"
+    },
+    "cancel": "キャンセル",
+    "detail": {
+      "title": "ユーザー詳細情報"
+    },
+    "update": {
+      "title": "ユーザー情報更新",
+      "content": "このユーザーを更新してもよろしいですか？",
+      "button" : {
+        "update": "更新",
+        "cancel": "キャンセル"
+      }
+    },
+    "create": {
+      "title": "新規ユーザー追加",
+      "content": "このユーザーを追加してもよろしいですか？",
+      "button" : {
+        "create": "追加",
+        "cancel": "キャンセル"
+      }
+    }
+  },
+  "form": {
+    "email": "ログインメール",
+    "email.required": "ログインメールを入力してください",
+    "email.invalid": "メールアドレスが無効です",
+    "email.placeholder": "ログインメールを入力",
+    "password": "パスワード",
+    "password.required": "パスワードを入力してください",
+    "password.min": "パスワードは6文字以上である必要があります",
+    "password.placeholder": "パスワードを入力",
+    "role": "役割",
+    "role.required": "役割を選択してください",
+    "role.placeholder": "役割を選択",
+    "name": "氏名",
+    "name.required": "氏名を入力してください",
+    "name.placeholder": "氏名を入力",
+    "dob": "生年月日",
+    "dob.placeholder": "生年月日を選択",
+    "emailContact": "連絡先メール",
+    "emailContact.required": "連絡先メールを入力してください",
+    "emailContact.invalid": "メールアドレスが無効です",
+    "emailContact.placeholder": "連絡先メールを入力",
+    "phoneContact": "電話番号",
+    "phoneContact.required": "電話番号を入力してください",
+    "phoneContact.placeholder": "電話番号を入力",
+    "companyName": "会社名",
+    "companyName.placeholder": "会社名を入力",
+    "address": "住所",
+    "address.placeholder": "住所を入力",
+    "note": "備考",
+    "note.placeholder": "備考を入力"
+  },
+  "role": {
+    "admin": "管理者",
+    "customer": "顧客",
+    "pm": "プロジェクトマネージャー",
+    "unknown": "未定義"
+  },
+  "filter": {
+    "all": "すべて",
+    "role": "役割でフィルター",
+    "active": "アクティブ",
+    "inactive": "非アクティブ"
+  },
+  "sort": {
+    "asc": "昇順",
+    "desc": "降順"
+  },
+  "search": {
+    "placeholder": "名前、メール、電話番号で検索..."
+  },
+  "statistic": {
+    "title": "ユーザー統計",
+    "roleDistribution": "役割分布",
+    "totalUser": "総ユーザー数",
+    "totalCustomer": "総顧客数",
+    "totalAdmin": "総管理者数",
+    "totalPM": "総PMユーザー数",
+    "fullActivation": "全ユーザーがアクティブです",
+    "inactiveUsers": "{{count}}人のユーザーが非アクティブです"
+  },
+  "pagination": {
+    "total": "全{total}件中の{start}〜{end}件を表示"
+  }
+}

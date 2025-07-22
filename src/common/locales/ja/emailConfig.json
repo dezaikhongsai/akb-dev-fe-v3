@@ -1,0 +1,66 @@
+{
+    "emailConfig": {
+        "form": {
+            "createAppPasswordGuide": "アプリパスワード作成ガイド",
+            "switchConfigMode": "メール送信設定のオン/オフ",
+            "emailService": "サービス",
+            "encryptionMethod": "暗号化方法",
+            "emailAddress": "送信者メールアドレス",
+            "password": "パスワード",
+            "senderName": "送信者名",
+            "host": "ホスト",
+            "port": "ポート",
+            "updateConfigTitle": "メール設定を更新",
+            "createConfigTitle": "新規メール設定を作成"
+        },
+        "message": {
+            "loadConfigFail": "メール設定を読み込めませんでした",
+            "onUpdateConfig": "メール設定を更新しています...",
+            "onCreateNewConfig": "新規メール設定を作成しています...",
+            "updateConfigSuccess": "メール設定の更新が完了しました！",
+            "createNewConfigSuccess": "新規メール設定の作成が完了しました！",
+            "handleFail": "リクエストの処理中にエラーが発生しました",
+            "emailServiceRequired": "メールサービスを選択してください",
+            "encryptionMethodRequired": "暗号化方法を選択してください",
+            "emailAddressRequired": "メールアドレスを入力してください",
+            "emailAddressInvalid": "メールアドレスが無効です",
+            "passwordRequired": "パスワードを入力してください",
+            "passwordDescription": "Gmailサービスを使用する場合、パスワードはアプリパスワードです",
+            "senderNameRequired": "送信者名を入力してください",
+            "hostRequired": "ホストを入力してください"
+        }
+    },
+    "gmailAppPasswordTutorial": {
+        "title": "Gmail アプリパスワード作成ガイド",
+        "closeButton": "閉じる",
+        "requirements": {
+            "title": "前提条件：",
+            "item1": "Gmailアカウントで2段階認証を有効にする",
+            "item2": "安全性の低いアプリからのログインがブロックされていないアカウント"
+        },
+        "steps": {
+            "step1": {
+                "title": "Googleアカウントにアクセス",
+                "description": "Googleアカウント管理ページにアクセス：",
+                "url": "https://myaccount.google.com/"
+            },
+            "step2": {
+                "title": "セキュリティを確認",
+                "description": "セキュリティ部分に移動\n2段階認証が有効になっていることを確認"
+            },
+            "step3": {
+                "title": "アプリパスワードにアクセス",
+                "description": "2段階認証を有効にした後、以下にアクセス：",
+                "url": "https://myaccount.google.com/apppasswords"
+            },
+            "step4": {
+                "title": "アプリパスワードを作成",
+                "description": "- アプリを選択でメールを選択\n- デバイスを選択でその他を選択 → MERN Appのような名前を付ける\n- 生成をクリック"
+            },
+            "step5": {
+                "title": "パスワードをコピー",
+                "description": "Googleが16文字の文字列を表示します\nその文字列をコピー - これがあなたのアプリパスワードです\nこれを使ってメール送信を設定してください"
+            }
+        }
+    }
+}

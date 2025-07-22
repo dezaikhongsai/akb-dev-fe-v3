@@ -1,0 +1,14 @@
+{
+  "username": "ユーザー名",
+  "password": "パスワード",
+  "login": "ログイン",
+  "forgot_password": "パスワードを忘れた?",
+  "email": "メールアドレス",
+  "email_required": "メールアドレスを入力してください！",
+  "email_invalid": "正しいメールアドレスの形式で入力してください！",
+  "password_required": "パスワードを入力してください！",
+  "login_failed": "ログインに失敗しました。アクセストークンが取得できません！",
+  "login_success": "ログイン成功！",
+  "slogan": "顧客要求管理・処理システム",
+  "footer": "© 2025 AKB-SOFTWARE"
+}

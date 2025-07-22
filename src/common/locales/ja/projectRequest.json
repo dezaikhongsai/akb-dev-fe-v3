@@ -1,0 +1,94 @@
+{
+    "pjRequest_page": {
+        "table": {
+            "stt": "番号",
+            "alias": "コード",
+            "name": "プロジェクト名",
+            "customer": "顧客名",
+            "PM": "プロジェクトマネージャー",
+            "status": "ステータス",
+            "startDate": "開始日",
+            "action": "アクション",
+
+            "approve": "承認",
+            "approveSuccess": "プロジェクトの承認に成功しました",
+            "approveError": "プロジェクトの承認中にエラーが発生しました",
+
+            "delete": "削除",
+            "deletetitle": "削除の確認",
+            "deleteconfirm": "{{name}} プロジェクト要求を削除してもよろしいですか？",
+            "deleteok": "削除",
+            "deletecancel": "キャンセル",
+            "deleteSuccess": "プロジェクトの削除に成功しました",
+            "deleteError": "プロジェクトの削除中にエラーが発生しました"
+        },
+        "createProjectRequest": "プロジェクト要求を作成する",
+        "createProjectSuccess": "プロジェクトの作成に成功しました",
+        "createProjectError": "プロジェクトの作成中にエラーが発生しました",
+        "getProjectsError": "プロジェクトリストの取得中にエラーが発生しました"
+    },
+
+    "DrawerProjectForm": {
+        "drawertitle": "新しいプロジェクト要求を作成",
+        "pjname": "プロジェクト名",
+            "pjname_required": "プロジェクト名を入力してください！",
+            "pjname_placeholder": "プロジェクト名を入力",
+        "PM": "プロジェクトマネージャー",
+            "PM_required": "プロジェクトマネージャーを選択してください！",
+            "PM_placeholder": "プロジェクトマネージャーを選択",
+        "customer": "顧客名",
+            "customer_required": "顧客名を選択してください！",
+            "customer_placeholder": "顧客名を選択",
+        "startDate": "開始日",
+            "startDate_required": "開始日を選択してください！",
+        "document": "ドキュメント",
+        "addDocument": "ドキュメントを追加",
+        "upedDoc_name": "ドキュメント名",
+        "upedDoc_Day": "アップロード日",
+        "upedDoc_files": "ファイル数",
+        "close": "閉じる"
+    },
+    "ModalApproveProject":{
+        "projectDetail": {
+            "title": "プロジェクト詳細",
+            "alias": "コード",
+            "name": "プロジェクト名",
+            "customer": "顧客名",
+            "customerEmail": "顧客メール",
+            "PM": "プロジェクトマネージャー",
+            "PMEmail": "プロジェクトマネージャーメール",
+            "status": "ステータス",
+            "startDate": "開始日",
+            "cancel": "キャンセル",
+            "approve": "承認"
+        },
+        "documents": {
+            "title": "ドキュメント一覧",
+            "name": "ドキュメント名",
+            "day": "作成日",
+            "files": "ファイル数",
+            "detail": "ドキュメントの詳細",
+                "detailHover": "クリックしてダウンロード"
+        },
+        "getProjectInforError": "プロジェクト情報の取得中にエラーが発生しました",
+        "dowFileError": "ファイルのダウンロード中にエラーが発生しました",
+        "approveSuccess": "プロジェクトの承認に成功しました",
+        "approveError": "プロジェクトの承認中にエラーが発生しました"
+    },
+    "ModalUploadDocument": {
+        "title": "ドキュメントを追加",
+        "oktext": "アップロード",
+        "canceltext": "閉じる",
+        "docName": "ドキュメント名",
+        "name_required": "ドキュメント名を入力してください！",
+        "name_placeholder": "ドキュメント名を入力",
+        "docUpDay": "日付",
+        "docUpDay_required": "日付を選択してください！",
+        "attrachment": "添付ファイル",
+        "Upload" : "ファイルを選択",
+
+        "uploadDocumentSuccess": "ドキュメントが正常にアップロードされました",
+        "uploadDocumentError": "ドキュメントのアップロード中にエラーが発生しました"
+    }
+
+}

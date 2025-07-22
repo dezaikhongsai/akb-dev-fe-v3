@@ -1,0 +1,62 @@
+{
+    "statisticCard": {
+        "newRequestLabel": "新しいリクエスト",
+        "inProgressLabel": "進行中",
+        "completedLabel": "完了済み",
+        "totalLabel": "プロジェクト合計"
+    },
+    "timeFilter": {
+        "byMonth": "月別",
+        "byQuarter": "四半期別",
+        "byYear": "年別",
+        "refresh": "更新",
+        "startMonth": "開始月",
+        "endMonth": "終了月",
+        "startQuarter": "開始四半期",
+        "endQuarter": "終了四半期",
+        "startYear": "開始年",
+        "endYear": "終了年"
+    },
+    "pageTitle": "ダッシュボード",
+    "progressBar": {
+        "title": "プロジェクト進捗チャート",
+        "tooltip": {
+            "progress": "進捗",
+            "owner": "担当者"
+        }
+    },
+    "customerRatingStatistic": {
+        "title": "顧客からの評価率",
+        "averageRating": "平均評価",
+        "ratingsRecorded": "件の評価が記録されました",
+        "stars": {
+            "1": "星1つ",
+            "2": "星2つ",
+            "3": "星3つ",
+            "4": "星4つ",
+            "5": "星5つ"
+        },
+        "legend": {
+            "5stars": "星5つ",
+            "4stars": "星4つ",
+            "3stars": "星3つ",
+            "2stars": "星2つ",
+            "1stars": "星1つ"
+        }
+    },
+    "customerReportStatistic": {
+        "title": "顧客からの報告数",
+        "top": "最多 {{number}} 件",
+        "top3": "最多3件",
+        "top5": "最多5件",
+        "top7": "最多7件"
+    },
+    "tooltip": {
+        "projectName": "プロジェクト",
+        "progress": "進捗",
+        "owner": "担当者"
+    },
+    "error": {
+        "fetchData": "データ取得エラー"
+    }
+}

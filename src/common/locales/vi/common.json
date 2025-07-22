@@ -1,0 +1,63 @@
+{
+  "welcome": "Chào mừng bạn đến với ứng dụng",
+  "switch_language": "Chuyển ngôn ngữ",
+  "accessLimit": "Bạn không có quyền truy cập vào trang này.",
+  "backToHomePage": "Quay lại trang chủ",
+  "notFound": "Xin lỗi, trang bạn tìm kiếm không tồn tại.",
+  "messages": {
+    "success": {
+      "create": "Tạo mới thành công!",
+      "update": "Cập nhật thành công!",
+      "delete": "Xóa thành công!",
+      "upload": "Tải lên thành công!",
+      "download": "Tải xuống thành công!",
+      "save": "Lưu thành công!",
+      "submit": "Gửi thành công!",
+      "approve": "Phê duyệt thành công!",
+      "reject": "Từ chối thành công!",
+      "complete": "Hoàn thành thành công!",
+      "login": "Đăng nhập thành công!",
+      "logout": "Đăng xuất thành công!",
+      "addDocument": "Thêm tài liệu thành công!",
+      "uploadDocument": "Tải lên tài liệu thành công!",
+      "updateDocument": "Cập nhật tài liệu thành công!",
+      "deleteDocument": "Xóa tài liệu thành công!",
+      "createReport": "Tạo báo cáo thành công!",
+      "updateReport": "Cập nhật báo cáo thành công!",
+      "deleteReport": "Xóa báo cáo thành công!",
+      "createPhase": "Tạo giai đoạn thành công!",
+      "updatePhase": "Cập nhật giai đoạn thành công!",
+      "nextPhase": "Chuyển sang giai đoạn tiếp theo thành công!",
+      "endProject": "Kết thúc dự án thành công!",
+      "createProject": "Tạo dự án thành công!",
+      "updateProject": "Cập nhật dự án thành công!",
+      "deleteProject": "Xóa dự án thành công!",
+      "approveProject": "Phê duyệt dự án thành công!",
+      "createUser": "Tạo người dùng thành công!",
+      "updateUser": "Cập nhật người dùng thành công!",
+      "deleteUser": "Xóa người dùng thành công!"
+    }
+  },
+  "validation": {
+    "name": {
+      "required": "Vui lòng nhập tên!"
+    },
+    "pm": {
+      "required": "Vui lòng chọn quản lý dự án!"
+    },
+    "customer": {
+      "required": "Vui lòng chọn khách hàng!"
+    },
+    "startDate": {
+      "required": "Vui lòng chọn ngày bắt đầu!"
+    },
+    "endDate": {
+      "required": "Vui lòng chọn ngày kết thúc!",
+      "afterStart": "Ngày kết thúc phải sau ngày bắt đầu!"
+    }
+  },
+  "status": {
+    "active": "Hoạt động",
+    "inactive": "Không hoạt động"
+  }
+}

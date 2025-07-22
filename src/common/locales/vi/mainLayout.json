@@ -1,0 +1,37 @@
+{
+  "title": "Hệ thống quản lý yêu cầu khách hàng",
+  "search_placeholder": "Tìm kiếm dự án...",
+  "search_loading": "Đang tìm kiếm...",
+  "menu": {
+    "home": "Trang chủ",
+    "project_management": "Quản lý dự án",
+    "project_detail": "Chi tiết dự án",
+    "projects": "Dự án",
+    "request_management": "Quản lý yêu cầu",
+    "requests": "Yêu cầu",
+    "user_management": "Quản lý người dùng",
+    "user": "Người dùng",
+    "customers": "Khách hàng",
+    "system": "Hệ thống",
+    "email_config": "Cấu hình email"
+  },
+  "breadcrumb": {
+    "profile": "Hồ sơ cá nhân"
+  },
+  "footer": {
+    "copyright": "AKB-SOFTWARE. All rights reserved."
+  },
+  "personal_info": "Thông tin cá nhân",
+  "logout": "Đăng xuất",
+  "confirm_logout_title": "Xác nhận đăng xuất",
+  "confirm_logout_content": "Bạn có chắc chắn muốn đăng xuất?",
+  "ok_text": "Đăng xuất",
+  "cancel_text": "Hủy",
+  "no_results": "Không tìm thấy kết quả",
+  "user_dropdown": {
+    "employee_code": "Mã nhân viên",
+    "contact_email": "Email liên hệ",
+    "role": "Vai trò",
+    "edit_profile": "Chỉnh sửa hồ sơ"
+  }
+}

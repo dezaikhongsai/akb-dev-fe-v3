@@ -1,0 +1,37 @@
+{
+  "title": "顧客要求管理システム",
+  "search_placeholder": "プロジェクトを検索...",
+  "search_loading": "検索中...",
+  "menu": {
+    "home": "ホーム",
+    "project_management": "プロジェクト管理",
+    "project_detail": "プロジェクト詳細",
+    "projects": "プロジェクト",
+    "request_management": "要求管理",
+    "requests": "要求",
+    "user_management": "ユーザー管理",
+    "user": "ユーザー",
+    "customers": "顧客",
+    "system": "システム",
+    "email_config": "メール設定"
+  },
+  "breadcrumb": {
+    "profile": "個人プロフィール"
+  },
+  "footer": {
+    "copyright": "AKB-SOFTWARE. All rights reserved."
+  },
+  "personal_info": "個人情報",
+  "logout": "ログアウト",
+  "confirm_logout_title": "ログアウトの確認",
+  "confirm_logout_content": "ログアウトしてもよろしいですか？",
+  "ok_text": "ログアウト",
+  "cancel_text": "キャンセル",
+  "no_results": "結果が見つかりません",
+  "user_dropdown": {
+    "employee_code": "社員コード",
+    "contact_email": "連絡先メール",
+    "role": "役割",
+    "edit_profile": "プロフィール編集"
+  }
+}

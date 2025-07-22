@@ -1,0 +1,67 @@
+{
+    "common": {
+        "backToList": "リストに戻る",
+        "viewProjectDetail": "プロジェクト詳細を表示",
+        "projectPrefix": "プロジェクト",
+        "customerLabel": "顧客",
+        "startDateLabel": "開始時期",
+        "projectManagerLabel": "プロジェクトマネージャー",
+        "estimatedEndDateLabel": "終了時期（予定）",
+        "completedTag": "完了済",
+        "notCompletedTag": "未完了",
+        "noCommentText": "コメントなし",
+        "noSuggestText": "なし"
+    },
+    "projectOverview": {
+        "title": "プロジェクト概要評価",
+        "rateButton": "プロジェクトを評価"
+    },
+    "projectProgress": {
+        "title": "プロジェクト進捗",
+        "completedPhases": "完了済",
+        "labelPrefix": "フェーズ"
+    },
+    "projectStatistics": {
+        "companyReportTitle": "会社側レポート",
+        "customerReportTitle": "顧客側レポート",
+        "daysInProgressTitle": "実行日数",
+        "reportByTimeTitle": "期間別レポート",
+        "chartCompanyReportLabel": "会社側レポート",
+        "chartCustomerReportLabel": "顧客側レポート"
+    },
+    "customerFeedback": {
+        "sectionTitle": "🗣️ 顧客からの評価",
+        "customerLabel": "顧客",
+        "ratingLabel": "評価",
+        "commentLabel": "コメント",
+        "suggestLabel": "追加の提案",
+        "noFeedbackYet": "顧客はまだ評価していません"
+    },
+    "messages": {
+        "feedbackSuccess": "ご評価いただきありがとうございます！",
+        "feedbackFailed": "評価の送信に失敗しました！"
+    },
+    "ProjectRatingModal": {
+        "modalTitle": "プロジェクト評価",
+        "okText": "評価を送信",
+        "cancelText": "キャンセル",
+        "projectNameLabel": "プロジェクト名",
+        "customerLabel": "顧客",
+        "executionTimeLabel": "実行期間",
+        "overallRatingLabel": "全体的な満足度を評価",
+        "overallRatingRequired": "満足度を選択してください！",
+        "ratingStarsRequired": "星の数を選択してください！",
+        "commentLabel": "プロジェクト全体のコメント",
+        "commentPlaceholder": "具体的なコメントを追加",
+        "suggestionLabel": "追加の提案・フィードバック",
+        "suggestionPlaceholder": "意見を記入してください（任意）"
+    },
+    "RatingProject": {
+        "notRated": "未評価",
+        "terrible": "ひどい！",
+        "dissatisfied": "不満！",
+        "needsImprovement": "改善が必要！",
+        "satisfied": "満足！",
+        "verySatisfied": "大変満足！"
+    }
+}

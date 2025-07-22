@@ -1,0 +1,41 @@
+{
+    "customer_page": {
+        "table": {
+            "stt": "番号",
+            "alias": "コード",
+            "name": "顧客名",
+            "email": "メールアドレス",
+            "phone": "電話番号",
+            "company": "会社名",
+            "address": "住所",
+            "function": "機能",
+            "detail_function": "詳細",
+            "delete_function": "削除"
+        },
+        "search_placeholder": "名前で検索",
+        "sort_by_name": "名前でソート",
+        "sort_by_alias": "エイリアスでソート",
+        "sort_asc": "昇順",
+        "sort_desc": "降順"
+    },
+    "handleDelete": {
+        "title_confirm": "顧客を削除しますか？",
+        "content_confirm": "この顧客を削除してもよろしいですか？",
+        "okText": "削除",
+        "cancelText": "キャンセル",
+        "success_message": "顧客を削除しました！",
+        "error_message": "削除に失敗しました！"
+    },
+    "updateCustomer": {
+        "updateSuccess": "顧客情報を更新しました！",
+        "updateError": "更新に失敗しました！",
+        "findIdtoUpdate_error": "更新する顧客IDが見つかりません！"
+    },
+    "customerStatisCard": {
+        "customerTotal": "顧客の総数",
+        "inProjectCustomer": "プロジェクトを持つ顧客の総数",
+        "projectsByName": "{{customerName}}のプロジェクト",
+        "projectsBy": "のプロジェクト",
+        "noneProject": "プロジェクトがありません"
+    }
+}

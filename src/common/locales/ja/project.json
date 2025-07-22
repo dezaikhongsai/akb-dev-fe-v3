@@ -1,0 +1,97 @@
+{
+  "statistic": {
+    "title": "プロジェクト統計",
+    "active": "アクティブなプロジェクト",
+    "completed": "完了したプロジェクト",
+    "processing": "進行中のプロジェクト",
+    "pending": "保留中のプロジェクト"
+  },
+  "progress": {
+    "title": "プロジェクトの進捗",
+    "time": "時間の進捗",
+    "phase": "フェーズの進捗",
+    "pm": "プロジェクトマネージャー",
+    "customer": "顧客",
+    "projects": "プロジェクト"
+  },
+  "project": {
+    "list": "プロジェクト一覧"
+  },
+  "filter": {
+    "all": "すべて",
+    "status": "ステータス",
+    "monthStart": "開始月",
+    "monthEnd": "終了月"
+  },
+  "search": {
+    "placeholder": "プロジェクトを検索..."
+  },
+  "sort": {
+    "newest": "最新順",
+    "oldest": "古い順"
+  },
+  "status": {
+    "completed": "完了",
+    "processing": "進行中",
+    "pending": "保留中"
+  },
+  "table": {
+    "name": "プロジェクト名",
+    "alias": "プロジェクトコード",
+    "status": "ステータス",
+    "customer": "顧客",
+    "pm": "プロジェクトマネージャー",
+    "startDate": "開始日",
+    "endDate": "終了日",
+    "action": "アクション"
+  },
+  "button": {
+    "create": "プロジェクトを追加"
+  },
+  "action": {
+    "detail": "詳細を表示",
+    "delete": "削除"
+  },
+  "modal": {
+    "delete": {
+      "title": "プロジェクトの削除",
+      "content": "このプロジェクトを削除してもよろしいですか？",
+      "ok": "削除",
+      "cancel": "キャンセル"
+    },
+    "create": {
+      "title": "新規プロジェクトの追加",
+      "button": {
+        "create": "追加",
+        "cancel": "キャンセル"
+      }
+    }
+  },
+  "date": {
+    "start": "開始月",
+    "end": "終了月"
+  },
+  "pagination": {
+    "total": "全{{total}}件"
+  },
+  "form": {
+    "name": "プロジェクト名",
+    "name.placeholder": "プロジェクト名を入力",
+    "pm": "プロジェクトマネージャー",
+    "pm.placeholder": "プロジェクトマネージャーを選択",
+    "customer": "顧客",
+    "customer.placeholder": "顧客を選択",
+    "startDate": "開始日",
+    "startDate.placeholder": "開始日を選択",
+    "endDate": "終了日",
+    "endDate.placeholder": "終了日を選択",
+    "status": "ステータス"
+  },
+  "alert": {
+    "pending": {
+      "message": "現在、{{count}}件のプロジェクトが承認待ちです。{{message}}",
+      "admin": "アクティブ化するには、プロジェクトにアクセスしてステータスを更新してください!",
+      "customer": "会社からの承認をお待ちください!"
+    }
+  }
+}

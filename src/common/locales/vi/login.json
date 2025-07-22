@@ -1,0 +1,14 @@
+{
+  "username": "Tên đăng nhập",
+  "password": "Mật khẩu",
+  "login": "Đăng nhập",
+  "forgot_password": "Quên mật khẩu?",
+  "email": "Email",
+  "email_required": "Vui lòng nhập email!",
+  "email_invalid": "Vui lòng nhập đúng định dạng email!",
+  "password_required": "Vui lòng nhập mật khẩu!",
+  "login_failed": "Đăng nhập thất bại. Không nhận được accessToken!",
+  "login_success": "Đăng nhập thành công!",
+  "slogan": "Hệ thống quản lý và xử lý yêu cầu khách hàng",
+  "footer": "© 2025 AKB-SOFTWARE"
+}

@@ -1,0 +1,66 @@
+{
+    "emailConfig": {
+        "form": {
+            "createAppPasswordGuide": "Hướng dẫn tạo App Password",
+            "switchConfigMode": "Bật/tắt cấu hình gửi email",
+            "emailService": "Dịch vụ",
+            "encryptionMethod": "Phương thức mã hóa",
+            "emailAddress": "Địa chỉ email gửi",
+            "password": "Mật khẩu",
+            "senderName": "Tên người gửi",
+            "host": "Host",
+            "port": "Cổng",
+            "updateConfigTitle": "Cập nhật cấu hình Email",
+            "createConfigTitle": "Tạo mới cấu hình Email"
+        },
+        "message": {
+            "loadConfigFail": "Không thể tải cấu hình email",
+            "onUpdateConfig": "Đang cập nhật cấu hình email...",
+            "onCreateNewConfig": "Đang tạo mới cấu hình email...",
+            "updateConfigSuccess": "Cập nhật cấu hình email thành công!",
+            "createNewConfigSuccess": " 'Tạo mới cấu hình email thành công!",
+            "handleFail": "Có lỗi xảy ra khi xử lý yêu cầu",
+            "emailServiceRequired": "Vui lòng chọn dịch vụ email'",
+            "encryptionMethodRequired": "Vui lòng chọn phương thức mã hóa",
+            "emailAddressRequired": "Vui lòng nhập địa chỉ email",
+            "emailAddressInvalid": "Địa chỉ email không hợp lệ",
+            "passwordRequired": "Vui lòng nhập mật khẩu",
+            "passwordDescription": "Nếu sử dụng dịch vụ Gmail, mật khẩu là mật khẩu ứng dụng (App Password)",
+            "senderNameRequired": "Vui lòng nhập tên người gửi",
+            "hostRequired": "Vui lòng nhập host"
+        }
+    },
+    "gmailAppPasswordTutorial": {
+        "title": "Hướng dẫn tạo App Password cho Gmail",
+        "closeButton": "Đóng",
+        "requirements": {
+            "title": "Yêu cầu trước:",
+            "item1": "Bật xác minh 2 bước (2-Step Verification) cho tài khoản Gmail",
+            "item2": "Tài khoản phải không bị chặn đăng nhập từ ứng dụng kém bảo mật"
+        },
+        "steps": {
+            "step1": {
+                "title": "Truy cập Google Account",
+                "description": "Truy cập trang quản lý tài khoản Google:",
+                "url": "https://myaccount.google.com/"
+            },
+            "step2": {
+                "title": "Kiểm tra Security",
+                "description": "Vào phần Security (Bảo mật)\nKiểm tra và đảm bảo đã bật 2-Step Verification"
+            },
+            "step3": {
+                "title": "Truy cập App Passwords",
+                "description": "Sau khi bật 2-Step Verification, truy cập:",
+                "url": "https://myaccount.google.com/apppasswords"
+            },
+            "step4": {
+                "title": "Tạo mật khẩu ứng dụng",
+                "description": "- Trong phần Select app, chọn Mail\n- Trong phần Select device, chọn Other → đặt tên như MERN App\n- Bấm Generate"
+            },
+            "step5": {
+                "title": "Sao chép mật khẩu",
+                "description": "Google sẽ hiển thị một dãy 16 ký tự\nSao chép dãy ký tự đó - đây chính là App Password của bạn\nDùng nó để cấu hình gửi email"
+            }
+        }
+    }
+}

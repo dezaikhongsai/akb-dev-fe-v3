@@ -1,0 +1,63 @@
+{
+  "welcome": "アプリケーションへようこそ",
+  "switch_language": "言語を切り替える",
+  "accessLimit": "このページにアクセスする権限がありません。",
+  "backToHomePage": "ホームページに戻る",
+  "notFound": "申し訳ございません。お探しのページは存在しません。",
+  "messages": {
+    "success": {
+      "create": "正常に作成されました！",
+      "update": "正常に更新されました！",
+      "delete": "正常に削除されました！",
+      "upload": "正常にアップロードされました！",
+      "download": "正常にダウンロードされました！",
+      "save": "正常に保存されました！",
+      "submit": "正常に送信されました！",
+      "approve": "正常に承認されました！",
+      "reject": "正常に却下されました！",
+      "complete": "正常に完了しました！",
+      "login": "ログインに成功しました！",
+      "logout": "ログアウトに成功しました！",
+      "addDocument": "文書の追加に成功しました！",
+      "uploadDocument": "文書のアップロードに成功しました！",
+      "updateDocument": "文書の更新に成功しました！",
+      "deleteDocument": "文書の削除に成功しました！",
+      "createReport": "レポートの作成に成功しました！",
+      "updateReport": "レポートの更新に成功しました！",
+      "deleteReport": "レポートの削除に成功しました！",
+      "createPhase": "フェーズの作成に成功しました！",
+      "updatePhase": "フェーズの更新に成功しました！",
+      "nextPhase": "次のフェーズへの移行に成功しました！",
+      "endProject": "プロジェクトの終了に成功しました！",
+      "createProject": "プロジェクトの作成に成功しました！",
+      "updateProject": "プロジェクトの更新に成功しました！",
+      "deleteProject": "プロジェクトの削除に成功しました！",
+      "approveProject": "プロジェクトの承認に成功しました！",
+      "createUser": "ユーザーの作成に成功しました！",
+      "updateUser": "ユーザーの更新に成功しました！",
+      "deleteUser": "ユーザーの削除に成功しました！"
+    }
+  },
+  "validation": {
+    "name": {
+      "required": "名前を入力してください！"
+    },
+    "pm": {
+      "required": "プロジェクトマネージャーを選択してください！"
+    },
+    "customer": {
+      "required": "顧客を選択してください！"
+    },
+    "startDate": {
+      "required": "開始日を選択してください！"
+    },
+    "endDate": {
+      "required": "終了日を選択してください！",
+      "afterStart": "終了日は開始日より後の日付を選択してください！"
+    }
+  },
+  "status": {
+    "active": "アクティブ",
+    "inactive": "非アクティブ"
+  }
+}

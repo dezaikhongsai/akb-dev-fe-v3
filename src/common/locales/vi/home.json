@@ -1,0 +1,62 @@
+{
+    "statisticCard": {
+        "newRequestLabel": "Yêu cầu mới",
+        "inProgressLabel": "Đang thực hiện",
+        "completedLabel": "Đã thực hiện",
+        "totalLabel": "Tổng dự án"
+    },
+    "timeFilter": {
+        "byMonth": "Theo tháng",
+        "byQuarter": "Theo quý",
+        "byYear": "Theo năm",
+        "refresh": "Làm mới",
+        "startMonth": "Tháng bắt đầu",
+        "endMonth": "Tháng kết thúc",
+        "startQuarter": "Quý bắt đầu",
+        "endQuarter": "Quý kết thúc",
+        "startYear": "Năm bắt đầu",
+        "endYear": "Năm kết thúc"
+    },
+    "pageTitle": "Trang tổng quan",
+    "progressBar": {
+        "title": "Biểu đồ tiến độ dự án",
+        "tooltip": {
+            "progress": "Tiến độ",
+            "owner": "Phụ trách"
+        }
+    },
+    "customerRatingStatistic": {
+        "title": "Tỉ lệ đánh giá từ khách hàng",
+        "averageRating": "Đánh giá trung bình",
+        "ratingsRecorded": "lượt đánh giá đã ghi nhận",
+        "stars": {
+            "1": "1 sao",
+            "2": "2 sao",
+            "3": "3 sao",
+            "4": "4 sao",
+            "5": "5 sao"
+        },
+        "legend": {
+            "5stars": "5 sao",
+            "4stars": "4 sao",
+            "3stars": "3 sao",
+            "2stars": "2 sao",
+            "1stars": "1 sao"
+        }
+    },
+    "customerReportStatistic": {
+        "title": "Số lượng báo cáo từ khách hàng",
+        "top": "Top {{number}} nhiều nhất",
+        "top3": "Top 3 nhiều nhất",
+        "top5": "Top 5 nhiều nhất",
+        "top7": "Top 7 nhiều nhất"
+    },
+    "tooltip": {
+        "projectName": "Dự án",
+        "progress": "Tiến độ",
+        "owner": "Phụ trách"
+    },
+    "error": {
+        "fetchData": "Lỗi khi lấy dữ liệu"
+    }
+}

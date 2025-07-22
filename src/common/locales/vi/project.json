@@ -1,0 +1,97 @@
+{
+  "statistic": {
+    "title": "Thống kê dự án",
+    "active": "Dự án đang hoạt động",
+    "completed": "Dự án đã hoàn thành",
+    "processing": "Dự án đang xử lý",
+    "pending": "Dự án đang chờ"
+  },
+  "progress": {
+    "title": "Tiến độ dự án",
+    "time": "Tiến độ thời gian",
+    "phase": "Tiến độ giai đoạn",
+    "pm": "Quản lý dự án",
+    "customer": "Khách hàng",
+    "projects": "Dự án"
+  },
+  "project": {
+    "list": "Danh sách dự án"
+  },
+  "filter": {
+    "all": "Tất cả",
+    "status": "Trạng thái",
+    "monthStart": "Tháng bắt đầu",
+    "monthEnd": "Tháng kết thúc"
+  },
+  "search": {
+    "placeholder": "Tìm kiếm dự án..."
+  },
+  "sort": {
+    "newest": "Mới nhất",
+    "oldest": "Cũ nhất"
+  },
+  "status": {
+    "completed": "Đã hoàn thành",
+    "processing": "Đang xử lý",
+    "pending": "Đang chờ"
+  },
+  "table": {
+    "name": "Tên dự án",
+    "alias": "Mã dự án",
+    "status": "Trạng thái",
+    "customer": "Khách hàng",
+    "pm": "Quản lý dự án",
+    "startDate": "Ngày bắt đầu",
+    "endDate": "Ngày kết thúc",
+    "action": "Thao tác"
+  },
+  "button": {
+    "create": "Thêm dự án"
+  },
+  "action": {
+    "detail": "Xem chi tiết",
+    "delete": "Xóa"
+  },
+  "modal": {
+    "delete": {
+      "title": "Xóa dự án",
+      "content": "Bạn có chắc chắn muốn xóa dự án này không?",
+      "ok": "Xóa",
+      "cancel": "Hủy"
+    },
+    "create": {
+      "title": "Thêm dự án mới",
+      "button": {
+        "create": "Thêm",
+        "cancel": "Hủy"
+      }
+    }
+  },
+  "date": {
+    "start": "Tháng bắt đầu",
+    "end": "Tháng kết thúc"
+  },
+  "pagination": {
+    "total": "Tổng số {{total}} dự án"
+  },
+  "form": {
+    "name": "Tên dự án",
+    "name.placeholder": "Nhập tên dự án",
+    "pm": "Quản lý dự án",
+    "pm.placeholder": "Chọn quản lý dự án",
+    "customer": "Khách hàng",
+    "customer.placeholder": "Chọn khách hàng",
+    "startDate": "Ngày bắt đầu",
+    "startDate.placeholder": "Chọn ngày bắt đầu",
+    "endDate": "Ngày kết thúc",
+    "endDate.placeholder": "Chọn ngày kết thúc",
+    "status": "Trạng thái"
+  },
+  "alert": {
+    "pending": {
+      "message": "Hiện tại đang có {{count}} dự án đang chờ xác nhận. {{message}}",
+      "admin": "Nếu muốn kích hoạt, vui lòng truy cập vào dự án và cập nhật trạng thái !",
+      "customer": "Vui lòng chờ xác nhận từ phía công ty !"
+    }
+  }
+}

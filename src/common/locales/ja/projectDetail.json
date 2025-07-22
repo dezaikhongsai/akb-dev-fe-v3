@@ -1,0 +1,195 @@
+{
+    "backToProjectList": "プロジェクト一覧に戻る",
+    "projectOverview": "プロジェクトの評価を表示",
+    "projectInfor": {
+        "title": "プロジェクト情報",
+        "alias": "コード",
+        "name": "プロジェクト名",
+        "PM": "プロジェクトマネージャー",
+        "customer": "顧客名",
+        "status": "ステータス",
+        "startDate": "開始日"
+    },
+    "projectDocument": {
+        "title": "プロジェクトドキュメント",
+        "searchPlaceholder": "ドキュメント名で検索",
+        "filterAll": "すべて",
+        "addDocument": "ドキュメントを追加",
+        "table": {
+            "no": "番号",
+            "name": "ドキュメント名",
+            "createdAt": "作成日",
+            "sender": "送信者",
+            "attachments": "添付ファイル",
+            "actions": "アクション",
+            "edit": "編集",
+            "delete": "削除",
+            "deleteConfirmTitle": "{{name}} ドキュメントの削除確認",
+            "deleteConfirmContent": "このドキュメントを削除してもよろしいですか？"
+        },
+        "message": {
+            "addSuccess": "ドキュメントがプロジェクトに正常に追加されました",
+            "addFail": "ドキュメントをプロジェクトに追加できませんでした",
+            "deleteConfirmContent": "このドキュメントを削除しますか？"
+        }
+    },
+    "projectPhase": {
+        "title": "プロジェクトの進捗",
+        "endConfirmTitle": "プロジェクト終了の確認",
+        "endConfirmContent": "このプロジェクトを終了してもよろしいですか？この操作は元に戻せません！",
+        "confirm": "確認",
+        "cancel": "キャンセル",
+        "endSuccess": "プロジェクトの承認が成功しました",
+        "endFail": "プロジェクトの承認中にエラーが発生しました"
+    },
+    "projectReport": {
+        "title": "プロジェクトレポート一覧"
+    },
+    "ModalAddDocument": {
+        "title": "資料追加",
+        "name": "資料名",
+        "nameRequired": "資料名を入力してください！",
+        "namePlaceholder": "資料名を入力",
+        "days": "日付",
+        "daysRequired": "日付を選択してください！",
+        "attachments": "添付ファイル",
+        "okText": "アップロード",
+        "cancelText": "閉じる",
+        "chooseFile": "ファイル選択",
+        "message": {
+            "uploadSuccess": "資料が正常に追加されました。",
+            "uploadFailed": "資料のアップロード中にエラーが発生しました。"
+        }
+    },
+    "PhaseProject": {
+        "endProjectConfirmTitle": "プロジェクト終了の確認",
+        "endProjectConfirmContent": "このプロジェクトを終了しますか？",
+        "OkText": "確認",
+        "CancelText": "キャンセル",
+        "nextPhaseSwitchTitle": "次フェーズへ移行",
+        "nextPhaseSwitchContent": "新フェーズへ移行しますか？この操作は元に戻せません！",
+        "isDone": "完了済",
+        "endProject": "プロジェクト完了",
+        "editPhase": "フェーズ編集",
+        "nextPhase": "次フェーズへ",
+        "addProgress": "進捗追加",
+        "message": {
+            "uploadFailed": "フェーズデータをロードできませんでした。",
+            "createSuccess": "フェーズ作成成功。",
+            "updateSuccess": "フェーズ更新成功。",
+            "handleFailed": "フェーズ処理中にエラーが発生しました。",
+            "nextPhaseSwitchSuccess": "次フェーズへ移行しました。",
+            "nextPhaseSwitchFailed": "次フェーズへ移行できませんでした。",
+            "filnalPhaseUpdateFailed": "最終フェーズを更新できませんでした。"
+        }
+    },
+    "PhaseFormModal": {
+        "phaseFields": {
+            "name": "フェーズ名",
+            "fieldRequired": "空欄にすることはできません。",
+            "namePlaceholder": "フェーズ名を入力",
+            "order": "順序",
+            "startDate": "開始日",
+            "description": "説明",
+            "descriptionPlaceholder": "説明を入力（任意）"
+        },
+        "createPhase": "フェーズ作成",
+        "editPhase": "フェーズ編集",
+        "phaseGroupName": "フェーズグループ名",
+        "phaseGroupNameRequiered": "空欄にすることはできません。",
+        "phaseGroupNamePlaceholder": "フェーズグループ名を入力",
+        "phasesDetail": "フェーズ詳細",
+        "phaseTitle": "フェーズ",
+        "deletePhaseTitle": "削除の確認",
+        "deletePhaseComfirm": "このフェーズを削除しますか？",
+        "okText": "削除",
+        "cancelText": "キャンセル",
+        "deletePhase": "フェーズ削除",
+        "addPhase": "フェーズ追加",
+        "addNew": "新規作成",
+        "saveChange": "変更を保存",
+        "message": {
+            "isError": "エラーが発生しました。"
+        }
+    },
+    "ReportTable": {
+        "columns": {
+            "stt": "番号",
+            "report": "レポート",
+            "contentCount": "内容数",
+            "creator": "作成者",
+            "createdAt": "作成日",
+            "actions": "アクション"
+        },
+        "actions": {
+            "viewDetail": "詳細表示",
+            "delete": "削除"
+        },
+        "searchPlaceholder": "レポートを検索...",
+        "selectTypePlaceholder": "タイプを選択",
+        "filterOptions": {
+            "all": "全レポート",
+            "customer": "顧客",
+            "projectManager": "プロジェクトマネージャー"
+        },
+        "addReportButton": "レポート追加",
+        "addReportModalTitle": "レポート追加",
+        "deleteModal": {
+            "title": "レポート削除の確認",
+            "content": "レポート「{{reportName}}」を削除しますか？",
+            "okText": "削除",
+            "cancelText": "キャンセル"
+        },
+        "messages": {
+            "fetchError": "レポートリストをロードできませんでした。",
+            "createSuccess": "レポート作成成功。",
+            "createError": "レポートの保存中にエラーが発生しました。",
+            "deleteSuccess": "レポート削除成功。",
+            "deleteError": "レポートの削除中にエラーが発生しました。"
+        }
+    },
+    "ReportFormModal": {
+        "fileSizeError": "ファイルは50MB未満である必要があります！",
+        "fileNumber": "ファイル #{{number}}",
+        "unknownType": "不明なタイプ",
+        "delete": "削除",
+        "mainContent": "主要内容",
+        "mainContentRequired": "主要内容を入力してください。",
+        "mainContentPlaceholder": "レポートの主要内容を入力",
+        "subContentTitle": "副内容 {{number}}",
+        "contentNameRequired": "内容名を入力してください。",
+        "contentNamePlaceholder": "内容名",
+        "uploadAttachment": "添付ファイルをアップロード",
+        "addSubContent": "副内容を追加",
+        "cancel": "キャンセル",
+        "uploadingFiles": "ファイルをアップロード中...",
+        "addNew": "新規追加"
+    },
+    "ReportDetailModal": {
+        "title": "レポート詳細",
+        "projectCode": "プロジェクトコード",
+        "projectName": "プロジェクト名",
+        "mainContent": "主要内容",
+        "creator": "作成者",
+        "createdDate": "作成日",
+        "detailContent": "詳細内容"
+    },
+    "ModalEditDocument": {
+        "modalTitle": "資料を編集",
+        "closeButton": "閉じる",
+        "editButton": "編集",
+        "documentNameLabel": "資料名",
+        "documentNameRequired": "資料名を入力してください！",
+        "documentNamePlaceholder": "資料名を入力",
+        "dateLabel": "日付",
+        "dateRequired": "日付を選択してください！",
+        "attachmentsLabel": "添付ファイル",
+        "confirmDeleteTitle": "ファイルの削除確認",
+        "confirmDeleteContent": "ファイル「{{fileName}}」を削除しますか？",
+        "selectFileButton": "ファイルを選択",
+        "senderInfoLabel": "送信者情報",
+        "updateSuccess": "資料が正常に更新されました。",
+        "updateError": "資料の更新中にエラーが発生しました。",
+        "fileSizeError": "ファイルは10MB未満である必要があります！"
+    }
+}

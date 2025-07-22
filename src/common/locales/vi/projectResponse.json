@@ -1,0 +1,67 @@
+{
+    "common": {
+        "backToList": "Quay lại danh sách",
+        "viewProjectDetail": "Xem chi tiết dự án",
+        "projectPrefix": "Dự án",
+        "customerLabel": "Khách hàng",
+        "startDateLabel": "Thời gian bắt đầu",
+        "projectManagerLabel": "Quản lý dự án",
+        "estimatedEndDateLabel": "Thời gian kết thúc (dự kiến)",
+        "completedTag": "Đã hoàn thành",
+        "notCompletedTag": "Chưa hoàn thành",
+        "noCommentText": "Chưa có nhận xét",
+        "noSuggestText": "Không có"
+    },
+    "projectOverview": {
+        "title": "Đánh giá tổng quan dự án",
+        "rateButton": "Đánh giá dự án"
+    },
+    "projectProgress": {
+        "title": "Tiến độ dự án",
+        "completedPhases": "Đã hoàn thành",
+        "labelPrefix": "Giai đoạn"
+    },
+    "projectStatistics": {
+        "companyReportTitle": "Báo cáo phía công ty",
+        "customerReportTitle": "Báo cáo phía khách hàng",
+        "daysInProgressTitle": "Số ngày thực hiện",
+        "reportByTimeTitle": "Báo cáo theo thời gian",
+        "chartCompanyReportLabel": "Báo cáo phía công ty",
+        "chartCustomerReportLabel": "Báo cáo phía khách hàng"
+    },
+    "customerFeedback": {
+        "sectionTitle": "🗣️ Đánh giá từ khách hàng",
+        "customerLabel": "Khách hàng",
+        "ratingLabel": "Đánh giá",
+        "commentLabel": "Nhận xét",
+        "suggestLabel": "Góp ý thêm",
+        "noFeedbackYet": "Khách hàng chưa đánh giá"
+    },
+    "messages": {
+        "feedbackSuccess": "Cảm ơn quý khách đã tham gia đánh giá!",
+        "feedbackFailed": "Gửi đánh giá thất bại!"
+    },
+    "ProjectRatingModal": {
+        "modalTitle": "Đánh giá dự án",
+        "okText": "Gửi đánh giá",
+        "cancelText": "Hủy",
+        "projectNameLabel": "Tên dự án",
+        "customerLabel": "Khách hàng",
+        "executionTimeLabel": "Thời gian thực hiện",
+        "overallRatingLabel": "Đánh giá mức độ hài lòng tổng thể",
+        "overallRatingRequired": "Vui lòng chọn mức độ hài lòng!",
+        "ratingStarsRequired": "Vui lòng chọn số sao đánh giá!",
+        "commentLabel": "Nhận xét về tổng thể dự án",
+        "commentPlaceholder": "Thêm nhận xét cụ thể",
+        "suggestionLabel": "Ý kiến đóng góp / phản hồi thêm",
+        "suggestionPlaceholder": "Viết ý kiến của bạn (không bắt buộc)"
+    },
+    "RatingProject": {
+        "notRated": "Chưa đánh giá",
+        "terrible": "Tệ!",
+        "dissatisfied": "Không hài lòng!",
+        "needsImprovement": "Cần cải thiện thêm!",
+        "satisfied": "Hài lòng!",
+        "verySatisfied": "Rất hài lòng!"
+    }
+}

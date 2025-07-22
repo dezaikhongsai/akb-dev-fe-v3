@@ -1,0 +1,96 @@
+{
+    "pjRequest_page":{
+        "table": {
+            "stt": "STT",
+            "alias": "Mã dự án",
+            "name": "Tên dự án",
+            "customer": "Khách hàng",
+            "PM": "Quản lý dự án",
+            "status": "Trạng thái",
+            "startDate": "Ngày bắt đầu",
+            "action": "Chức năng",
+
+            "approve": "Duyệt",
+            "approveSuccess": "Duyệt dự án thành công",
+            "approveError": "Có lỗi xảy ra khi duyệt dự án",
+
+            "delete": "Xóa",
+            "deletetitle": "Xác nhận xóa",
+            "deleteconfirm": "Bạn có chắc chắn muốn xóa yêu cầu dự án {{name}}?",
+            "deleteok": "Xóa",
+            "deletecancel": "Hủy",
+            "deleteSuccess": "Xóa dự án thành công",
+            "deleteError": "Có lỗi xảy ra khi xóa dự án"
+
+        },
+        "createProjectRequest": "Tạo yêu cầu dự án",
+        "createProjectSuccess": "Tạo dự án thành công",
+        "createProjectError": "Có lỗi xảy ra khi tạo dự án",
+        "getProjectsError": "Có lỗi xảy ra khi lấy danh sách dự án"
+    } ,
+    "DrawerProjectForm":{
+        "drawertitle":"Tạo yêu cầu dự án mới",
+
+        "pjname": "Tên dự án",
+            "pjname_required": "Vui lòng nhập tên dự án!",
+            "pjname_placeholder": "Nhập tên dự án",
+        "PM": "Quản lý dự án",
+            "PM_required": "Vui lòng chọn quản lý dự án!",
+            "PM_placeholder": "Chọn quản lý dự án",
+        "customer": "Khách hàng",
+            "customer_required": "Vui lòng chọn khách hàng!",
+            "customer_placeholder": "Chọn khách hàng",
+        "startDate": "Ngày bắt đầu",
+            "startDate_required": "Vui lòng chọn ngày bắt đầu!",
+        "document": "Tài liệu",
+        "addDocument": "Thêm tài liệu",
+        "upedDoc_name": "Tên tài liệu",
+        "upedDoc_Day": "Ngày",
+        "upedDoc_files": "Số tệp",
+        "close" : "Đóng"
+    },
+    "ModalApproveProject": {
+        "projectDetail": {
+            "title": "Chi tiết dự án",
+            "alias" :"Mã dự án",
+            "name": "Tên dự án",
+            "customer": "Khách hàng",
+            "customerEmail": "Email khách hàng",
+            "PM": "Quản lý dự án",
+            "PMEmail": "Email quản lý dự án",
+            "status": "Trạng thái",
+            "startDate": "Ngày bắt đầu dự kiến",
+            "cancel" : "Hủy",
+            "approve": "Duyệt"
+        },
+        "documents": {
+            "title": "Danh sách tài liệu",
+            "name": "Tên tài liệu",
+            "day": "Ngày tạo",
+            "files": "Số lượng file",
+            "detail": "Chi tiết tài liệu",
+                "detailHover": "Nhấn để tải xuống"
+        },
+        "getProjectInforError": "Có lỗi xảy ra khi lấy thông tin dự án",
+        "dowFileError": "Có lỗi xảy ra khi tải file",
+        "approveSuccess": "Duyệt dự án thành công",
+        "approveError": "Có lỗi xảy ra khi duyệt dự án"
+    },
+    "ModalUploadDocument": {
+        "title": "Thêm tài liệu",
+        "oktext": "Tải lên",
+        "canceltext": "Đóng",
+        "docName": "Tên tài liệu",
+        "name_required": "Vui lòng nhập tên tài liệu!",
+        "name_placeholder": "Nhập tên tài liệu",
+        "docUpDay" : "Ngày",
+        "docUpDay_required": "Vui lòng chọn ngày!",
+        "attrachment": "Tệp đính kèm",
+        "Upload": "Chọn tệp",
+
+        "uploadDocumentSuccess": "Tài liệu đã được tải lên thành công",
+        "uploadDocumentError": "Có lỗi xảy ra khi tải lên tài liệu"
+    }
+
+
+}

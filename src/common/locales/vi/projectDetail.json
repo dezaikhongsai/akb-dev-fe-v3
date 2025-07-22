@@ -1,0 +1,195 @@
+{
+    "backToProjectList": "Quay lại",
+    "projectOverview": "Xem đánh giá dự án",
+    "projectInfor": {
+        "title": "Thông tin dự án",
+        "alias": "Mã dự án",
+        "name": "Tên dự án",
+        "PM": "Quản lý dự án",
+        "customer": "Khách hàng",
+        "status": "Trạng thái",
+        "startDate": "Ngày bắt đầu "
+    },
+    "projectDocument": {
+        "title": "Tài liệu dự án",
+        "searchPlaceholder": "Tìm kiếm theo tên tài liệu",
+        "filterAll": "Tất cả",
+        "addDocument": "Thêm tài liệu",
+        "table": {
+            "no": "STT",
+            "name": "Tên tài liệu",
+            "createdAt": "Ngày tạo",
+            "sender": "Người gửi",
+            "attachments": "Tệp đính kèm",
+            "actions": "Chức năng",
+            "edit": "Sửa",
+            "delete": "Xóa",
+            "deleteConfirmTitle": "Xác nhận xóa tài liệu {{name}}",
+            "deleteConfirmContent": "Bạn có chắc chắn muốn xóa tài liệu này không ?"
+        },
+        "message": {
+            "addSuccess": "Tài liệu đã được thêm vào dự án thành công",
+            "addFail": "Không thể thêm tài liệu vào dự án",
+            "deleteConfirmContent": "Bạn có muốn xóa tài liệu này không ?"
+        }
+    },
+    "projectPhase": {
+        "title": "Tiến dộ dự án",
+        "endConfirmTitle": "Xác nhận kết thúc dự án",
+        "endConfirmContent": "Bạn có chăc chắn muốn kết thúc dự án này, hành động không thể hoàn thác!",
+        "confirm": "Xác nhận",
+        "cancel": "Hủy",
+        "endSuccess": "Duyệt dự án thành công",
+        "endFail": "Có lỗi xảy ra khi duyệt dự án"
+    },
+    "projectReport": {
+        "title": "Danh sách báo cáo dự án"
+    },
+    "ModalAddDocument": {
+        "title": "Thêm tài liệu",
+        "name": "Tên tài liệu",
+        "nameRequired": "Vui lòng nhập tên tài liệu!",
+        "namePlaceholder": "Nhập tên tài liệu",
+        "days": "Ngày",
+        "daysRequired": "Vui lòng chọn ngày!",
+        "attachments": "Tệp đính kèm",
+        "okText": "Tải lên",
+        "cancelText": "Đóng",
+        "chooseFile": "Chọn tệp",
+        "message": {
+            "uploadSuccess": "Tài liệu đã được thêm thành công",
+            "uploadFailed": "Có lỗi xảy ra khi tải lên tài liệu"
+        }
+    },
+    "PhaseProject": {
+        "endProjectConfirmTitle": "Xác nhận kết thúc dự án",
+        "endProjectConfirmContent": "Bạn có chắc chắn muốn kết thúc dự án này",
+        "OkText": "Xác nhận",
+        "CancelText": "Hủy",
+        "nextPhaseSwitchTitle": "chuyển sang giai đoạn tiếp theo",
+        "nextPhaseSwitchContent": "Bạn có chắc chắn muốn chuyển giai đoạn mới, hành động không thể hoàn tác!",
+        "isDone": "Đã hoàn thành",
+        "endProject": "Hoàn thành dự án",
+        "editPhase": "Chỉnh sửa giai đoạn",
+        "nextPhase": "Chuyển sang giai đoạn tiếp theo",
+        "addProgress": "Thêm tiến độ",
+        "message": {
+            "uploadFailed": "Không thể tải dữ liệu giai đoạn",
+            "createSuccess": "Tạo giai đoạn thành công",
+            "updateSuccess": "Cập nhật giai đoạn thành công",
+            "handleFailed": "Có lỗi xảy ra khi xử lý giai đoạn",
+            "nextPhaseSwitchSuccess": "Đã chuyển sang giai đoạn tiếp theo",
+            "nextPhaseSwitchFailed": "Không thể chuyển sang giai đoạn tiếp theo",
+            "filnalPhaseUpdateFailed": "Không thể cập nhật giai đoạn cuối cùng"
+        }
+    },
+    "PhaseFormModal": {
+        "phaseFields": {
+            "name": "Tên giai đoạn",
+            "fieldRequired": "Không được để trống",
+            "namePlaceholder": "Nhập tên giai đoạn",
+            "order": "Thứ tự",
+            "startDate": "Ngày bắt đầu ",
+            "description": "Mô tả",
+            "descriptionPlaceholder": "Nhập mô tả (Nếu có)"
+        },
+        "createPhase": "Tạo giai đoạn",
+        "editPhase": "Chỉnh sửa giai đoạn",
+        "phaseGroupName": "Tên nhóm giai đoạn",
+        "phaseGroupNameRequiered": "Không được để trống",
+        "phaseGroupNamePlaceholder": "Nhập tên nhóm giai đoạn",
+        "phasesDetail": "Chi tiết các giai đoạn",
+        "phaseTitle": "Giai đoạn",
+        "deletePhaseTitle": "Xác nhận xóa",
+        "deletePhaseComfirm": "Bạn có chắc chắn muốn xóa giai đoạn này?",
+        "okText": "Xóa",
+        "cancelText": "Hủy",
+        "deletePhase": "Xóa giai đoạn",
+        "addPhase": "Thêm giai đoạn",
+        "addNew": "Tạo mới",
+        "saveChange": "Lưu thay đổi",
+        "message": {
+            "isError": "Có lỗi xảy ra"
+        }
+    },
+    "ReportTable": {
+        "columns": {
+            "stt": "STT",
+            "report": "Báo cáo",
+            "contentCount": "Số nội dung",
+            "creator": "Người tạo",
+            "createdAt": "Ngày tạo",
+            "actions": "Hành động"
+        },
+        "actions": {
+            "viewDetail": "Chi tiết",
+            "delete": "Xóa"
+        },
+        "searchPlaceholder": "Tìm kiếm báo cáo...",
+        "selectTypePlaceholder": "Chọn loại",
+        "filterOptions": {
+            "all": "Tất cả báo cáo",
+            "customer": "Khách hàng",
+            "projectManager": "Quản lý dự án"
+        },
+        "addReportButton": "Thêm báo cáo",
+        "addReportModalTitle": "Thêm báo cáo",
+        "deleteModal": {
+            "title": "Xác nhận xóa báo cáo",
+            "content": "Bạn có muốn xóa báo cáo \"{{reportName}}\" không?",
+            "okText": "Xóa",
+            "cancelText": "Hủy"
+        },
+        "messages": {
+            "fetchError": "Không thể tải danh sách báo cáo",
+            "createSuccess": "Tạo báo cáo thành công",
+            "createError": "Có lỗi xảy ra khi lưu báo cáo",
+            "deleteSuccess": "Xóa báo cáo thành công",
+            "deleteError": "Có lỗi xảy ra khi xóa báo cáo"
+        }
+    },
+    "ReportFormModal": {
+        "fileSizeError": "File phải nhỏ hơn 50MB!",
+        "fileNumber": "File #{{number}}",
+        "unknownType": "Unknown type",
+        "delete": "Xóa",
+        "mainContent": "Nội dung chính",
+        "mainContentRequired": "Vui lòng nhập nội dung chính",
+        "mainContentPlaceholder": "Nhập nội dung chính của báo cáo",
+        "subContentTitle": "Nội dung phụ {{number}}",
+        "contentNameRequired": "Vui lòng nhập tên nội dung",
+        "contentNamePlaceholder": "Tên nội dung",
+        "uploadAttachment": "Tải lên tệp đính kèm",
+        "addSubContent": "Thêm nội dung phụ",
+        "cancel": "Hủy",
+        "uploadingFiles": "Đang tải file...",
+        "addNew": "Thêm mới"
+    },
+    "ReportDetailModal": {
+        "title": "Chi tiết báo cáo",
+        "projectCode": "Mã dự án",
+        "projectName": "Tên dự án",
+        "mainContent": "Nội dung chính",
+        "creator": "Người tạo",
+        "createdDate": "Ngày tạo",
+        "detailContent": "Nội dung chi tiết"
+    },
+    "ModalEditDocument": {
+        "modalTitle": "Chỉnh sửa tài liệu",
+        "closeButton": "Đóng",
+        "editButton": "Chỉnh sửa",
+        "documentNameLabel": "Tên tài liệu",
+        "documentNameRequired": "Vui lòng nhập tên tài liệu!",
+        "documentNamePlaceholder": "Nhập tên tài liệu",
+        "dateLabel": "Ngày",
+        "dateRequired": "Vui lòng chọn ngày!",
+        "attachmentsLabel": "Tệp đính kèm",
+        "confirmDeleteTitle": "Xác nhận xóa file",
+        "confirmDeleteContent": "Bạn có chắc chắn muốn xóa file \"{{fileName}}\"?",
+        "selectFileButton": "Chọn file",
+        "senderInfoLabel": "Thông tin người gửi",
+        "updateSuccess": "Cập nhật tài liệu thành công",
+        "updateError": "Có lỗi xảy ra khi cập nhật tài liệu",
+        "fileSizeError": "File phải nhỏ hơn 10MB!"
+    }
+}

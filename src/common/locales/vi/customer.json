@@ -1,0 +1,41 @@
+{
+    "customer_page": {
+        "table": {
+            "stt": "STT",
+            "alias": "Mã",
+            "name": "Tên khách hàng",
+            "email": "Email liên hệ",
+            "phone": "Số điện thoại",
+            "company": "Công ty",
+            "address": "Địa chỉ",
+            "function": "Chức năng",
+            "detail_function": "Chi tiết",
+            "delete_function": "Xóa"
+        },
+        "search_placeholder": "Tìm kiếm theo tên",
+        "sort_by_name": "Sắp xếp theo tên",
+        "sort_by_alias": "Sắp xếp theo mã",
+        "sort_asc": "Tăng dần",
+        "sort_desc": "Giảm dần"
+    },
+    "handleDelete": {
+        "title_confirm": "Xác nhận xóa khách hàng?",
+        "content_confirm": "Bạn có chắc chắn muốn xóa khách hàng này không?",
+        "okText": "Xóa",
+        "cancelText": "Hủy",
+        "success_message": "Đã xóa khách hàng!",
+        "error_message": "Xóa thất bại!"
+    },
+    "updateCustomer": {
+        "updateSuccess": "Cập nhật khách hàng thành công!",
+        "updateError": "Cập nhật thất bại!",
+        "findIdtoUpdate_error": "Không tìm thấy ID khách hàng để cập nhật!"
+    },
+    "customerStatisCard": {
+        "customerTotal": "Tổng số khách hàng",
+        "inProjectCustomer": "Tổng số khách hàng có dự án",
+        "projectsByName": "Dự án của {{customerName}}",
+        "projectsBy": "Dự án của",
+        "noneProject": "Không có dự án"
+    }
+}
