@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Space, Typography, Button, message, Modal, Image } from 'antd';
-import { 
-  DownloadOutlined, 
+import {
+  DownloadOutlined,
   EyeOutlined,
   FileWordOutlined,
   FilePdfOutlined,
@@ -29,28 +29,28 @@ const FileText: React.FC<FileTextProps> = ({ originalName, filePath, fileType })
   // Function to get file icon based on file type or extension
   const getFileIcon = () => {
     const ext = fileType?.toLowerCase() || getFileExtension(originalName);
-    
+
     switch (ext) {
       case 'doc':
       case 'docx':
       case 'word':
         return <FileWordOutlined style={{ color: '#2B579A' }} />; // Word blue color
-      
+
       case 'pdf':
         return <FilePdfOutlined style={{ color: '#FF0000' }} />; // PDF red color
-      
+
       case 'xls':
       case 'xlsx':
       case 'excel':
         return <FileExcelOutlined style={{ color: '#217346' }} />; // Excel green color
-      
+
       case 'jpg':
       case 'jpeg':
       case 'png':
       case 'gif':
       case 'image':
         return <FileImageOutlined style={{ color: '#774ABC' }} />; // Purple for images
-      
+
       default:
         return <FileOutlined />; // Default file icon
     }
@@ -72,7 +72,7 @@ const FileText: React.FC<FileTextProps> = ({ originalName, filePath, fileType })
   const handleDownload = async () => {
     try {
       const response = await downloadFile(filePath);
-      
+
       // Create blob URL and trigger download
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement('a');
@@ -82,6 +82,7 @@ const FileText: React.FC<FileTextProps> = ({ originalName, filePath, fileType })
       link.click();
       link.remove();
       window.URL.revokeObjectURL(url);
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       message.error('Failed to download file');
     }
@@ -96,7 +97,7 @@ const FileText: React.FC<FileTextProps> = ({ originalName, filePath, fileType })
     setPreviewVisible(true);
   };
   const isProd = import.meta.env.VITE_IS_PROD === 'true';
-  const API_UPLOADS_URL = isProd ? import.meta.env.VITE_API_UPLOAD_PROD + `/${filePath}`: import.meta.env.VITE_API_UPLOAD_URL + `/${filePath}`;
+  const API_UPLOADS_URL = isProd ? import.meta.env.VITE_API_UPLOAD_PROD + `/${filePath}` : import.meta.env.VITE_API_UPLOAD_URL + `/${filePath}`;
 
   return (
     <>
@@ -106,21 +107,21 @@ const FileText: React.FC<FileTextProps> = ({ originalName, filePath, fileType })
         <Space size="small">
           <Tooltip title="Tải xuống">
             <Button
-            type="text"
-            icon={<DownloadOutlined />}
-            onClick={handleDownload}
-            title="Download"
-          />
+              type="text"
+              icon={<DownloadOutlined />}
+              onClick={handleDownload}
+              title="Download"
+            />
           </Tooltip>
-         <Tooltip title = {'Xem trước'}>
-           <Button
-            type="text"
-            icon={<EyeOutlined />}
-            onClick={handlePreview}
-            disabled={!isPreviewable(originalName)}
-            title={isPreviewable(originalName) ? 'Preview' : 'Preview not available'}
-          />
-         </Tooltip>
+          <Tooltip title={'Xem trước'}>
+            <Button
+              type="text"
+              icon={<EyeOutlined />}
+              onClick={handlePreview}
+              disabled={!isPreviewable(originalName)}
+              title={isPreviewable(originalName) ? 'Preview' : 'Preview not available'}
+            />
+          </Tooltip>
         </Space>
       </Space>
 
@@ -139,14 +140,14 @@ const FileText: React.FC<FileTextProps> = ({ originalName, filePath, fileType })
           title={originalName}
           open={previewVisible}
           onCancel={() => setPreviewVisible(false)}
-           width="100vw" 
+          width="100vw"
           // height={'100%'}
           footer={null}
           style={{ top: 24, padding: 0 }}
         >
           <iframe
             src={API_UPLOADS_URL}
-             style={{ width: '100%', height: '85vh', border: 'none' }}
+            style={{ width: '100%', height: '85vh', border: 'none' }}
             title={originalName}
           />
         </Modal>
