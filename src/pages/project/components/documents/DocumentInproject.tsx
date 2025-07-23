@@ -13,9 +13,7 @@ import {
   PlusOutlined,
   MoreOutlined,
   FileAddOutlined,
-  ExclamationCircleFilled,
   WarningFilled,
-  CloseOutlined
 } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
 import dayjs from 'dayjs';
@@ -24,7 +22,12 @@ import type { MenuProps } from 'antd';
 import { useState, useEffect } from 'react';
 import { useDebounce } from '../../../../common/hooks/useDebounce';
 import { useParams } from 'react-router-dom';
-import { getDocumentByProjectId, deleteContent, deleteDocument } from '../../../../services/document/document.service';
+import { 
+  getDocumentByProjectId, 
+  deleteContent, 
+  deleteDocument, 
+  updateContent,
+} from '../../../../services/document/document.service';
 import ModalContent from './components/ModalContent';
 import type { UploadFile } from 'antd/es/upload/interface';
 
@@ -50,6 +53,7 @@ const DocumentInproject: React.FC<DocumentInprojectProps> = () => {
   // Add new states for modal
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedContent, setSelectedContent] = useState<{
+    id: string; // Add content ID
     name: string;
     documentName: string;
     files: Array<{
@@ -58,11 +62,14 @@ const DocumentInproject: React.FC<DocumentInprojectProps> = () => {
       filepath: string;
       type: string;
       size?: number;
+      isNew?: boolean;
+      originFileObj?: File;  // Thêm trường này để lưu File gốc
     }>;
     creator: string;
     createdAt: string;
     updatedAt: string;
   } | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   const debouncedSearchTerm = useDebounce(searchTerm);
 
@@ -94,6 +101,7 @@ const DocumentInproject: React.FC<DocumentInprojectProps> = () => {
 
   const handleViewContent = (record: IDocument, content: any) => {
     setSelectedContent({
+      id: content._id, // Ensure we store the content ID
       name: content.content,
       documentName: record.name,
       files: Array.isArray(content.files) ? content.files.map((file: any) => ({
@@ -101,34 +109,23 @@ const DocumentInproject: React.FC<DocumentInprojectProps> = () => {
         name: file.originalName,
         filepath: file.path,
         type: file.type,
-        size: file.size
+        size: file.size,
+        isNew: false
       })) : [],
       creator: record.createdBy?.profile?.name || 'N/A',
       createdAt: record.createdAt,
       updatedAt: record.updatedAt
     });
     setIsModalOpen(true);
-    console.log("selectedContent", selectedContent);
-    console.log("record", record);
   };
 
-  const handleDeleteContent = async (documentId: string, contentId: string) => {
+  const handleDeleteContent = async (contentId: string) => {
     Modal.confirm({
       title: t('document.content.delete_confirm_title'),
       icon: <WarningFilled style={{ color: '#faad14' }} />,
       content: t('document.content.delete_confirm_content'),
-      okText: (
-        <Space>
-          <DeleteOutlined />
-          {t('common.confirm')}
-        </Space>
-      ),
-      cancelText: (
-        <Space>
-          <CloseOutlined />
-          {t('common.cancel')}
-        </Space>
-      ),
+      okText: t('common.confirm'),
+      cancelText: t('common.cancel'),
       okButtonProps: { 
         danger: true,
         icon: <DeleteOutlined />
@@ -150,18 +147,8 @@ const DocumentInproject: React.FC<DocumentInprojectProps> = () => {
       title: t('document.delete_confirm_title'),
       icon: <WarningFilled style={{ color: '#faad14' }} />,
       content: t('document.delete_confirm_content'),
-      okText: (
-        <Space>
-          <DeleteOutlined />
-          {t('common.confirm')}
-        </Space>
-      ),
-      cancelText: (
-        <Space>
-          <CloseOutlined />
-          {t('common.cancel')}
-        </Space>
-      ),
+      okText: t('common.confirm'),
+      cancelText: t('common.cancel'),
       okButtonProps: { 
         danger: true,
         icon: <DeleteOutlined />
@@ -188,63 +175,63 @@ const DocumentInproject: React.FC<DocumentInprojectProps> = () => {
     console.log('Add content to document:', documentId);
   };
 
-  const handleDeleteFile = async (fileId: string) => {
+  const handleDeleteFile = (fileId: string) => {
     if (!selectedContent) return;
     
-    try {
-      // TODO: Call API to delete file
-      // Sau khi xóa thành công, cập nhật lại state
-      setSelectedContent(prev => {
-        if (!prev) return null;
-        return {
-          ...prev,
-          files: prev.files.filter(file => file.uid !== fileId)
-        };
-      });
-      // Refresh lại data table nếu cần
-      fetchDocuments();
-    } catch (error) {
-      console.error('Error deleting file:', error);
-    }
+    setSelectedContent(prev => {
+      if (!prev) return null;
+      return {
+        ...prev,
+        files: prev.files.filter(file => file.uid !== fileId)
+      };
+    });
   };
 
-  const handleUploadFiles = async (files: UploadFile[]) => {
+  const handleUploadFiles = (files: UploadFile[]) => {
     if (!selectedContent) return;
     
-    try {
-      // TODO: Call API to upload files
-      // Sau khi upload thành công, cập nhật lại state
-      const newFiles = files.map(file => ({
-        uid: file.uid,
-        name: file.name,
-        filepath: file.name, // Temporary filepath, should be updated with actual path from server
-        type: file.name.split('.').pop() || ''
-      }));
+    const newFiles = files.map(file => ({
+      uid: file.uid,
+      name: file.name,
+      filepath: file.name,
+      type: file.type || file.name.split('.').pop() || '',
+      size: file.size,
+      isNew: true,
+      originFileObj: file.originFileObj as File  // Lưu File gốc
+    }));
 
-      setSelectedContent(prev => {
-        if (!prev) return null;
-        return {
-          ...prev,
-          files: [...prev.files, ...newFiles]
-        };
-      });
-      // Refresh lại data table nếu cần
-      fetchDocuments();
-    } catch (error) {
-      console.error('Error uploading files:', error);
-    }
+    setSelectedContent(prev => {
+      if (!prev) return null;
+      return {
+        ...prev,
+        files: [...prev.files, ...newFiles]
+      };
+    });
   };
 
-  const handleConfirmContent = async () => {
-    try {
-      // TODO: Call API to save changes if needed
-      setIsModalOpen(false);
-      // Refresh lại data table nếu cần
-      fetchDocuments();
-    } catch (error) {
-      console.error('Error saving content:', error);
-    }
+  // const handleConfirmContent = async () => {
+  //   try {
+  //     // TODO: Call API to save changes if needed
+  //     setIsModalOpen(false);
+  //     // Refresh lại data table nếu cần
+  //     fetchDocuments();
+  //   } catch (error) {
+  //     console.error('Error saving content:', error);
+  //   }
+  // };
+
+  const handleModalSuccess = () => {
+    setIsModalOpen(false);
+    setSuccessMessage(t('document.content.update_success'));
+    fetchDocuments();
   };
+
+  useEffect(() => {
+    if (!loading && successMessage) {
+      message.success(successMessage);
+      setSuccessMessage(null);
+    }
+  }, [loading, successMessage]);
 
   const getContentActionItems = (record: IDocument, content: any): MenuProps['items'] => [
     {
@@ -258,7 +245,7 @@ const DocumentInproject: React.FC<DocumentInprojectProps> = () => {
       label: t('document.content.delete'),
       icon: <DeleteOutlined />,
       danger: true,
-      onClick: () => handleDeleteContent(record._id, content._id)
+      onClick: () => handleDeleteContent(content._id)
     }
   ];
 
@@ -526,6 +513,7 @@ const DocumentInproject: React.FC<DocumentInprojectProps> = () => {
         <ModalContent
           open={isModalOpen}
           onClose={() => setIsModalOpen(false)}
+          contentId={selectedContent.id}
           contentName={selectedContent.name}
           documentName={selectedContent.documentName}
           files={selectedContent.files}
@@ -534,7 +522,45 @@ const DocumentInproject: React.FC<DocumentInprojectProps> = () => {
           updatedAt={selectedContent.updatedAt}
           onDeleteFile={handleDeleteFile}
           onUploadFiles={handleUploadFiles}
-          onConfirm={handleConfirmContent}
+          onConfirm={async (data, onSuccess) => {
+            try {
+              const formData = new FormData();
+              
+              // Add content
+              formData.append('content', data.content);
+
+              // Separate new and existing files
+              const { newFiles, existingFiles } = selectedContent.files.reduce((acc, file) => {
+                if (file.isNew && file.originFileObj) {
+                  acc.newFiles.push(file.originFileObj);
+                } else {
+                  acc.existingFiles.push({
+                    originalName: file.name,
+                    path: file.filepath,
+                    type: file.type,
+                    size: file.size
+                  });
+                }
+                return acc;
+              }, { newFiles: [] as File[], existingFiles: [] as any[] });
+
+              // Add existing files as JSON string
+              formData.append('existingFiles', JSON.stringify(existingFiles));
+              
+              // Add new files
+              newFiles.forEach((file) => {
+                formData.append('files', file);
+              });
+
+              // Call the API to update content
+              await updateContent(data.contentId, formData);
+              if (onSuccess) onSuccess();
+            } catch (error) {
+              console.error('Error updating content:', error);
+              message.error(t('document.content.update_error'));
+            }
+          }}
+          onSuccess={handleModalSuccess}
         />
       )}
     </>

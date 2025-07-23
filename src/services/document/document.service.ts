@@ -5,6 +5,15 @@ export const downloadFile = async (fileId: string) => {
   return response.data;
 };
 
+export const deleteFile = async (fileId: string) => {
+  try {
+    const response = await api.delete(`/document/delete-file/${fileId}`);
+    return response.data;
+  } catch (error: any) {
+    throw new Error(error.response.data.message);
+  }
+};
+
 export const getDocumentByProjectId = async (projectId: string, query: {
   page?: number;
   limit?: number;
@@ -16,7 +25,7 @@ export const getDocumentByProjectId = async (projectId: string, query: {
     params: query
   });
   return response.data;
-}; 
+};
 
 export const deleteContent = async (contentId : string) => {
   try {
@@ -36,18 +45,26 @@ export const deleteDocument = async (documentId : string) => {
   }
 }
 
-export const updateContent = async (contentId : string, data : any) => {
+export const updateContent = async (contentId: string, formData: FormData) => {
   try {
-    const response = await api.put(`/document/update-content/${contentId}`, data);
+    const response = await api.put(`/document/update-content/${contentId}`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
     return response.data;
   } catch (error: any) {
     throw new Error(error.response.data.message);
   }
 }
 
-export const addContent = async (documentId : string, data : any) => {
+export const addContent = async (documentId: string, formData: FormData) => {
   try {
-    const response = await api.post(`/document/add-content/${documentId}`, data);
+    const response = await api.post(`/document/add-content/${documentId}`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
     return response.data;
   } catch (error: any) {
     throw new Error(error.response.data.message);

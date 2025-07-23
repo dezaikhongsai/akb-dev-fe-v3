@@ -1,4 +1,4 @@
-import { Modal, Typography, Space, Button, Upload, List, Tooltip, message, Divider } from 'antd';
+import { Modal, Typography, Space, Button, Upload, List, Tooltip, message, Divider, Input, Tag } from 'antd';
 import {
   FileOutlined,
   FileWordOutlined,
@@ -14,53 +14,84 @@ import {
   FileTextOutlined,
   UserOutlined,
   CalendarOutlined,
-  EditOutlined
+  EditOutlined,
+  WarningFilled
 } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import type { UploadFile } from 'antd/es/upload/interface';
+import type { RcFile } from 'antd/es/upload';
 import dayjs from 'dayjs';
 
 const { Text } = Typography;
 
+interface FileItem {
+  uid: string;
+  name: string;
+  filepath: string;
+  type: string;
+  size?: number;
+  isNew?: boolean;
+  originFileObj?: File;
+}
+
 interface ModalContentProps {
   open: boolean;
   onClose: () => void;
+  contentId: string;
   contentName: string;
   documentName: string;
-  files: Array<{
-    uid: string;
-    name: string;
-    filepath: string; // Đường dẫn file từ server
-    type: string;
-    size?: number;
-  }>;
+  files: FileItem[];
   creator: string;
   createdAt: string;
   updatedAt: string;
   onDeleteFile: (fileId: string) => void;
   onUploadFiles: (files: UploadFile[]) => void;
-  onConfirm: () => void;
+  onConfirm: (data: { contentId: string; content: string; files: File[] }, onSuccess?: () => void) => void;
+  onSuccess?: () => void;
+  onContentChange?: (newContent: string) => void;
 }
+
+// const getSafeFileName = (file: RcFile | UploadFile): string => {
+//   // Lấy tên file gốc
+//   const originalName = file instanceof File ? file.name : file.originFileObj?.name || file.name;
+  
+//   // Chuyển đổi tên file thành chuỗi UTF-8 an toàn
+//   const encoder = new TextEncoder();
+//   const decoder = new TextDecoder('utf-8');
+//   const bytes = encoder.encode(originalName);
+//   return decoder.decode(bytes);
+// };
 
 const ModalContent: React.FC<ModalContentProps> = ({
   open,
   onClose,
+  contentId,
   contentName,
   documentName,
-  files,
+  files: initialFiles,
   creator,
   createdAt,
   updatedAt,
   onDeleteFile,
   onUploadFiles,
-  onConfirm
+  onConfirm,
+  onSuccess,
+  onContentChange
 }) => {
   const { t } = useTranslation(['project', 'common']);
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewUrl, setPreviewUrl] = useState('');
   const [previewTitle, setPreviewTitle] = useState('');
+  const [isEditingContent, setIsEditingContent] = useState(false);
+  const [editedContent, setEditedContent] = useState(contentName);
+  const [currentFiles, setCurrentFiles] = useState(initialFiles);
+  const [originalContent, setOriginalContent] = useState(contentName);
+  const [originalFiles, setOriginalFiles] = useState(initialFiles);
+  const [deletedFileIds, setDeletedFileIds] = useState<string[]>([]);
   const URL_UPLOAD = import.meta.env.VITE_API_UPLOAD_URL;
+  const [hasChanges, setHasChanges] = useState(false);
+
   const formatFileSize = (bytes: number): string => {
     if (!bytes) return '0 B';
     const k = 1024;
@@ -69,13 +100,227 @@ const ModalContent: React.FC<ModalContentProps> = ({
     return `${parseFloat((bytes / Math.pow(k, i)).toFixed(2))} ${sizes[i]}`;
   };
 
+  // Reset state when modal opens
+  useEffect(() => {
+    setEditedContent(contentName);
+    setCurrentFiles(initialFiles);
+    setOriginalContent(contentName);
+    setOriginalFiles(initialFiles);
+    setHasChanges(false);
+  }, [contentName, initialFiles]);
+
+  // Reset data khi đóng modal
+  const handleClose = () => {
+    setEditedContent(contentName);
+    setCurrentFiles(initialFiles.map(f => ({
+      ...f,
+      originFileObj: undefined
+    })));
+    setOriginalContent(contentName);
+    setOriginalFiles(initialFiles.map(f => ({
+      ...f,
+      originFileObj: undefined
+    })));
+    setIsEditingContent(false);
+    setPreviewOpen(false);
+    setPreviewUrl('');
+    setPreviewTitle('');
+    setHasChanges(false);
+    onClose();
+  };
+  
+  // Logic duy nhất để kiểm tra thay đổi
+  useEffect(() => {
+    const contentChanged = editedContent !== originalContent;
+
+    const filesChanged = (() => {
+      if (currentFiles.length !== originalFiles.length) return true;
+      const originalFileUids = new Set(originalFiles.map(f => f.uid));
+      const currentFileUids = new Set(currentFiles.map(f => f.uid));
+      if (originalFileUids.size !== currentFileUids.size) return true;
+      for (const id of originalFileUids) {
+        if (!currentFileUids.has(id)) return true;
+      }
+      return false;
+    })();
+
+    setHasChanges(contentChanged || filesChanged);
+  }, [editedContent, currentFiles, originalContent, originalFiles]);
+
+
+  const handleContentSubmit = () => {
+    setIsEditingContent(false);
+    onContentChange?.(editedContent);
+  };
+
+  const handleDeleteFileClick = (fileId: string, fileName: string) => {
+    Modal.confirm({
+      title: t('document.content.delete_file_confirm_title'),
+      icon: <WarningFilled style={{ color: '#faad14' }} />,
+      content: t('document.content.delete_file_confirm_content', { fileName }),
+      okText: t('common.confirm'),
+      cancelText: t('common.cancel'),
+      okButtonProps: { 
+        danger: true,
+        icon: <DeleteOutlined />
+      },
+      onOk: async () => {
+        try {
+          // Nếu là file cũ (không phải file mới upload)
+          if (!currentFiles.find(f => f.uid === fileId)?.isNew) {
+            await onDeleteFile(fileId);
+            setDeletedFileIds(prev => [...prev, fileId]);
+          }
+          
+          // Chỉ cần cập nhật state, useEffect sẽ xử lý hasChanges
+          setCurrentFiles(prev => prev.filter(file => file.uid !== fileId));
+          message.success(t('document.content.delete_success'));
+        } catch (error) {
+          console.error('Error deleting file:', error);
+          message.error(t('document.content.delete_error'));
+        }
+      }
+    });
+  };
+
+  const ACCEPTED_FILE_TYPES = {
+    // Microsoft Office
+    'doc': 'application/msword',
+    'docx': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    'xls': 'application/vnd.ms-excel',
+    'xlsx': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    'ppt': 'application/vnd.ms-powerpoint',
+    'pptx': 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+    
+    // PDF
+    'pdf': 'application/pdf',
+    
+    // Images
+    'jpg': 'image/jpeg',
+    'jpeg': 'image/jpeg',
+    'png': 'image/png',
+    'gif': 'image/gif',
+    'bmp': 'image/bmp',
+    'webp': 'image/webp',
+    
+    // Text
+    'txt': 'text/plain',
+    'csv': 'text/csv',
+  };
+
+  const ACCEPTED_FILE_EXTENSIONS = Object.keys(ACCEPTED_FILE_TYPES).map(ext => `.${ext}`).join(',');
+
+  const isValidFileType = (file: File): boolean => {
+    const extension = file.name.split('.').pop()?.toLowerCase() || '';
+    const expectedMimeType = ACCEPTED_FILE_TYPES[extension as keyof typeof ACCEPTED_FILE_TYPES];
+    
+    // Kiểm tra extension và mime type
+    return (
+      expectedMimeType !== undefined && 
+      (file.type === expectedMimeType || file.type.startsWith('application/') || file.type.startsWith('image/'))
+    );
+  };
+
+  const handleUploadFiles = (newFiles: UploadFile[]) => {
+    const uniqueNewFiles = newFiles
+      .filter(newFile => !currentFiles.some(existingFile => existingFile.uid === newFile.uid))
+      .map(file => ({
+        uid: file.uid,
+        name: file.name,
+        filepath: file.name,
+        type: file.type || file.name.split('.').pop() || '',
+        size: file.size,
+        isNew: true,
+        originFileObj: file.originFileObj as File // Chỉ file mới có trường này
+      }));
+    
+    // Chỉ cần cập nhật state, useEffect sẽ xử lý hasChanges
+    setCurrentFiles(prev => [...prev, ...uniqueNewFiles]);
+    onUploadFiles(newFiles);
+    if(uniqueNewFiles.length > 0) setHasChanges(true);
+  };
+
+  const handleConfirmChanges = () => {
+    try {
+      const formData = new FormData();
+      
+      // 1. Thêm content
+      formData.append('content', editedContent);
+
+      // 2. Xử lý files
+      // 2.1. Files mới
+      const newFiles = currentFiles
+        .filter(file => file.isNew && file.originFileObj)
+        .map(file => file.originFileObj as RcFile);
+
+      // 2.2. Files cũ chưa bị xóa
+      const existingFiles = currentFiles
+        .filter(file => !file.isNew && !deletedFileIds.includes(file.uid))
+        .map(file => ({
+          _id: file.uid,
+          originalName: file.name,
+          path: file.filepath,
+          type: file.type,
+          size: file.size
+        }));
+
+      // Thêm files mới vào formData
+      newFiles.forEach(file => {
+        formData.append('files', file);
+      });
+
+      // Thêm files cũ vào formData
+      existingFiles.forEach(file => {
+        formData.append('files', JSON.stringify(file));
+      });
+
+      // 3. Thêm danh sách file đã xóa
+      if (deletedFileIds.length > 0) {
+        formData.append('deletedFileIds', JSON.stringify(deletedFileIds));
+      }
+
+      // Log để kiểm tra
+      console.log('Content:', editedContent);
+      console.log('New files:', newFiles);
+      console.log('Existing files:', existingFiles);
+      console.log('Deleted files:', deletedFileIds);
+
+      // Gọi API cập nhật
+      onConfirm({
+        contentId,
+        content: editedContent,
+        files: newFiles,
+      }, () => {
+        // Reset original state after successful update
+        setOriginalContent(editedContent);
+        setOriginalFiles([...currentFiles]);
+        if (onSuccess) onSuccess();
+      });
+    } catch (error) {
+      console.error('Error preparing files:', error);
+      message.error(t('document.content.prepare_files_error'));
+    }
+  };
+
+  // Chuyển đổi currentFiles sang định dạng UploadFile cho antd Upload
+  const uploadFileList = currentFiles
+    .filter(file => file.isNew)
+    .map(file => ({
+      uid: file.uid,
+      name: file.name,
+      status: 'done' as const,
+      url: file.filepath,
+      type: file.type,
+      size: file.size,
+    }));
+
   const getFileIcon = (fileType: string) => {
     const type = fileType.toLowerCase();
     if (type.includes('word') || type.includes('doc')) {
       return <FileWordOutlined style={{ fontSize: 24, color: '#2B579A' }} />;
     } else if (type.includes('pdf')) {
       return <FilePdfOutlined style={{ fontSize: 24, color: '#FF0000' }} />;
-    } else if (type.includes('sheet') || type.includes('excel') || type.includes('xls')) {
+    } else if (type.includes('sheet') || type.includes('excel') || type.includes('xls') || type.includes('xlsx')) {
       return <FileExcelOutlined style={{ fontSize: 24, color: '#217346' }} />;
     } else if (type.includes('image') || /\.(jpg|jpeg|png|gif)$/i.test(fileType)) {
       return <FileImageOutlined style={{ fontSize: 24, color: '#4A90E2' }} />;
@@ -90,7 +335,16 @@ const ModalContent: React.FC<ModalContentProps> = ({
 
     if (isPreviewable) {
       try {
-        // Kết hợp URL_UPLOAD với filepath
+        // For new files, create object URL
+        if (file.isNew && file.originFileObj) {
+          const previewUrl = URL.createObjectURL(file.originFileObj);
+          setPreviewUrl(previewUrl);
+          setPreviewTitle(file.name);
+          setPreviewOpen(true);
+          return;
+        }
+
+        // For existing files, use server URL
         const fullPath = `${URL_UPLOAD}/${file.filepath}`;
         setPreviewUrl(fullPath);
         setPreviewTitle(file.name);
@@ -105,19 +359,40 @@ const ModalContent: React.FC<ModalContentProps> = ({
 
   const handleDownload = (file: any) => {
     try {
-      // Kết hợp URL_UPLOAD với filepath
-      const fullPath = `${URL_UPLOAD}/${file.filepath}`;
-      window.open(fullPath, '_blank');
+      if (file.isNew && file.originFileObj) {
+        // For new files, create and trigger download link
+        const downloadUrl = URL.createObjectURL(file.originFileObj);
+        const link = document.createElement('a');
+        link.href = downloadUrl;
+        link.download = file.name;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(downloadUrl);
+      } else {
+        // For existing files, use server URL
+        const fullPath = `${URL_UPLOAD}/${file.filepath}`;
+        window.open(fullPath, '_blank');
+      }
     } catch (error) {
       message.error(t('document.content.download_error'));
     }
   };
 
+  // Cleanup object URLs when component unmounts
+  useEffect(() => {
+    return () => {
+      if (previewUrl.startsWith('blob:')) {
+        URL.revokeObjectURL(previewUrl);
+      }
+    };
+  }, [previewUrl]);
+
   return (
     <>
       <Modal
         open={open}
-        onCancel={onClose}
+        onCancel={handleClose}
         width={800}
         title={
           <Space direction="vertical" size={4}>
@@ -125,13 +400,34 @@ const ModalContent: React.FC<ModalContentProps> = ({
               <FileTextOutlined />
               <Text>{documentName}</Text>
             </Space>
-            <Text type="secondary" style={{ fontSize: '14px', marginLeft: 24 }}>
-              {contentName}
-            </Text>
+            <Space align="center" style={{ fontSize: '14px', marginLeft: 24 }}>
+              {isEditingContent ? (
+                <Input
+                  value={editedContent}
+                  onChange={(e) => setEditedContent(e.target.value)}
+                  onPressEnter={handleContentSubmit}
+                  onBlur={handleContentSubmit}
+                  autoFocus
+                  style={{ width: '300px' }}
+                />
+              ) : (
+                <>
+                  <Text type="secondary">{editedContent}</Text>
+                  <Tooltip title={t('document.content.edit')}>
+                    <Button
+                      type="text"
+                      icon={<EditOutlined />}
+                      onClick={() => setIsEditingContent(true)}
+                      style={{ marginLeft: 8 }}
+                    />
+                  </Tooltip>
+                </>
+              )}
+            </Space>
           </Space>
         }
         footer={[
-          <Button key="close" icon={<CloseOutlined />} onClick={onClose}>
+          <Button key="close" icon={<CloseOutlined />} onClick={handleClose}>
             {t('common.close')}
           </Button>,
           <Button
@@ -149,7 +445,8 @@ const ModalContent: React.FC<ModalContentProps> = ({
             key="confirm"
             type="primary"
             icon={<CheckOutlined />}
-            onClick={onConfirm}
+            onClick={handleConfirmChanges}
+            disabled={!hasChanges}
           >
             {t('common.confirm')}
           </Button>
@@ -175,7 +472,7 @@ const ModalContent: React.FC<ModalContentProps> = ({
         <Divider style={{ margin: '12px 0' }} />
 
         <List
-          dataSource={files}
+          dataSource={currentFiles}
           renderItem={(file) => (
             <List.Item
               key={file.uid}
@@ -203,14 +500,21 @@ const ModalContent: React.FC<ModalContentProps> = ({
                     type="text"
                     danger
                     icon={<DeleteOutlined />}
-                    onClick={() => onDeleteFile(file.uid)}
+                    onClick={() => handleDeleteFileClick(file.uid, file.name)}
                   />
                 </Tooltip>
               ].filter(Boolean)}
             >
               <List.Item.Meta
                 avatar={getFileIcon(file.type)}
-                title={file.name}
+                title={
+                  <Space>
+                    <Text>{file.name}</Text>
+                    {file.isNew && (
+                      <Tag color="processing">{t('document.content.new_file')}</Tag>
+                    )}
+                  </Space>
+                }
                 description={
                   <Space>
                     <span>{file.type}</span>
@@ -225,21 +529,24 @@ const ModalContent: React.FC<ModalContentProps> = ({
         <Upload
           id="file-upload"
           style={{ display: 'none' }}
-          accept=".doc,.docx,.pdf,.xls,.xlsx,.jpg,.jpeg,.png,.gif"
+          accept={ACCEPTED_FILE_EXTENSIONS}
           multiple
+          fileList={uploadFileList}
           beforeUpload={(file) => {
-            const isValidType = [
-              'doc', 'docx', 'pdf', 'xls', 'xlsx',
-              'jpg', 'jpeg', 'png', 'gif'
-            ].includes(file.name.split('.').pop()?.toLowerCase() || '');
-            
-            if (!isValidType) {
+            if (!isValidFileType(file)) {
               message.error(t('document.content.invalid_file_type'));
               return Upload.LIST_IGNORE;
             }
+            
+            const maxSize = 50 * 1024 * 1024; // 50MB
+            if (file.size > maxSize) {
+              message.error(t('document.content.file_too_large', { maxSize: '50MB' }));
+              return Upload.LIST_IGNORE;
+            }
+
             return false;
           }}
-          onChange={({ fileList }) => onUploadFiles(fileList)}
+          onChange={({ fileList }) => handleUploadFiles(fileList)}
         >
           <Button type="primary" icon={<UploadOutlined />}>
             {t('document.content.select_files')}
@@ -250,7 +557,12 @@ const ModalContent: React.FC<ModalContentProps> = ({
           open={previewOpen}
           title={previewTitle}
           footer={null}
-          onCancel={() => setPreviewOpen(false)}
+          onCancel={() => {
+            setPreviewOpen(false);
+            if (previewUrl.startsWith('blob:')) {
+              URL.revokeObjectURL(previewUrl);
+            }
+          }}
           width="90vw"
           style={{ 
             top: 20,
@@ -289,3 +601,4 @@ const ModalContent: React.FC<ModalContentProps> = ({
 };
 
 export default ModalContent;
+
