@@ -1,58 +1,31 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button } from 'antd';
+import { Dropdown } from 'antd';
+import type { MenuProps } from 'antd';
 import vnFlag from '../../assets/vn.webp';
 import jpFlag from '../../assets/jp.webp';
 
 const LanguageSwitcher: React.FC = () => {
   const { i18n } = useTranslation();
 
-  const changeLanguage = () => {
-    const newLang = i18n.language === 'vi' ? 'ja' : 'vi';
-    i18n.changeLanguage(newLang);
-  };
-
-  const getCurrentLanguage = () => {
-    switch (i18n.language) {
-      case 'vi':
-        return {
-          code: 'Tiếng Việt',
-          flag: vnFlag
-        };
-      case 'ja':
-        return {
-          code: '日本語',
-          flag: jpFlag
-        };
-      default:
-        return {
-          code: 'Tiếng Việt',
-          flag: vnFlag
-        };
+  const languages = {
+    vi: {
+      code: 'Tiếng Việt',
+      flag: vnFlag
+    },
+    ja: {
+      code: '日本語',
+      flag: jpFlag
     }
   };
 
-  const currentLang = getCurrentLanguage();
+  const currentLangKey = i18n.language === 'ja' ? 'ja' : 'vi';
+  const currentLang = languages[currentLangKey];
 
-  return (
-    <Button
-      type="text"
-      // size='middle'
-      onClick={changeLanguage}
-      style={{
-        width: '150px',
-        height: '40px',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        boxShadow: 'none',
-        background: 'transparent',
-        fontSize: 16,
-        padding: 0,
-        border: '1px solid',
-        borderColor: '#f0f0f0',
-      }}
-    >
+  // items dropdown
+  const items: MenuProps['items'] = Object.entries(languages).map(([key, lang]) => ({
+    key,
+    label: (
       <div
         style={{
           display: 'flex',
@@ -61,14 +34,42 @@ const LanguageSwitcher: React.FC = () => {
         }}
       >
         <img
+          src={lang.flag}
+          alt="flag"
+          style={{ width: 24, height: 16, objectFit: 'cover' }}
+        />
+        <span>{lang.code}</span>
+      </div>
+    ),
+    onClick: () => {
+      i18n.changeLanguage(key);
+    }
+  }));
+
+  return (
+    <Dropdown menu={{ items }} trigger={['click']}
+      placement="bottom"
+    >
+      <div
+        style={{
+          padding: '22px 10px',
+          display: 'flex',
+          alignItems: 'center',
+          cursor: 'pointer',
+        }}
+        onMouseEnter={e => e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.1)'}
+        onMouseLeave={e => e.currentTarget.style.backgroundColor = 'transparent'}
+        onClick={e => e.preventDefault()} // ngăn reload nếu dùng thẻ a
+      >
+        <img
           src={currentLang.flag}
           alt="flag"
           style={{ width: 24, height: 16, objectFit: 'cover', borderRadius: 2 }}
         />
-        <span>{currentLang.code}</span>
       </div>
-    </Button>
+    </Dropdown>
   );
 };
 
 export default LanguageSwitcher;
+

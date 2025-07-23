@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react'; // Import useCallback
-import { Layout, Menu, Avatar, Button, Dropdown, Modal, Breadcrumb } from 'antd';
+import { Layout, Menu, Avatar, Button, Dropdown, Breadcrumb, Modal } from 'antd';
 import {
   MenuUnfoldOutlined,
   ProjectOutlined,
@@ -10,12 +10,12 @@ import {
   SafetyOutlined,
   HomeOutlined,
   IdcardOutlined,
-  GlobalOutlined,
   KeyOutlined,
   EditOutlined,
-  CloseOutlined,
   TeamOutlined,
   UserOutlined,
+  SettingOutlined,
+  CloseOutlined
 } from '@ant-design/icons';
 import { logout } from '../../services/auth';
 import { useNavigate, Outlet, useLocation } from 'react-router-dom';
@@ -372,9 +372,6 @@ const MainLayout: React.FC = () => {
     const index = str.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0) % colors.length;
     return colors[index];
   }, [user]);
-
-
-
   return (
     <Layout style={{ minHeight: '100vh' }}>
       {/* Thanh Header */}
@@ -385,8 +382,8 @@ const MainLayout: React.FC = () => {
           zIndex: 100,
           width: '100%',
           background: '#222D32',
-          padding: '0 24px',
-          height: '64px',
+          padding: '0 0 0 24px',
+          height: '60px',
           color: '#fff',
           display: 'flex',
           alignItems: 'center',
@@ -413,8 +410,8 @@ const MainLayout: React.FC = () => {
             />
           </div>
           {/* Header bên phải */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-            <div ref={searchRef} style={{ position: 'relative' }}>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <div ref={searchRef} style={{ position: 'relative', paddingRight: 5 }}>
               <SearchBox
                 options={searchResults.map(project => ({
                   name: project.name,
@@ -434,7 +431,9 @@ const MainLayout: React.FC = () => {
                 noDataMessage={t('no_results')}
               />
             </div>
+            {/* Ô thông báo */}
             <Notification />
+            {/* ô ngôn ngữ */}
             <LanguageSwitcher />
             <Dropdown
               menu={{
@@ -488,49 +487,59 @@ const MainLayout: React.FC = () => {
                     type: 'divider',
                   },
                   {
-                    key: 'language',
-                    icon: <GlobalOutlined style={{ color: '#13c2c2' }} />,
+                    key: 'logout',
                     label: (
-                      <div style={{ padding: '4px 0' }}>
+                      <Button
+                        style={{ width: '100%' }}
+                        icon={<LogoutOutlined />}
+                        onClick={() => {
+                          Modal.confirm({
+                            title: t('confirm_logout_title'),
+                            content: t('confirm_logout_content'),
+                            okText: <><LogoutOutlined /> {t('ok_text')}</>,
+                            cancelText: <><CloseOutlined /> {t('cancel_text')}</>,
+                            okType: 'danger',
+                            centered: false,
+                            onOk: handleLogout,
+                          });
+                        }}
+                      >
+                        {t('logout')}
+                      </Button>
 
-                      </div>
                     ),
                   },
                 ],
               }}
-              placement="bottomRight"
-              arrow
+              overlayStyle={{ width: '250px', paddingRight: 26 }}
             >
-              <Avatar
+              <div
                 style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 12,
                   cursor: 'pointer',
-                  backgroundColor: getAvatarColor,
-                  verticalAlign: 'middle'
-                }}
-              >
-                {getAvatarText}
-              </Avatar>
-            </Dropdown>
-            <span style={{ fontWeight: 500, color: '#fff' }}>{displayName}</span>
-            <Button
-              icon={<LogoutOutlined />}
-              type="primary"
-              danger
-              onClick={() => {
-                Modal.confirm({
-                  title: t('confirm_logout_title'),
-                  content: t('confirm_logout_content'),
-                  okText: <><LogoutOutlined /> {t('ok_text')}</>,
-                  cancelText: <><CloseOutlined /> {t('cancel_text')}</>,
-                  okType: 'danger',
-                  centered: false,
-                  onOk: handleLogout,
-                });
-              }}
-            >
-              {t('logout')}
-            </Button>
+                  padding: '4px 25px 4px 20px',
+                  borderRadius: 4,
+                  backgroundColor: 'transparent',
 
+                }}
+                onMouseEnter={e => e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.1)'}
+                onMouseLeave={e => e.currentTarget.style.backgroundColor = 'transparent'}
+              >
+                <Avatar
+                  style={{
+                    backgroundColor: getAvatarColor,
+                    verticalAlign: 'middle'
+                  }}
+                >
+                  {getAvatarText}
+                </Avatar>
+                <span style={{ fontWeight: 500, color: '#fff' }}>{displayName}</span>
+                <SettingOutlined />
+              </div>
+            </Dropdown>
+            {/* Dropdown profile */}
           </div>
         </div>
       </Header>
