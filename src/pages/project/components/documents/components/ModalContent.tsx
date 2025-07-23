@@ -86,27 +86,16 @@ const ModalContent: React.FC<ModalContentProps> = ({
   const [isEditingContent, setIsEditingContent] = useState(false);
   const [editedContent, setEditedContent] = useState(contentName);
   const [currentFiles, setCurrentFiles] = useState(initialFiles);
-  const [originalContent, setOriginalContent] = useState(contentName);
-  const [originalFiles, setOriginalFiles] = useState(initialFiles);
   const [deletedFileIds, setDeletedFileIds] = useState<string[]>([]);
   const URL_UPLOAD = import.meta.env.VITE_API_UPLOAD_URL;
-  const [hasChanges, setHasChanges] = useState(false);
+  // const [hasChanges, setHasChanges] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const formatFileSize = (bytes: number): string => {
-    if (!bytes) return '0 B';
-    const k = 1024;
-    const sizes = ['B', 'KB', 'MB', 'GB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return `${parseFloat((bytes / Math.pow(k, i)).toFixed(2))} ${sizes[i]}`;
-  };
 
   // Reset state when modal opens
   useEffect(() => {
     setEditedContent(contentName);
     setCurrentFiles(initialFiles);
-    setOriginalContent(contentName);
-    setOriginalFiles(initialFiles);
-    setHasChanges(false);
   }, [contentName, initialFiles]);
 
   // Reset data khi đóng modal
@@ -116,38 +105,12 @@ const ModalContent: React.FC<ModalContentProps> = ({
       ...f,
       originFileObj: undefined
     })));
-    setOriginalContent(contentName);
-    setOriginalFiles(initialFiles.map(f => ({
-      ...f,
-      originFileObj: undefined
-    })));
     setIsEditingContent(false);
     setPreviewOpen(false);
     setPreviewUrl('');
     setPreviewTitle('');
-    setHasChanges(false);
     onClose();
   };
-  
-  // Logic duy nhất để kiểm tra thay đổi
-  useEffect(() => {
-    const contentChanged = editedContent !== originalContent;
-
-    const filesChanged = (() => {
-      if (currentFiles.length !== originalFiles.length) return true;
-      const originalFileUids = new Set(originalFiles.map(f => f.uid));
-      const currentFileUids = new Set(currentFiles.map(f => f.uid));
-      if (originalFileUids.size !== currentFileUids.size) return true;
-      for (const id of originalFileUids) {
-        if (!currentFileUids.has(id)) return true;
-      }
-      return false;
-    })();
-
-    setHasChanges(contentChanged || filesChanged);
-  }, [editedContent, currentFiles, originalContent, originalFiles]);
-
-
   const handleContentSubmit = () => {
     setIsEditingContent(false);
     onContentChange?.(editedContent);
@@ -222,26 +185,35 @@ const ModalContent: React.FC<ModalContentProps> = ({
   };
 
   const handleUploadFiles = (newFiles: UploadFile[]) => {
-    const uniqueNewFiles = newFiles
-      .filter(newFile => !currentFiles.some(existingFile => existingFile.uid === newFile.uid))
-      .map(file => ({
+    // Kiểm tra file trùng tên và size đã có trong currentFiles
+    const duplicateFiles = newFiles.filter(
+      newFile => currentFiles.some(existingFile =>
+        existingFile.name === newFile.name && existingFile.size === newFile.size
+      )
+    );
+    if (duplicateFiles.length > 0) {
+      message.error(t('document.content.duplicate_file_error', { fileName: duplicateFiles[0].name }));
+      return;
+    }
+    // Gộp file mới vào currentFiles, đánh dấu isNew
+    setCurrentFiles(prev => [
+      ...prev,
+      ...newFiles.map(file => ({
         uid: file.uid,
         name: file.name,
         filepath: file.name,
         type: file.type || file.name.split('.').pop() || '',
         size: file.size,
         isNew: true,
-        originFileObj: file.originFileObj as File // Chỉ file mới có trường này
-      }));
-    
-    // Chỉ cần cập nhật state, useEffect sẽ xử lý hasChanges
-    setCurrentFiles(prev => [...prev, ...uniqueNewFiles]);
+        originFileObj: file.originFileObj as File
+      }))
+    ]);
     onUploadFiles(newFiles);
-    if(uniqueNewFiles.length > 0) setHasChanges(true);
   };
 
   const handleConfirmChanges = () => {
     try {
+      setIsSubmitting(true);
       const formData = new FormData();
       
       // 1. Thêm content
@@ -250,7 +222,7 @@ const ModalContent: React.FC<ModalContentProps> = ({
       // 2. Xử lý files
       // 2.1. Files mới
       const newFiles = currentFiles
-        .filter(file => file.isNew && file.originFileObj)
+        .filter(file => file.isNew)
         .map(file => file.originFileObj as RcFile);
 
       // 2.2. Files cũ chưa bị xóa
@@ -291,37 +263,59 @@ const ModalContent: React.FC<ModalContentProps> = ({
         content: editedContent,
         files: newFiles,
       }, () => {
-        // Reset original state after successful update
-        setOriginalContent(editedContent);
-        setOriginalFiles([...currentFiles]);
+        // Sau khi xác nhận, gộp pendingFiles vào currentFiles
+        setCurrentFiles(prev => [
+          ...prev,
+          ...currentFiles.map(file => ({
+            uid: file.uid,
+            name: file.name,
+            filepath: file.name,
+            type: file.type || file.name.split('.').pop() || '',
+            size: file.size,
+            isNew: true,
+            originFileObj: file.originFileObj as File
+          }))
+        ]);
+        setCurrentFiles(prev => [
+          ...prev,
+          ...currentFiles.map(file => ({
+            uid: file.uid,
+            name: file.name,
+            filepath: file.name,
+            type: file.type || file.name.split('.').pop() || '',
+            size: file.size,
+            isNew: true,
+            originFileObj: file.originFileObj as File
+          }))
+        ]);
+        setDeletedFileIds([]);
+        setIsSubmitting(false);
+        // message.success(t('document.content.update_success'));
         if (onSuccess) onSuccess();
+        handleClose();
       });
     } catch (error) {
+      setIsSubmitting(false);
       console.error('Error preparing files:', error);
       message.error(t('document.content.prepare_files_error'));
     }
   };
 
-  // Chuyển đổi currentFiles sang định dạng UploadFile cho antd Upload
-  const uploadFileList = currentFiles
-    .filter(file => file.isNew)
-    .map(file => ({
-      uid: file.uid,
-      name: file.name,
-      status: 'done' as const,
-      url: file.filepath,
-      type: file.type,
-      size: file.size,
-    }));
-
   const getFileIcon = (fileType: string) => {
     const type = fileType.toLowerCase();
-    if (type.includes('word') || type.includes('doc')) {
+    if (
+      type.includes('sheet') ||
+      type.includes('excel') ||
+      type.includes('xls') ||
+      type.includes('xlsx') ||
+      type === 'application/vnd.ms-excel' ||
+      type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    ) {
+      return <FileExcelOutlined style={{ fontSize: 24, color: '#217346' }} />;
+    } else if (type.includes('word') || type.includes('doc')) {
       return <FileWordOutlined style={{ fontSize: 24, color: '#2B579A' }} />;
     } else if (type.includes('pdf')) {
       return <FilePdfOutlined style={{ fontSize: 24, color: '#FF0000' }} />;
-    } else if (type.includes('sheet') || type.includes('excel') || type.includes('xls') || type.includes('xlsx')) {
-      return <FileExcelOutlined style={{ fontSize: 24, color: '#217346' }} />;
     } else if (type.includes('image') || /\.(jpg|jpeg|png|gif)$/i.test(fileType)) {
       return <FileImageOutlined style={{ fontSize: 24, color: '#4A90E2' }} />;
     }
@@ -357,7 +351,7 @@ const ModalContent: React.FC<ModalContentProps> = ({
     }
   };
 
-  const handleDownload = (file: any) => {
+  const handleDownload = async (file: any) => {
     try {
       if (file.isNew && file.originFileObj) {
         // For new files, create and trigger download link
@@ -370,9 +364,19 @@ const ModalContent: React.FC<ModalContentProps> = ({
         document.body.removeChild(link);
         URL.revokeObjectURL(downloadUrl);
       } else {
-        // For existing files, use server URL
+        // For existing files, fetch as blob and trigger download with correct name
         const fullPath = `${URL_UPLOAD}/${file.filepath}`;
-        window.open(fullPath, '_blank');
+        const response = await fetch(fullPath);
+        if (!response.ok) throw new Error('Network response was not ok');
+        const blob = await response.blob();
+        const blobUrl = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = blobUrl;
+        link.download = file.name;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(blobUrl);
       }
     } catch (error) {
       message.error(t('document.content.download_error'));
@@ -446,7 +450,7 @@ const ModalContent: React.FC<ModalContentProps> = ({
             type="primary"
             icon={<CheckOutlined />}
             onClick={handleConfirmChanges}
-            disabled={!hasChanges}
+            loading={isSubmitting}
           >
             {t('common.confirm')}
           </Button>
@@ -515,38 +519,35 @@ const ModalContent: React.FC<ModalContentProps> = ({
                     )}
                   </Space>
                 }
-                description={
-                  <Space>
-                    <span>{file.type}</span>
-                    {file.size && <span>{formatFileSize(file.size)}</span>}
-                  </Space>
-                }
+                // XÓA description: chỉ hiển thị tên file
               />
             </List.Item>
           )}
         />
-
         <Upload
           id="file-upload"
           style={{ display: 'none' }}
           accept={ACCEPTED_FILE_EXTENSIONS}
-          multiple
-          fileList={uploadFileList}
+          multiple={false}
+          fileList={[]}
           beforeUpload={(file) => {
             if (!isValidFileType(file)) {
               message.error(t('document.content.invalid_file_type'));
               return Upload.LIST_IGNORE;
             }
-            
             const maxSize = 50 * 1024 * 1024; // 50MB
             if (file.size > maxSize) {
               message.error(t('document.content.file_too_large', { maxSize: '50MB' }));
               return Upload.LIST_IGNORE;
             }
-
             return false;
           }}
-          onChange={({ fileList }) => handleUploadFiles(fileList)}
+          onChange={({ fileList }) => {
+            // Chỉ lấy file đầu tiên, thêm vào currentFiles
+            if (fileList.length > 0) {
+              handleUploadFiles([fileList[0]]);
+            }
+          }}
         >
           <Button type="primary" icon={<UploadOutlined />}>
             {t('document.content.select_files')}

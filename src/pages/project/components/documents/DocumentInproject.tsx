@@ -30,6 +30,7 @@ import {
 } from '../../../../services/document/document.service';
 import ModalContent from './components/ModalContent';
 import type { UploadFile } from 'antd/es/upload/interface';
+import ModalAddContent from './components/ModalAddContent';
 
 interface DocumentInprojectProps {}
 
@@ -70,7 +71,8 @@ const DocumentInproject: React.FC<DocumentInprojectProps> = () => {
     updatedAt: string;
   } | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
-
+  const [isModalAddContentOpen, setIsModalAddContentOpen] = useState(false);
+  const [selectedDocument, setSelectedDocument] = useState<IDocument | null>(null);
   const debouncedSearchTerm = useDebounce(searchTerm);
 
   const fetchDocuments = async () => {
@@ -171,8 +173,8 @@ const DocumentInproject: React.FC<DocumentInprojectProps> = () => {
   };
 
   const handleAddContent = (documentId: string) => {
-    // TODO: Implement add content
-    console.log('Add content to document:', documentId);
+    setSelectedDocument(documents.find(doc => doc._id === documentId) || null);
+    setIsModalAddContentOpen(true);
   };
 
   const handleDeleteFile = (fileId: string) => {
@@ -209,16 +211,7 @@ const DocumentInproject: React.FC<DocumentInprojectProps> = () => {
     });
   };
 
-  // const handleConfirmContent = async () => {
-  //   try {
-  //     // TODO: Call API to save changes if needed
-  //     setIsModalOpen(false);
-  //     // Refresh lại data table nếu cần
-  //     fetchDocuments();
-  //   } catch (error) {
-  //     console.error('Error saving content:', error);
-  //   }
-  // };
+
 
   const handleModalSuccess = () => {
     setIsModalOpen(false);
@@ -404,6 +397,7 @@ const DocumentInproject: React.FC<DocumentInprojectProps> = () => {
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchTerm(e.target.value)}
               style={{ width: 200 }}
               allowClear
+              
             />
           </Col>
         </Row>
@@ -563,7 +557,17 @@ const DocumentInproject: React.FC<DocumentInprojectProps> = () => {
           onSuccess={handleModalSuccess}
         />
       )}
-    </>
+      <ModalAddContent
+        open={isModalAddContentOpen}
+        onClose={() => setIsModalAddContentOpen(false)}
+        documentId={selectedDocument?._id || ''}
+        documentName={selectedDocument?.name || ''}
+        creator={selectedDocument?.createdBy?.profile?.name || ''}
+        createdAt={dayjs(selectedDocument?.createdAt).format('DD/MM/YYYY HH:mm') || ''}
+        updatedAt={dayjs(selectedDocument?.updatedAt).format('DD/MM/YYYY HH:mm') || ''}
+        onSuccess={handleModalSuccess}
+      />
+      </>
   );
 };
 
