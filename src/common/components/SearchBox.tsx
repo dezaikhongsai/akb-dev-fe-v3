@@ -1,10 +1,11 @@
 import React from 'react';
-import { AutoComplete, theme, Empty, Spin } from 'antd';
+import { AutoComplete, theme, Empty, Spin, Input } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 
 interface Option {
   alias: string;
   name: string;
+  pId: string;
 }
 
 interface SearchBoxProps {
@@ -17,8 +18,8 @@ interface SearchBoxProps {
   value?: string;
 }
 
-const SearchBox: React.FC<SearchBoxProps> = ({ 
-  options, 
+const SearchBox: React.FC<SearchBoxProps> = ({
+  options,
   placeholder = "Bạn hãy nhập tên dự án",
   style,
   onChange,
@@ -26,70 +27,48 @@ const SearchBox: React.FC<SearchBoxProps> = ({
   noDataMessage = "Không tìm thấy dữ liệu",
   value
 }) => {
-  const { token } = theme.useToken();
+  theme.useToken();
 
   const transformedOptions = options.map(opt => ({
     value: opt.alias,
-    label: `${opt.name} (${opt.alias})`
+    label: `${opt.name} (${opt.alias})`,
   }));
 
-  const notFoundContent = (
+  const notFoundContent = loading ? (
+    <div style={{ padding: '12px', textAlign: 'center' }}><Spin size="small" /></div>
+  ) : (
     <Empty
       image={Empty.PRESENTED_IMAGE_SIMPLE}
       description={noDataMessage}
-      style={{
-        margin: '12px 0',
-        padding: '12px'
-      }}
+      style={{ margin: '12px 0', padding: '12px' }}
     />
   );
 
   return (
     <AutoComplete
-      style={{ 
-        width: 200,
-        ...style 
-      }}
       value={value}
       options={transformedOptions}
       onChange={onChange}
-      filterOption={(inputValue, option) =>
-        option?.label?.toLowerCase().indexOf(inputValue.toLowerCase()) !== -1
-      }
-       styles={{
-        popup: {
-          root: {
-            background: '#ffffff',
-            color: token.colorText, // Use your token here if desired
-          },
-        },
+      onSelect={(alias) => {
+        const selected = options.find(opt => opt.alias === alias);
+        if (selected) {
+          window.location.href = `/project/${selected.pId}`;
+        }
       }}
-      notFoundContent={loading ? <div style={{ padding: '12px', textAlign: 'center' }}><Spin size="small" /></div> : notFoundContent}
+      filterOption={(inputValue, option) =>
+        option && option.label
+          ? option.label.toLowerCase().includes(inputValue.toLowerCase())
+          : false
+      }
+      style={style}
+      notFoundContent={notFoundContent}
     >
-      <div 
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          backgroundColor: 'rgba(255, 255, 255, 0.1)',
-          borderRadius: token.borderRadius,
-          border: 'none',
-          padding: '4px 11px',
-        }}
-      >
-        <SearchOutlined style={{ color: 'rgba(255, 255, 255, 0.65)', marginRight: 8 }} />
-        <input
-          className="header-search-input"
-          style={{
-            backgroundColor: 'transparent',
-            color: '#fff',
-            border: 'none',
-            outline: 'none',
-            width: '100%',
-          }}
-          placeholder={placeholder}
-        />
-      </div>
-    </AutoComplete>    
+      <Input
+        prefix={<SearchOutlined style={{ color: '#444746' }} />}
+        placeholder={placeholder}
+        style={{ backgroundColor: 'rgba(255,255,255,0.1)', color: '#444746' }}
+      />
+    </AutoComplete>
   );
 };
 
