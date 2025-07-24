@@ -21,7 +21,7 @@ const items: MenuProps['items'] = [
                 Có 5 báo cáo mới được gửi
             </a>
         ),
-        key: '0',
+        key: '1',
     },
     {
         label: (
@@ -29,7 +29,7 @@ const items: MenuProps['items'] = [
                 Có 2 yêu cầu dự án mới hôm nay
             </a>
         ),
-        key: '1',
+        key: '2',
     }
 ];
 

@@ -49,12 +49,6 @@ const SearchBox: React.FC<SearchBoxProps> = ({
       value={value}
       options={transformedOptions}
       onChange={onChange}
-      onSelect={(alias) => {
-        const selected = options.find(opt => opt.alias === alias);
-        if (selected) {
-          window.location.href = `/project/${selected.pId}`;
-        }
-      }}
       filterOption={(inputValue, option) =>
         option && option.label
           ? option.label.toLowerCase().includes(inputValue.toLowerCase())

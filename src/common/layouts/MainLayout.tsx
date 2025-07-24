@@ -263,8 +263,9 @@ const MainLayout: React.FC = () => {
     const items = [
       {
         title: (
-          <span onClick={() => navigate('/')} style={{ cursor: 'pointer' }}>
-            {'Hệ thống'}
+          // onClick={() => navigate('/')} style={{ cursor: 'pointer' }}
+          <span >
+            {'REOPS'}
           </span>
         )
       },
@@ -435,6 +436,7 @@ const MainLayout: React.FC = () => {
                 onChange={(value) => {
                   handleSearch(value);
                   const selectedProject = searchResults.find(p => p.alias === value);
+                  console.log('User chọn:', value, 'Tìm thấy:', selectedProject);
                   if (selectedProject) {
                     handleResultClick(selectedProject);
                   }

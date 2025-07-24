@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Dropdown } from 'antd';
 import type { MenuProps } from 'antd';
 import vnFlag from '../../assets/vn.webp';
-import jpFlag from '../../assets/jp.webp';
+import jpFlag from '../../assets/jp.png';
 
 const LanguageSwitcher: React.FC = () => {
   const { i18n } = useTranslation();
