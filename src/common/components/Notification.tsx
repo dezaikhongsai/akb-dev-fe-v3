@@ -21,7 +21,7 @@ const items: MenuProps['items'] = [
                 Có 5 báo cáo mới được gửi
             </a>
         ),
-        key: '0',
+        key: '1',
     },
     {
         label: (
@@ -29,7 +29,7 @@ const items: MenuProps['items'] = [
                 Có 2 yêu cầu dự án mới hôm nay
             </a>
         ),
-        key: '1',
+        key: '2',
     }
 ];
 
@@ -43,8 +43,9 @@ const Notification: React.FC = () => {
                     display: 'flex',
                     alignItems: 'center',
                     cursor: 'pointer',
+                    height: '60px'
                 }}
-                onMouseEnter={e => e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.1)'}
+                onMouseEnter={e => e.currentTarget.style.backgroundColor = 'rgba(0, 0, 0, 0.05)'}
                 onMouseLeave={e => e.currentTarget.style.backgroundColor = 'transparent'}
                 onClick={e => e.preventDefault()} // ngăn reload nếu dùng thẻ a
             >
@@ -60,7 +61,7 @@ const Notification: React.FC = () => {
 
                         }}>
 
-                            <BellOutlined style={{ fontSize: '17px', color: '#ffffffff' }} />
+                            <BellOutlined style={{ fontSize: '17px', color: '#0F0F0F' }} />
                         </Badge>
                     </Space>
                 </a>

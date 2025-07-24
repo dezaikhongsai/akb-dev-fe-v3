@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Dropdown } from 'antd';
 import type { MenuProps } from 'antd';
 import vnFlag from '../../assets/vn.webp';
-import jpFlag from '../../assets/jp.webp';
+import jpFlag from '../../assets/jp.png';
 
 const LanguageSwitcher: React.FC = () => {
   const { i18n } = useTranslation();
@@ -57,8 +57,9 @@ const LanguageSwitcher: React.FC = () => {
           alignItems: 'center',
           cursor: 'pointer',
         }}
-        onMouseEnter={e => e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.1)'}
+        onMouseEnter={e => e.currentTarget.style.backgroundColor = 'rgba(0, 0, 0, 0.05)'}
         onMouseLeave={e => e.currentTarget.style.backgroundColor = 'transparent'}
+
         onClick={e => e.preventDefault()} // ngăn reload nếu dùng thẻ a
       >
         <img

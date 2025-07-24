@@ -3,10 +3,10 @@ import type { ColumnsType } from 'antd/es/table';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDebounce } from '../../common/hooks/useDebounce';
-import { 
-  MoreOutlined, 
-  EditOutlined, 
-  DeleteOutlined, 
+import {
+  MoreOutlined,
+  EditOutlined,
+  DeleteOutlined,
   ExclamationCircleOutlined,
   SearchOutlined,
   ProjectOutlined,
@@ -55,9 +55,9 @@ const Project = () => {
   const { t } = useTranslation(['project']);
   const currentUser = useSelector(selectAuthUser);
   const isCustomer = currentUser?.role === 'customer';
-  
+
   type SortType = 'asc' | 'desc';
-  
+
   const [loading, setLoading] = useState(false);
   const [projects, setProjects] = useState<IProject[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
@@ -78,7 +78,7 @@ const Project = () => {
   const [totalItems, setTotalItems] = useState(0);
   const [dateRange, setDateRange] = useState<[Dayjs | null, Dayjs | null]>([null, null]);
   const [modalAddOpen, setModalAddOpen] = useState(false);
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
   const fetchProjects = async () => {
     try {
       setLoading(true);
@@ -104,7 +104,7 @@ const Project = () => {
         monthYearStart: '',
         monthYearEnd: ''
       };
-      
+
       const response = await projectStatistics(params);
       setStatistic(response.data.data);
     } catch (error) {
@@ -340,9 +340,9 @@ const Project = () => {
             <ProjectOutlined style={{ fontSize: 24, color: '#1890ff', marginRight: 16 }} />
             <div style={{ flex: 1 }}>
               <div style={{ color: 'rgba(0, 0, 0, 0.45)', fontSize: '14px' }}>{t('statistic.active')}</div>
-              <div style={{ 
-                fontSize: '24px', 
-                fontWeight: 500, 
+              <div style={{
+                fontSize: '24px',
+                fontWeight: 500,
                 color: getPercentageChangeColor(statistic?.totalActiveProjects.percentageChange),
                 display: 'flex',
                 alignItems: 'center'
@@ -359,9 +359,9 @@ const Project = () => {
             <CheckCircleFilled style={{ fontSize: 24, color: '#52c41a', marginRight: 16 }} />
             <div style={{ flex: 1 }}>
               <div style={{ color: 'rgba(0, 0, 0, 0.45)', fontSize: '14px' }}>{t('statistic.completed')}</div>
-              <div style={{ 
-                fontSize: '24px', 
-                fontWeight: 500, 
+              <div style={{
+                fontSize: '24px',
+                fontWeight: 500,
                 color: getPercentageChangeColor(statistic?.totalCompletedProjects.percentageChange),
                 display: 'flex',
                 alignItems: 'center'
@@ -378,9 +378,9 @@ const Project = () => {
             <ClockCircleOutlined style={{ fontSize: 24, color: '#1890ff', marginRight: 16 }} />
             <div style={{ flex: 1 }}>
               <div style={{ color: 'rgba(0, 0, 0, 0.45)', fontSize: '14px' }}>{t('statistic.processing')}</div>
-              <div style={{ 
-                fontSize: '24px', 
-                fontWeight: 500, 
+              <div style={{
+                fontSize: '24px',
+                fontWeight: 500,
                 color: getPercentageChangeColor(statistic?.totalProcessingProjects.percentageChange),
                 display: 'flex',
                 alignItems: 'center'
@@ -397,9 +397,9 @@ const Project = () => {
             <WarningFilled style={{ fontSize: 24, color: '#faad14', marginRight: 16 }} />
             <div style={{ flex: 1 }}>
               <div style={{ color: 'rgba(0, 0, 0, 0.45)', fontSize: '14px' }}>{t('statistic.pending')}</div>
-              <div style={{ 
-                fontSize: '24px', 
-                fontWeight: 500, 
+              <div style={{
+                fontSize: '24px',
+                fontWeight: 500,
                 color: getPercentageChangeColor(statistic?.totalPendingProjects.percentageChange),
                 display: 'flex',
                 alignItems: 'center'
@@ -513,7 +513,7 @@ const Project = () => {
         monthYearStart: '',
         monthYearEnd: ''
       };
-      
+
       const response = await projectStatistics(params);
       setStatistic(response.data.data);
     } catch (error) {
@@ -566,7 +566,7 @@ const Project = () => {
       {contextHolder}
       <Row gutter={[24, 24]}>
         <Col span={24}>
-          <Card 
+          <Card
             title={
               <Space>
                 <ProjectOutlined />
@@ -587,7 +587,7 @@ const Project = () => {
           >
             {statistic && statistic.totalPendingProjects && statistic.totalPendingProjects.current > 0 && (
               <Alert
-                message={t('alert.pending.message', { 
+                message={t('alert.pending.message', {
                   count: statistic.totalPendingProjects.current,
                   message: t(isCustomer ? 'alert.pending.customer' : 'alert.pending.admin')
                 })}
@@ -603,9 +603,9 @@ const Project = () => {
                 </div>
               </Col>
               <Col span={16}>
-                <div style={{ 
-                  borderLeft: '1px solid #f0f0f0', 
-                  paddingLeft: 24, 
+                <div style={{
+                  borderLeft: '1px solid #f0f0f0',
+                  paddingLeft: 24,
                   height: '100%',
                   display: 'flex',
                   flexDirection: 'column'
@@ -622,7 +622,7 @@ const Project = () => {
       </Row>
       <Row style={{ marginTop: 24 }}>
         <Col span={24}>
-          <Card 
+          <Card
             title={
               <Space>
                 <UnorderedListOutlined />
