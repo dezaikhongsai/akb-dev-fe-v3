@@ -1,0 +1,119 @@
+import { CloseOutlined, SaveOutlined, EditOutlined } from '@ant-design/icons';
+import { Button, Form, Space, Typography, message, Spin, Pagination } from 'antd';
+import { Modal } from 'antd/lib';
+import React from 'react';
+import { useTranslation } from 'react-i18next';
+import AddPhaseInput from './AddPhaseInPut';
+import { updateManyPhase } from '../../../../../services/phase/phase.service';
+
+interface IPhase {
+  _id: string;
+  name: string;
+  description: string;
+  startDate: string;
+}
+
+interface ModalUpdatePhaseProps {
+  open: boolean;
+  onClose: () => void;
+  onSuccess: () => void;
+  phases: IPhase[];
+}
+
+const ModalUpdatePhase: React.FC<ModalUpdatePhaseProps> = ({ open, onClose, onSuccess, phases }) => {
+  const { t } = useTranslation(['phase', 'common']);
+  const [form] = Form.useForm();
+  const [editPhases, setEditPhases] = React.useState<IPhase[]>([]);
+  const [loading, setLoading] = React.useState(false);
+  const [changed, setChanged] = React.useState(false);
+  const [currentPage, setCurrentPage] = React.useState(1);
+
+  React.useEffect(() => {
+    if (open) {
+      setEditPhases(phases.map(p => ({ ...p })));
+      setChanged(false);
+      setCurrentPage(1);
+      form.resetFields();
+    }
+  }, [open, phases]);
+
+  const handlePhaseChange = (index: number, value: Partial<IPhase>) => {
+    setEditPhases(prev => {
+      const updated = prev.map((p, i) => i === index ? { ...p, ...value } : p);
+      setChanged(JSON.stringify(updated) !== JSON.stringify(phases));
+      return updated;
+    });
+  };
+
+  const handleSave = async () => {
+    try {
+      await form.validateFields();
+      setLoading(true);
+      const data = { phases: editPhases };
+      await updateManyPhase(data);
+      message.success(t('common.saveSuccess'));
+      setLoading(false);
+      onSuccess && onSuccess();
+      onClose();
+    } catch (err: any) {
+      setLoading(false);
+      message.error(err.message || t('common.saveFailed'));
+    }
+  };
+
+  return (
+    <Modal
+      open={open}
+      onCancel={onClose}
+      width={1000}
+      bodyStyle={{ maxHeight: '60vh', overflow: 'auto' }}
+      title={
+        <Space>
+          <EditOutlined />
+          <Typography.Text>{t('phase.update')}</Typography.Text>
+        </Space>
+      }
+      footer={[
+        <Button
+          icon={<CloseOutlined />}
+          onClick={onClose}
+          key="close"
+          disabled={loading}
+        >
+          {t('common.close')}
+        </Button>,
+        <Button
+          icon={<SaveOutlined />}
+          onClick={handleSave}
+          key="save"
+          type="primary"
+          loading={loading}
+          disabled={!changed}
+        >
+          {t('common.save')}
+        </Button>
+      ]}
+    >
+      <Spin spinning={loading}>
+        <AddPhaseInput
+          phase={editPhases[currentPage - 1]}
+          index={currentPage - 1}
+          onChange={handlePhaseChange}
+          onRemove={() => {}}
+          disableRemove={true}
+        />
+        <div style={{ marginTop: 16, textAlign: 'center' }}>
+          <Pagination
+            current={currentPage}
+            pageSize={1}
+            total={editPhases.length}
+            onChange={setCurrentPage}
+            showSizeChanger={false}
+          />
+        </div>
+      </Spin>
+    </Modal>
+  );
+};
+
+export default ModalUpdatePhase;

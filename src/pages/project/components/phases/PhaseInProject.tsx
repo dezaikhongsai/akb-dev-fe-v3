@@ -13,17 +13,24 @@ import {
 import { useTranslation } from 'react-i18next';
 import dayjs from 'dayjs';
 import type { StepProps } from 'antd';
+import ModalAddPhase from './components/ModalAddPhase';
+import { useState } from 'react';
+import ModalUpdatePhase from './components/ModalUpdatePhase';
 
 interface PhaseInProjectProps {
   phases: IPhase[];
   currentPhase: number;
+  projectId: string;
+  onReloadPhases?: () => void;
+  loadingPhase?: boolean;
 }
 
 const { Text } = Typography;
 
-const PhaseInProject: React.FC<PhaseInProjectProps> = ({ phases, currentPhase }) => {
+const PhaseInProject: React.FC<PhaseInProjectProps> = ({ phases, currentPhase , projectId, onReloadPhases, loadingPhase }) => {
   const { t } = useTranslation(['project', 'common']);
-
+  const [isModalAddPhaseOpen, setIsModalAddPhaseOpen] = useState(false);
+  const [isModalUpdatePhaseOpen , setIsModalUpdatePhaseOpen] = useState(true);
   const getPhaseStatus = (index: number) => {
     if (index + 1 < currentPhase) return 'finish';
     if (index + 1 === currentPhase) return 'process';
@@ -86,6 +93,18 @@ const PhaseInProject: React.FC<PhaseInProjectProps> = ({ phases, currentPhase })
     };
   });
 
+  const handleAddPhase = () => {
+    setIsModalAddPhaseOpen(true);
+  }
+  const handleUpdatePhase = () => {
+    setIsModalUpdatePhaseOpen(true);
+  }
+
+  // Thêm hàm xử lý khi click vào step
+  const handleStepClick = (current: number) => {
+    setIsModalAddPhaseOpen(true);
+  };
+
   return (
     <Card
       title={
@@ -96,11 +115,15 @@ const PhaseInProject: React.FC<PhaseInProjectProps> = ({ phases, currentPhase })
       }
       extra = {
         phases.length > 0 ? (
-          <Button type="primary" icon={<EditOutlined />}>
+          <Button type="primary" icon={<EditOutlined />} onClick={handleUpdatePhase}>
             {t('project.update_phase')}
           </Button>
         ) : (
-          <Button type="primary" icon={<PlusOutlined />}>
+          <Button 
+          type="primary" 
+          icon={<PlusOutlined />}
+          onClick={handleAddPhase}
+          >
             {t('project.add_phase')}
           </Button>
         )
@@ -109,22 +132,41 @@ const PhaseInProject: React.FC<PhaseInProjectProps> = ({ phases, currentPhase })
     >
       {phases.length > 0 ? (
         <div style={{ padding: '24px 0' }}>
-          <Steps
-            direction="horizontal"
-            current={currentPhase - 1}
-            items={items}
-            progressDot={false}
-            style={{ 
-              maxWidth: '100%',
-              overflowX: 'auto',
-              overflowY: 'hidden',
-              padding: '8px 0'
-            }}
-          />
+          {loadingPhase ? (
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: 100 }}>
+              <LoadingOutlined style={{ fontSize: 32 }} spin />
+            </div>
+          ) : (
+            <Steps
+              direction="horizontal"
+              current={currentPhase - 1}
+              items={items}
+              progressDot={false}
+              style={{ 
+                maxWidth: '100%',
+                overflowX: 'auto',
+                overflowY: 'hidden',
+                padding: '8px 0'
+              }}
+              onChange={handleStepClick}
+            />
+          )}
         </div>
       ) : (
         <Text type="secondary">{t('project.no_phases')}</Text>
       )}
+      <ModalAddPhase
+        open={isModalAddPhaseOpen}
+        onClose={() => setIsModalAddPhaseOpen(false)}
+        onSuccess={onReloadPhases || (() => {})}
+        projectId={projectId}
+      />
+      <ModalUpdatePhase
+        open={isModalUpdatePhaseOpen}
+        onClose={() => setIsModalUpdatePhaseOpen(false)}
+        onSuccess={onReloadPhases || (() => {})}
+        phases={phases}
+      />
     </Card>
   );
 };

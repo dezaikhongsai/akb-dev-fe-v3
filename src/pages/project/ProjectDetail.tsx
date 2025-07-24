@@ -12,6 +12,13 @@ const ProjectDetail = () => {
   const [project, setProject] = useState<IProjectDetailResponse | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [loadingPhase, setLoadingPhase] = useState(false);
+
+  const reloadPhases = async () => {
+    setLoadingPhase(true);
+    await fetchProjectDetail();
+    setLoadingPhase(false);
+  };
 
   const fetchProjectDetail = async () => {
     if (!pid) {
@@ -52,7 +59,13 @@ const ProjectDetail = () => {
   return (
     <div style={{ padding: '24px' }}>
       <ProjectInfor project={project.project} />
-      <PhaseInProject phases={project.phases} currentPhase={project.project.currentPhase} />
+      <PhaseInProject 
+        phases={project.phases} 
+        currentPhase={project.project.currentPhase} 
+        projectId={pid || ''} 
+        onReloadPhases={reloadPhases}
+        loadingPhase={loadingPhase}
+      />
       <DocumentInproject  />
     </div>
   )
