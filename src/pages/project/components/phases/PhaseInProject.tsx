@@ -1,4 +1,4 @@
-import { Card, Steps, Space, Typography, Tooltip } from 'antd';
+import { Card, Steps, Space, Typography, Tooltip, Button } from 'antd';
 import { IPhase } from '../../interfaces/project.interface';
 import {
   ProjectOutlined,
@@ -7,6 +7,8 @@ import {
   CheckCircleOutlined,
   LoadingOutlined,
   ClockCircleOutlined,
+  PlusOutlined,
+  EditOutlined,
 } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
 import dayjs from 'dayjs';
@@ -91,6 +93,17 @@ const PhaseInProject: React.FC<PhaseInProjectProps> = ({ phases, currentPhase })
           <ProjectOutlined />
           {t('project.phases')}
         </Space>
+      }
+      extra = {
+        phases.length > 0 ? (
+          <Button type="primary" icon={<EditOutlined />}>
+            {t('project.update_phase')}
+          </Button>
+        ) : (
+          <Button type="primary" icon={<PlusOutlined />}>
+            {t('project.add_phase')}
+          </Button>
+        )
       }
       style={{ marginBottom: 24 }}
     >

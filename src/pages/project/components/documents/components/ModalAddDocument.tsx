@@ -185,6 +185,7 @@ const ModalAddDocument: React.FC<ModalAddDocumentProp> = ({
             open={open}
             onCancel={onClose}
             width={900}
+            bodyStyle={{ maxHeight: '70vh', overflow: 'auto' }}
             title={
                 <Space>
                     <FileAddOutlined />

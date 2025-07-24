@@ -1,4 +1,4 @@
-import { Card, Descriptions, Tag, Space, Typography } from 'antd';
+import { Card, Descriptions, Tag, Space, Typography, Button } from 'antd';
 import { useTranslation } from 'react-i18next';
 import {
   ProjectOutlined,
@@ -11,6 +11,8 @@ import {
   CloseCircleOutlined,
   NumberOutlined,
   MailOutlined,
+  EditOutlined,
+  SwapOutlined,
 } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import { IProject } from '../../interfaces/project.interface';
@@ -60,6 +62,43 @@ const ProjectInfor: React.FC<ProjectInforProps> = ({ project }) => {
         <Space>
           <ProjectOutlined />
           {t('project.information')}
+        </Space>
+      }
+      extra = {
+        <Space>
+          { project.isActive ? (
+          <div style={{ display: 'flex', gap: 8 }}>
+               <Button
+                type="primary"
+                icon={<EditOutlined />}
+              >
+                {t('project.update')}
+              </Button>
+              <Button
+                type='primary'
+                icon = {<CheckCircleOutlined/>}
+                style={{ backgroundColor: 'green', borderColor: 'green' }}
+              >
+                {t('project.mark_as_complete')}
+              </Button>
+              <Button
+                type='primary'
+                icon = {<SwapOutlined />}
+                style={{ backgroundColor: 'purple', borderColor: 'purple' }}
+              >
+                 {t('project.change_phase')}
+              </Button>
+          </div>
+        ) : (
+          <Button
+            type="primary"
+            icon={<CheckCircleOutlined />}
+            style={{ backgroundColor: 'gold', borderColor: 'gold' }}
+          >
+            {t('project.active')}
+          </Button>
+        )}
+        
         </Space>
       }
       style={{ marginBottom: 24 }}
