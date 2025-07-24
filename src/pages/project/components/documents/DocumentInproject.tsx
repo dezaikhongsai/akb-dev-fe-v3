@@ -31,6 +31,7 @@ import {
 import ModalContent from './components/ModalContent';
 import type { UploadFile } from 'antd/es/upload/interface';
 import ModalAddContent from './components/ModalAddContent';
+import ModalAddDocument from './components/ModalAddDocument';
 
 interface DocumentInprojectProps {}
 
@@ -73,6 +74,7 @@ const DocumentInproject: React.FC<DocumentInprojectProps> = () => {
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [isModalAddContentOpen, setIsModalAddContentOpen] = useState(false);
   const [selectedDocument, setSelectedDocument] = useState<IDocument | null>(null);
+  const [isModalAddDocumentOpen , setIsModalAddDocumentOpen] = useState(false);
   const debouncedSearchTerm = useDebounce(searchTerm);
 
   const fetchDocuments = async () => {
@@ -167,8 +169,9 @@ const DocumentInproject: React.FC<DocumentInprojectProps> = () => {
     });
   };
 
-  const handleAddDocument = () => {
+  const handleOpenAddDocument = () => {
     // TODO: Implement add document
+    setIsModalAddDocumentOpen(true);
     console.log('Add document');
   };
 
@@ -489,7 +492,7 @@ const DocumentInproject: React.FC<DocumentInprojectProps> = () => {
           <Button
             type="primary"
             icon={<PlusOutlined />}
-            onClick={handleAddDocument}
+            onClick={handleOpenAddDocument}
           >
             {t('document.add')}
           </Button>
@@ -566,6 +569,10 @@ const DocumentInproject: React.FC<DocumentInprojectProps> = () => {
         createdAt={dayjs(selectedDocument?.createdAt).format('DD/MM/YYYY HH:mm') || ''}
         updatedAt={dayjs(selectedDocument?.updatedAt).format('DD/MM/YYYY HH:mm') || ''}
         onSuccess={handleModalSuccess}
+      />
+      <ModalAddDocument
+        open = {isModalAddDocumentOpen}
+        onClose={() => setIsModalAddDocumentOpen(false)}
       />
       </>
   );

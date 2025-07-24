@@ -132,11 +132,6 @@ const MainLayout: React.FC = () => {
       icon: <ProjectOutlined />,
       label: t('menu.projects'),
     },
-    'project-detail': {
-      key: 'project-detail',
-      icon: <ProjectOutlined />,
-      label: 'Chi tiết dự án'
-    },
     'request-management': {
       key: 'request-management',
       icon: <FormOutlined />,
@@ -245,48 +240,47 @@ const MainLayout: React.FC = () => {
 
   // Update breadcrumb based on selected menu
   const getBreadcrumbItems = useCallback(() => {
-    const pathSnippets = location.pathname.split('/').filter(Boolean);
-
-    const breadcrumbMap: Record<string, string> = {
-      home: 'Trang chủ',
-      projects: 'Danh sách dự án',
-      project: 'Danh sách dự án',
-      settings: 'Cài đặt',
-      user: 'Danh sách người dùng',
-      requests: 'Yêu cầu',
-      customers: 'Danh sách khách hàng',
-      'email-config': 'Cấu hình email'
-    };
-    const customNavigateMap: Record<string, string> = {
-      project: '/projects',
-    };
     const items = [
       {
         title: (
-          // onClick={() => navigate('/')} style={{ cursor: 'pointer' }}
-          <span >
-            {'REOPS'}
+          <span onClick={() => navigate('/')} style={{ cursor: 'pointer' }}>
+            {menuConfig.home.label}
           </span>
-        )
+        ),
       },
-      ...pathSnippets.map((segment, index) => {
-        const url = customNavigateMap[segment] || '/' + pathSnippets.slice(0, index + 1).join('/');
-
-
-        const label = breadcrumbMap[segment] || 'Chi tiết dự án';
-
-        return {
-          title: (
-            <span onClick={() => navigate(url)} style={{ cursor: 'pointer' }}>
-              {label}
-            </span>
-          )
-        };
-      })
     ];
 
+    const currentPath = location.pathname;
+    const currentKey = selectedKeys[0];
+
+    // Special case for user profile
+    if (currentPath.includes('user-profile')) {
+      items.push({
+        title: (
+          <span>
+            <IdcardOutlined /> {t('breadcrumb.profile')}
+          </span>
+        ),
+      });
+      return items;
+    }
+    // Only add current page if it's not home
+    if (currentKey !== 'home') {
+      // Direct lookup in menuConfig
+      const currentItem = menuConfig[currentKey];
+      if (currentItem) {
+        items.push({
+          title: (
+            <span>
+              {currentItem.icon} {currentItem.label}
+            </span>
+          ),
+        });
+      }
+    }
     return items;
-  }, [location.pathname, navigate]);
+  }, [selectedKeys, menuConfig, navigate, location.pathname, t]);
+
   // Handle menu click
   const handleMenuClick = useCallback(({ key }: { key: string }) => {
     // Only update if the key is different to prevent unnecessary re-renders
@@ -417,7 +411,7 @@ const MainLayout: React.FC = () => {
               style={{ width: 35, height: 35, borderRadius: 6, objectFit: 'cover' }}
             />
             <div style={{ padding: '16px 0' }}>
-              <Breadcrumb items={getBreadcrumbItems()} style={{ fontSize: 14 }} />
+              <Breadcrumb items={getBreadcrumbItems()} style={{ fontSize: 18 }} />
             </div>
           </div>
 
@@ -436,7 +430,6 @@ const MainLayout: React.FC = () => {
                 onChange={(value) => {
                   handleSearch(value);
                   const selectedProject = searchResults.find(p => p.alias === value);
-                  console.log('User chọn:', value, 'Tìm thấy:', selectedProject);
                   if (selectedProject) {
                     handleResultClick(selectedProject);
                   }
@@ -605,7 +598,7 @@ const MainLayout: React.FC = () => {
           marginLeft: collapsed ? '80px' : '260px',
           transition: 'margin-left 0.2s',
           background: '#f5f5f5', // Light gray background
-          padding: '10px 14px'
+          padding: '0 24px'
         }}>
           <Content style={{
             background: '#fff',
