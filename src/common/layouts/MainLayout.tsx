@@ -45,10 +45,25 @@ interface MenuConfig {
   [key: string]: MenuItemConfig;
 }
 
+// Trong MainLayout.tsx, thay thế interface Project hiện tại bằng:
 interface Project {
   _id: string;
   name: string;
   alias: string;
+  pm?: {
+    _id: string;
+    profile: {
+      name: string;
+      emailContact?: string;
+    };
+  };
+  customer?: {
+    _id: string;
+    profile: {
+      name: string;
+      emailContact?: string;
+    };
+  };
 }
 
 const MainLayout: React.FC = () => {
@@ -245,7 +260,13 @@ const MainLayout: React.FC = () => {
 
   // Update breadcrumb based on selected menu
   const getBreadcrumbItems = useCallback(() => {
-    const pathSnippets = location.pathname.split('/').filter(Boolean);
+    let pathSnippets = location.pathname.split('/').filter(Boolean);
+
+    // Nếu có 'user-profile' trong path, cắt bỏ các segment sau nó
+    const userProfileIndex = pathSnippets.indexOf('user-profile');
+    if (userProfileIndex !== -1) {
+      pathSnippets = pathSnippets.slice(0, userProfileIndex + 1);
+    }
 
     const breadcrumbMap: Record<string, string> = {
       home: 'Trang chủ',
@@ -255,24 +276,24 @@ const MainLayout: React.FC = () => {
       user: 'Danh sách người dùng',
       requests: 'Yêu cầu',
       customers: 'Danh sách khách hàng',
-      'email-config': 'Cấu hình email'
+      'email-config': 'Cấu hình email',
+      'user-profile': 'Thông tin cá nhân',
     };
+
     const customNavigateMap: Record<string, string> = {
       project: '/projects',
     };
+
     const items = [
       {
         title: (
-          // onClick={() => navigate('/')} style={{ cursor: 'pointer' }}
-          <span >
+          <span>
             {'REOPS'}
           </span>
         )
       },
       ...pathSnippets.map((segment, index) => {
         const url = customNavigateMap[segment] || '/' + pathSnippets.slice(0, index + 1).join('/');
-
-
         const label = breadcrumbMap[segment] || 'Chi tiết dự án';
 
         return {
@@ -287,6 +308,10 @@ const MainLayout: React.FC = () => {
 
     return items;
   }, [location.pathname, navigate]);
+
+
+
+
   // Handle menu click
   const handleMenuClick = useCallback(({ key }: { key: string }) => {
     // Only update if the key is different to prevent unnecessary re-renders
@@ -425,21 +450,15 @@ const MainLayout: React.FC = () => {
           <div style={{ display: 'flex', alignItems: 'center' }}>
             <div ref={searchRef} style={{ position: 'relative', paddingRight: 5 }}>
               <SearchBox
-                options={searchResults.map(project => ({
-                  name: project.name,
-                  alias: project.alias,
-                  pId: project._id
-                }))}
+                options={searchResults}
                 placeholder={t('search_placeholder')}
                 style={{ width: 200 }}
                 value={searchValue}
                 onChange={(value) => {
                   handleSearch(value);
-                  const selectedProject = searchResults.find(p => p.alias === value);
-                  console.log('User chọn:', value, 'Tìm thấy:', selectedProject);
-                  if (selectedProject) {
-                    handleResultClick(selectedProject);
-                  }
+                }}
+                onSelectProject={(project) => {
+                  handleResultClick(project);
                 }}
                 loading={loading}
                 noDataMessage={t('no_results')}
