@@ -52,6 +52,7 @@ ChartJS.register(
 );
 
 const Project = () => {
+  const [showChart, setShowChart] = useState(true);
   const { t } = useTranslation(['project']);
   const currentUser = useSelector(selectAuthUser);
   const isCustomer = currentUser?.role === 'customer';
@@ -334,7 +335,8 @@ const Project = () => {
     };
 
     return (
-      <Space direction="vertical" size="middle" style={{ width: '100%', height: '100%' }}>
+      // Số dự án đang tiến hành
+      <Space direction="horizontal" size="middle" style={{ width: '100%', height: '100%' }}>
         <Card size="small" style={{ marginBottom: 0 }}>
           <div style={{ display: 'flex', alignItems: 'center' }}>
             <ProjectOutlined style={{ fontSize: 24, color: '#1890ff', marginRight: 16 }} />
@@ -354,6 +356,7 @@ const Project = () => {
           </div>
         </Card>
 
+        {/* Dự án đã hoàn thành */}
         <Card size="small" style={{ marginBottom: 0 }}>
           <div style={{ display: 'flex', alignItems: 'center' }}>
             <CheckCircleFilled style={{ fontSize: 24, color: '#52c41a', marginRight: 16 }} />
@@ -562,64 +565,97 @@ const Project = () => {
   }, []);
 
   return (
-    <div style={{ padding: '24px' }}>
+    <div style={{ padding: '0px' }}>
       {contextHolder}
-      <Row gutter={[24, 24]}>
-        <Col span={24}>
-          <Card
-            title={
-              <Space>
-                <ProjectOutlined />
-                {t('statistic.title')}
-              </Space>
-            }
-            loading={loading}
-            extra={
-              <RangePicker
-                onChange={(dates) => handleDateRangeChange(dates as [Dayjs | null, Dayjs | null] | null)}
-                value={dateRange}
-                format="MM/YYYY"
-                picker="month"
-                allowEmpty={[true, true]}
-                placeholder={[t('date.start'), t('date.end')]}
-              />
-            }
-          >
-            {statistic && statistic.totalPendingProjects && statistic.totalPendingProjects.current > 0 && (
-              <Alert
-                message={t('alert.pending.message', {
-                  count: statistic.totalPendingProjects.current,
-                  message: t(isCustomer ? 'alert.pending.customer' : 'alert.pending.admin')
-                })}
-                type="warning"
-                showIcon
-                style={{ marginBottom: 24 }}
-              />
-            )}
-            <Row gutter={[24, 24]}>
-              <Col span={8}>
-                <div style={{ height: '380px' }}>
-                  <StatisticCards />
+
+      <Card
+        title={
+          <Space>
+            <ProjectOutlined />
+            {t('statistic.title')}
+          </Space>
+        }
+        loading={loading}
+        extra={
+          <RangePicker
+            onChange={(dates) => handleDateRangeChange(dates as [Dayjs | null, Dayjs | null] | null)}
+            value={dateRange}
+            format="MM/YYYY"
+            picker="month"
+            allowEmpty={[true, true]}
+            placeholder={[t('date.start'), t('date.end')]}
+          />
+        }
+      >
+        {/* box thông báo  */}
+        {statistic && statistic.totalPendingProjects && statistic.totalPendingProjects.current > 0 && (
+          <Alert
+            message={t('alert.pending.message', {
+              count: statistic.totalPendingProjects.current,
+              message: t(isCustomer ? 'alert.pending.customer' : 'alert.pending.admin')
+            })}
+            type="warning"
+            showIcon
+            style={{ marginBottom: 15 }}
+          />
+        )}
+
+        {/* Hàng 1: Các card */}
+        <Row gutter={[24, 24]} style={{ marginBottom: 14 }}>
+          <Col span={24}>
+            <div style={{ height: 'auto' }}>
+              <StatisticCards />
+            </div>
+          </Col>
+        </Row>
+
+        {/* Nút toggle biểu đồ */}
+        <Row style={{ marginBottom: 5 }}>
+          <Col span={24} style={{ textAlign: 'left' }}>
+            <Button
+              onClick={() => setShowChart(prev => !prev)}
+              style={{
+                borderRadius: 15,
+                borderColor: '#e8e5e5ff',
+                backgroundColor: '#ffffffff',
+                transition: 'all 0.2s',
+                minWidth: '170px'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = '#f5f5f5';
+                e.currentTarget.style.color = '#000'; // giữ nguyên màu chữ
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = '#fff';
+                e.currentTarget.style.color = '#000'; // giữ nguyên màu chữ
+              }}
+            >
+              {showChart ? 'Ẩn biểu đồ tiến độ' : 'Hiển thị biểu đồ tiến'}
+            </Button>
+
+          </Col>
+        </Row>
+
+        {/* Hàng 2: Biểu đồ */}
+        {showChart && (
+          <Row gutter={[24, 24]}>
+            <Col span={24}>
+              <div style={{
+                borderTop: '1px solid #f0f0f0',
+                paddingTop: 24
+              }}>
+                <div style={{ marginBottom: 16, fontWeight: 500 }}>
+                  {t('progress.title')}
                 </div>
-              </Col>
-              <Col span={16}>
-                <div style={{
-                  borderLeft: '1px solid #f0f0f0',
-                  paddingLeft: 24,
-                  height: '100%',
-                  display: 'flex',
-                  flexDirection: 'column'
-                }}>
-                  <div style={{ marginBottom: 16, fontWeight: 500 }}>{t('progress.title')}</div>
-                  <div style={{ flex: 1 }}>
-                    <ActiveProjectsProgress />
-                  </div>
-                </div>
-              </Col>
-            </Row>
-          </Card>
-        </Col>
-      </Row>
+                <ActiveProjectsProgress />
+              </div>
+            </Col>
+          </Row>
+        )}
+      </Card>
+
+
+      {/* Danh sách */}
       <Row style={{ marginTop: 24 }}>
         <Col span={24}>
           <Card
