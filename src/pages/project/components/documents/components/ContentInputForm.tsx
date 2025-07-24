@@ -12,48 +12,33 @@ import {
   UploadOutlined,
   CheckOutlined,
   FileTextOutlined,
-  WarningFilled,
-  UserOutlined,
-  CalendarOutlined,
-  EditOutlined
+  WarningFilled
 } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
 import { useState } from 'react';
 import type { UploadFile } from 'antd/es/upload/interface';
-import { addContent } from '../../../../../services/document/document.service';
 
 const { Text } = Typography;
 
 interface FileItem {
   uid: string;
   name: string;
-  filepath: string;
   type: string;
   size?: number;
   isNew?: boolean;
   originFileObj?: File;
 }
 
-interface ModalAddContentProps {
+interface ContentInputFormProps {
   open: boolean;
   onClose: () => void;
-  documentId: string;
-  documentName: string;
-  creator: string;
-  createdAt: string;
-  updatedAt: string;
-  onSuccess?: () => void;
+  onSubmit: (data: { content: string; files: File[] }) => void;
 }
 
-const ModalAddContent: React.FC<ModalAddContentProps> = ({
+const ContentInputForm: React.FC<ContentInputFormProps> = ({
   open,
   onClose,
-  documentId,
-  documentName,
-  creator,
-  createdAt,
-  updatedAt,
-  onSuccess
+  onSubmit
 }) => {
   const { t } = useTranslation(['project', 'common']);
   const [content, setContent] = useState('');
@@ -62,7 +47,6 @@ const ModalAddContent: React.FC<ModalAddContentProps> = ({
   const [previewUrl, setPreviewUrl] = useState('');
   const [previewTitle, setPreviewTitle] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const URL_UPLOAD = import.meta.env.VITE_API_UPLOAD_URL;
 
   const ACCEPTED_FILE_TYPES = {
     'doc': 'application/msword',
@@ -87,7 +71,7 @@ const ModalAddContent: React.FC<ModalAddContentProps> = ({
     const extension = file.name.split('.').pop()?.toLowerCase() || '';
     const expectedMimeType = ACCEPTED_FILE_TYPES[extension as keyof typeof ACCEPTED_FILE_TYPES];
     return (
-      expectedMimeType !== undefined && 
+      expectedMimeType !== undefined &&
       (file.type === expectedMimeType || file.type.startsWith('application/') || file.type.startsWith('image/'))
     );
   };
@@ -108,7 +92,6 @@ const ModalAddContent: React.FC<ModalAddContentProps> = ({
       ...newFiles.map(file => ({
         uid: file.uid,
         name: file.name,
-        filepath: file.name,
         type: file.type || file.name.split('.').pop() || '',
         size: file.size,
         isNew: true,
@@ -154,9 +137,9 @@ const ModalAddContent: React.FC<ModalAddContentProps> = ({
   };
 
   const handlePreview = (file: any) => {
-    const isPreviewable = file.type.toLowerCase().includes('pdf') || 
-                         file.type.toLowerCase().includes('image') ||
-                         /\.(jpg|jpeg|png|gif|pdf)$/i.test(file.name);
+    const isPreviewable = file.type.toLowerCase().includes('pdf') ||
+      file.type.toLowerCase().includes('image') ||
+      /\.(jpg|jpeg|png|gif|pdf)$/i.test(file.name);
     if (isPreviewable) {
       try {
         if (file.isNew && file.originFileObj) {
@@ -166,8 +149,8 @@ const ModalAddContent: React.FC<ModalAddContentProps> = ({
           setPreviewOpen(true);
           return;
         }
-        const fullPath = `${URL_UPLOAD}/${file.filepath}`;
-        setPreviewUrl(fullPath);
+        // Không có file path thực tế ở đây
+        setPreviewUrl('');
         setPreviewTitle(file.name);
         setPreviewOpen(true);
       } catch (error) {
@@ -189,68 +172,36 @@ const ModalAddContent: React.FC<ModalAddContentProps> = ({
         link.click();
         document.body.removeChild(link);
         URL.revokeObjectURL(downloadUrl);
-      } else {
-        const fullPath = `${URL_UPLOAD}/${file.filepath}`;
-        const response = await fetch(fullPath);
-        if (!response.ok) throw new Error('Network response was not ok');
-        const blob = await response.blob();
-        const blobUrl = URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = blobUrl;
-        link.download = file.name;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        URL.revokeObjectURL(blobUrl);
       }
     } catch (error) {
       message.error(t('document.content.download_error'));
     }
   };
 
-  const  handleConfirm = async () => {
-    try {
-      setIsSubmitting(true);
-      const formData = new FormData();
-      formData.append('content', content);
-      files.forEach(file => {
-        if (file.isNew && file.originFileObj) {
-          formData.append('files', file.originFileObj);
-        }
-      });
-      await addContent(documentId, formData);
-      if (onSuccess) onSuccess();
-      setFiles([]);
-      setContent('');
-      setIsSubmitting(false);
-      onClose();
-    } catch (error) {
-      setIsSubmitting(false);
-      message.error(t('document.content.prepare_files_error'));
+  const handleConfirm = () => {
+    if (!content.trim()) {
+      message.error(t('document.content.enter_content'));
+      return;
     }
+    setIsSubmitting(true);
+    // Trả về files đúng thứ tự upload
+    const fileList = files.map(f => f.originFileObj).filter(Boolean) as File[];
+    onSubmit({ content, files: fileList });
+    setContent('');
+    setFiles([]);
+    setIsSubmitting(false);
+    onClose();
   };
 
   return (
     <Modal
       open={open}
       onCancel={onClose}
-      width={800}
+      width={700}
       title={
-        <Space direction="vertical" size={4}>
-          <Space>
-            <FileTextOutlined />
-            <Text>{documentName}</Text>
-          </Space>
-          <Space align="center" style={{ fontSize: '14px', marginLeft: 24 }}>
-            <Input
-              value={content}
-              onChange={(e) => setContent(e.target.value)}
-              placeholder={t('document.content.enter_content')}
-              style={{ width: '300px' }}
-              required={true}
-              
-            />
-          </Space>
+        <Space>
+          <FileTextOutlined />
+          <Text>{t('document.content.add')}</Text>
         </Space>
       }
       footer={[
@@ -258,54 +209,33 @@ const ModalAddContent: React.FC<ModalAddContentProps> = ({
           {t('common.close')}
         </Button>,
         <Button
-          key="upload"
-          type="primary"
-          icon={<UploadOutlined />}
-          style={{ backgroundColor: '#722ED1' }}
-          onClick={() => {
-            document.getElementById('file-upload-add')?.click();
-          }}
-        >
-          {t('document.content.upload_file')}
-        </Button>,
-        <Button
           key="confirm"
           type="primary"
           icon={<CheckOutlined />}
           onClick={handleConfirm}
           loading={isSubmitting}
-          disabled={files.length === 0}
+          disabled={files.length === 0 || !content.trim()}
         >
           {t('common.confirm')}
         </Button>
       ]}
     >
-      {/* Metadata section giống ModalContent */}
-      <div style={{ color: '#8C8C8C', marginBottom: 16 }}>
-        <Space direction="vertical" size={4} style={{ width: '100%' }}>
-          <Space>
-            <UserOutlined />
-            <Text>{t('document.creator')}: {creator}</Text>
-          </Space>
-          <Space>
-            <CalendarOutlined />
-            <Text>{t('document.created_at')}: {createdAt}</Text>
-          </Space>
-          <Space>
-            <EditOutlined />
-            <Text>{t('document.updated_at')}: {updatedAt}</Text>
-          </Space>
-        </Space>
-      </div>
+      <Input
+        value={content}
+        onChange={(e) => setContent(e.target.value)}
+        placeholder={t('document.content.enter_content')}
+        style={{ width: '100%', marginBottom: 16 }}
+        required={true}
+      />
       <List
         dataSource={files}
         renderItem={(file) => (
           <List.Item
             key={file.uid}
             actions={[
-              (file.type.toLowerCase().includes('pdf') || 
-               file.type.toLowerCase().includes('image') ||
-               /\.(jpg|jpeg|png|gif|pdf)$/i.test(file.name)) && (
+              (file.type.toLowerCase().includes('pdf') ||
+                file.type.toLowerCase().includes('image') ||
+                /\.(jpg|jpeg|png|gif|pdf)$/i.test(file.name)) && (
                 <Tooltip title={t('document.content.preview')}>
                   <Button
                     type="text"
@@ -369,8 +299,10 @@ const ModalAddContent: React.FC<ModalAddContentProps> = ({
           }
         }}
       >
-        <Button type="primary" icon={<UploadOutlined />}>
-          {t('document.content.select_files')}
+        <Button type="primary" icon={<UploadOutlined />} style={{ marginTop: 16 }} onClick={() => {
+          document.getElementById('file-upload-add')?.click();
+        }}>
+          {t('document.content.upload_file')}
         </Button>
       </Upload>
       <Modal
@@ -384,7 +316,7 @@ const ModalAddContent: React.FC<ModalAddContentProps> = ({
           }
         }}
         width="90vw"
-        style={{ 
+        style={{
           top: 20,
           paddingBottom: 0
         }}
@@ -393,8 +325,8 @@ const ModalAddContent: React.FC<ModalAddContentProps> = ({
           {previewTitle.toLowerCase().endsWith('.pdf') ? (
             <iframe
               src={previewUrl}
-              style={{ 
-                width: '100%', 
+              style={{
+                width: '100%',
                 height: '100%',
                 border: 'none'
               }}
@@ -403,7 +335,7 @@ const ModalAddContent: React.FC<ModalAddContentProps> = ({
           ) : (
             <img
               alt={previewTitle}
-              style={{ 
+              style={{
                 maxWidth: '100%',
                 maxHeight: '100%',
                 objectFit: 'contain',
@@ -419,4 +351,4 @@ const ModalAddContent: React.FC<ModalAddContentProps> = ({
   );
 };
 
-export default ModalAddContent;
+export default ContentInputForm; 
