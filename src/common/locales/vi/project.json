@@ -15,7 +15,7 @@
     "projects": "Dự án"
   },
   "project": {
-    "list": "Danh sách dự án"
+    "list": "Quản lý dự án"
   },
   "filter": {
     "all": "Tất cả",
@@ -24,7 +24,7 @@
     "monthEnd": "Tháng kết thúc"
   },
   "search": {
-    "placeholder": "Tìm kiếm dự án..."
+    "placeholder": "Nhập từ khóa tìm kiếm..."
   },
   "sort": {
     "newest": "Mới nhất",
@@ -46,7 +46,7 @@
     "action": "Thao tác"
   },
   "button": {
-    "create": "Thêm dự án"
+    "create": "Tạo dự án mới"
   },
   "action": {
     "detail": "Xem chi tiết",

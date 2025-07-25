@@ -16,8 +16,7 @@ import {
   CloseOutlined,
   ArrowUpOutlined,
   ArrowDownOutlined,
-  UnorderedListOutlined,
-  BarChartOutlined
+  UnorderedListOutlined
 } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
 import { Bar } from 'react-chartjs-2';
@@ -52,7 +51,7 @@ ChartJS.register(
 );
 
 const Project = () => {
-  const [showChart, setShowChart] = useState(false);
+  const [showChart, setShowChart] = useState(true);
   const { t } = useTranslation(['project']);
   const currentUser = useSelector(selectAuthUser);
   const isCustomer = currentUser?.role === 'customer';
@@ -321,7 +320,7 @@ const Project = () => {
   const StatisticCards = () => {
     const getPercentageChangeColor = (change: number | undefined) => {
       if (change === undefined) return '#000000';
-      return change >= 0 ? '#7cff80ff' : '#ff3243ff';
+      return change >= 0 ? '#3f8600' : '#cf1322';
     };
 
     const renderPercentageChange = (change: number | undefined) => {
@@ -335,145 +334,65 @@ const Project = () => {
     };
 
     return (
-      // Hàng statistic cards
-      <Space direction="horizontal" size="small" style={{ width: '100%', height: '100%' }}>
-        {/* thẻ tổng dự án hiện tại*/}
-        <div
-          style={{
-            background: '#1890ff',
-            color: 'white',
-            borderRadius: 6,
-            padding: 5,
-            height: 70,
-            width: 270,
-            display: 'flex',
-            alignItems: 'center',
-          }}
-        >
+      // Số dự án đang tiến hành
+      <Space direction="horizontal" size="middle" style={{ width: '100%', height: '100%' }}>
+        <Card size="small" style={{ marginBottom: 0 }}>
           <div style={{ display: 'flex', alignItems: 'center' }}>
-            {/* Icon bên trái */}
-            <div style={{
-              backgroundColor: 'white',
-              padding: 10,
-              borderRadius: 6,
-              marginRight: 12,
-            }}>
-              <ProjectOutlined style={{ fontSize: 38, color: '#1890ff' }} />
-            </div>
-
-            {/* Nội dung bên phải */}
-            <div>
-              <div style={{ fontSize: 15, lineHeight: 1.5, fontWeight: 500 }}>{t('statistic.active')}</div>
+            <ProjectOutlined style={{ fontSize: 24, color: '#1890ff', marginRight: 16 }} />
+            <div style={{ flex: 1 }}>
+              <div style={{ color: '#444746', fontSize: '14px' }}>{t('statistic.active')}</div>
               <div style={{
-                fontSize: 22,
-                fontWeight: 'bold',
+                fontSize: '24px',
+                fontWeight: 500,
+                color: getPercentageChangeColor(statistic?.totalActiveProjects.percentageChange),
                 display: 'flex',
-                alignItems: 'center',
-                gap: 6
+                alignItems: 'center'
               }}>
-                <span>{statistic?.totalActiveProjects.current || 0}</span>
-                <span style={{
-                  fontSize: 12,
-                  color: getPercentageChangeColor(statistic?.totalActiveProjects.percentageChange)
-                }}>
-                  {renderPercentageChange(statistic?.totalActiveProjects.percentageChange)}
-                </span>
+                {statistic?.totalActiveProjects.current || 0}
+                {renderPercentageChange(statistic?.totalActiveProjects.percentageChange)}
               </div>
             </div>
           </div>
-        </div>
+        </Card>
 
-        {/*  Thẻ dự án đang tiến hành */}
-        <div
-          style={{
-            background: '#52C41A',
-            color: 'white',
-            borderRadius: 6,
-            padding: 5,
-            height: 70,
-            width: 270,
-            display: 'flex',
-            alignItems: 'center',
-          }}
-        >
+        {/* Dự án đã hoàn thành */}
+        <Card size="small" style={{ marginBottom: 0 }}>
           <div style={{ display: 'flex', alignItems: 'center' }}>
-            {/* Icon bên trái */}
-            <div style={{
-              backgroundColor: 'white',
-              padding: 10,
-              borderRadius: 6,
-              marginRight: 12,
-            }}>
-              <ClockCircleOutlined style={{ fontSize: 38, color: '#52C41A' }} />
-            </div>
-
-            {/* Nội dung bên phải */}
-            <div>
-              <div style={{ fontSize: 15, lineHeight: 1.5, fontWeight: 500 }}>{t('statistic.processing')}</div>
+            <CheckCircleFilled style={{ fontSize: 24, color: '#52c41a', marginRight: 16 }} />
+            <div style={{ flex: 1 }}>
+              <div style={{ color: '#444746', fontSize: '14px' }}>{t('statistic.completed')}</div>
               <div style={{
-                fontSize: 22,
-                fontWeight: 'bold',
+                fontSize: '24px',
+                fontWeight: 500,
+                color: getPercentageChangeColor(statistic?.totalCompletedProjects.percentageChange),
                 display: 'flex',
-                alignItems: 'center',
-                gap: 6,
+                alignItems: 'center'
               }}>
-                <span>{statistic?.totalProcessingProjects.current || 0}</span>
-                <span style={{
-                  fontSize: 12,
-                  color: getPercentageChangeColor(statistic?.totalProcessingProjects.percentageChange)
-                }}>
-                  {renderPercentageChange(statistic?.totalProcessingProjects.percentageChange)}
-                </span>
+                {statistic?.totalCompletedProjects.current || 0}
+                {renderPercentageChange(statistic?.totalCompletedProjects.percentageChange)}
               </div>
             </div>
           </div>
-        </div>
+        </Card>
 
-        {/* thẻ dự án đã hoàn thành */}
-        <div
-          style={{
-            background: '#ffb302ff',
-            color: 'white',
-            borderRadius: 6,
-            padding: 5,
-            height: 70,
-            width: 270,
-            display: 'flex',
-            alignItems: 'center',
-          }}
-        >
+        <Card size="small" style={{ marginBottom: 0 }}>
           <div style={{ display: 'flex', alignItems: 'center' }}>
-            {/* Icon bên trái */}
-            <div style={{
-              backgroundColor: 'white',
-              padding: 10,
-              borderRadius: 6,
-              marginRight: 12,
-            }}>
-              <CheckCircleFilled style={{ fontSize: 38, color: '#ffb302ff' }} />
-            </div>
-
-            {/* Nội dung bên phải */}
-            <div>
-              <div style={{ fontSize: 15, lineHeight: 1.5, fontWeight: 500 }}>{t('statistic.completed')}</div>
+            <ClockCircleOutlined style={{ fontSize: 24, color: '#1890ff', marginRight: 16 }} />
+            <div style={{ flex: 1 }}>
+              <div style={{ color: '#444746', fontSize: '14px' }}>{t('statistic.processing')}</div>
               <div style={{
-                fontSize: 22,
-                fontWeight: 'bold',
+                fontSize: '24px',
+                fontWeight: 500,
+                color: getPercentageChangeColor(statistic?.totalProcessingProjects.percentageChange),
                 display: 'flex',
-                alignItems: 'center',
-                gap: 6
+                alignItems: 'center'
               }}>
-                <span>{statistic?.totalCompletedProjects.current || 0}</span>
-                <span style={{
-                  fontSize: 12,
-                  color: getPercentageChangeColor(statistic?.totalCompletedProjects.percentageChange)
-                }}>
-                  {renderPercentageChange(statistic?.totalCompletedProjects.percentageChange)}
-                </span>
+                {statistic?.totalProcessingProjects.current || 0}
+                {renderPercentageChange(statistic?.totalProcessingProjects.percentageChange)}
               </div>
             </div>
           </div>
-        </div>
+        </Card>
 
 
       </Space>
@@ -628,10 +547,112 @@ const Project = () => {
   }, []);
 
   return (
-    <>
+    <div style={{ padding: '0px' }}>
       {contextHolder}
+
+      <Card
+        title={
+          <Space>
+            <ProjectOutlined />
+            {t('statistic.title')}
+          </Space>
+        }
+        loading={loading}
+        extra={
+
+          <Space>
+            <Select
+              style={{ width: 120 }}
+              options={[
+                { value: 'desc', label: 'Quản lý A' },
+                { value: 'asc', label: 'Quản lý B' }
+              ]}
+            />
+            <RangePicker
+              onChange={(dates) =>
+                handleDateRangeChange(dates as [Dayjs | null, Dayjs | null] | null)
+              }
+              value={dateRange}
+              format="MM/YYYY"
+              picker="month"
+              allowEmpty={[true, true]}
+              placeholder={[t('date.start'), t('date.end')]}
+            />
+          </Space>
+        }
+
+      >
+        {/* box thông báo  */}
+        {statistic && statistic.totalPendingProjects && statistic.totalPendingProjects.current > 0 && (
+          <Alert
+            message={t('alert.pending.message', {
+              count: statistic.totalPendingProjects.current,
+              message: t(isCustomer ? 'alert.pending.customer' : 'alert.pending.admin')
+            })}
+            type="warning"
+            showIcon
+            style={{ marginBottom: 15 }}
+          />
+        )}
+
+        {/* Hàng 1: Các card */}
+        <Row gutter={[24, 24]} style={{ marginBottom: 14 }}>
+          <Col span={24}>
+            <div style={{ height: 'auto' }}>
+              <StatisticCards />
+            </div>
+          </Col>
+        </Row>
+
+        {/* Nút toggle biểu đồ */}
+        <Row style={{ marginBottom: 5 }}>
+          <Col span={24} style={{ textAlign: 'left' }}>
+            <Button
+              onClick={() => setShowChart(prev => !prev)}
+              style={{
+                borderRadius: 15,
+                borderColor: '#e8e5e5ff',
+                backgroundColor: '#ffffffff',
+                transition: 'all 0.2s',
+                minWidth: '170px',
+                color: '#444746be'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = '#f5f5f5';
+                e.currentTarget.style.color = '#444746be'; // giữ nguyên màu chữ
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = '#fff';
+                e.currentTarget.style.color = '#444746be'; // giữ nguyên màu chữ
+              }}
+            >
+              {showChart ? 'Ẩn biểu đồ tiến độ' : 'Hiển thị biểu đồ tiến'}
+            </Button>
+
+          </Col>
+        </Row>
+
+        {/* Hàng 2: Biểu đồ */}
+        {showChart && (
+          <Row gutter={[24, 24]}>
+            <Col span={24}>
+              <div style={{
+                borderTop: '1px solid #f0f0f0',
+                paddingTop: 24
+              }}>
+                <div style={{ marginBottom: 16, fontWeight: 500 }}>
+                  {t('progress.title')}
+                </div>
+                <ActiveProjectsProgress />
+              </div>
+            </Col>
+          </Row>
+        )}
+      </Card>
+
+
       {/* Danh sách */}
-      <Row >
+      <Row style={{ marginTop: 24 }}>
         <Col span={24}>
           <Card
             title={
@@ -640,109 +661,47 @@ const Project = () => {
                 {t('project.list')}
               </Space>
             }
-
+            extra={
+              <Button type="primary" icon={<PlusOutlined />} onClick={handleCreateProject}>
+                {t('button.create')}
+              </Button>
+            }
           >
-            <div style={{ marginBottom: 10, display: 'flex', justifyContent: 'space-between' }}>
-              <div>
-                <Space size="small" wrap>
-                  <Input
-                    placeholder={t('search.placeholder')}
-                    prefix={<SearchOutlined />}
-                    value={searchTerm}
-                    onChange={e => setSearchTerm(e.target.value)}
-                    style={{ width: 200 }}
-                  />
-                  <Select
-                    style={{ width: 120 }}
-                    options={statusOptions}
-                    value={queryParams.status}
-                    onChange={handleStatusChange}
-                    placeholder={t('filter.status')}
-                  />
-                  <Select
-                    style={{ width: 120 }}
-                    options={[
-                      { value: 'desc', label: t('sort.newest') },
-                      { value: 'asc', label: t('sort.oldest') }
-                    ]}
-                    value={queryParams.sort}
-                    onChange={handleSortChange}
-                  />
-                  <RangePicker
-                    onChange={(dates) => handleListDateRangeChange(dates as [Dayjs | null, Dayjs | null] | null)}
-                    value={listDateRange}
-                    format="MM/YYYY"
-                    picker="month"
-                    allowEmpty={[true, true]}
-                    placeholder={[t('filter.monthStart'), t('filter.monthEnd')]}
-                  />
-
-                </Space>
-              </div>
-              <div style={{
-                display: 'flex',
-
-              }}>
-
-                <Button
-                  onClick={() => setShowChart(prev => !prev)}
-                  style={{ width: '170px', height: '35px', marginRight: '10px' }}
-                  icon={< BarChartOutlined />}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.backgroundColor = '#f5f5f5';
-                    e.currentTarget.style.color = '#444746be'; // giữ nguyên màu chữ
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.backgroundColor = '#fff';
-                    e.currentTarget.style.color = '#444746be'; // giữ nguyên màu chữ
-                  }}
-                >
-                  {showChart ? 'Ẩn biểu đồ tiến độ' : 'Mở biểu đồ tiến độ'}
-                </Button>
-
-                <Button style={{ width: '170px', height: '35px' }} type="primary" icon={< PlusOutlined />} onClick={handleCreateProject}>
-                  {t('button.create')}
-                </Button>
-              </div>
+            <div style={{ marginBottom: 16 }}>
+              <Space size="middle" wrap>
+                <Input
+                  placeholder={t('search.placeholder')}
+                  prefix={<SearchOutlined />}
+                  value={searchTerm}
+                  onChange={e => setSearchTerm(e.target.value)}
+                  style={{ width: 200 }}
+                />
+                <Select
+                  style={{ width: 120 }}
+                  options={statusOptions}
+                  value={queryParams.status}
+                  onChange={handleStatusChange}
+                  placeholder={t('filter.status')}
+                />
+                <Select
+                  style={{ width: 120 }}
+                  options={[
+                    { value: 'desc', label: t('sort.newest') },
+                    { value: 'asc', label: t('sort.oldest') }
+                  ]}
+                  value={queryParams.sort}
+                  onChange={handleSortChange}
+                />
+                <RangePicker
+                  onChange={(dates) => handleListDateRangeChange(dates as [Dayjs | null, Dayjs | null] | null)}
+                  value={listDateRange}
+                  format="MM/YYYY"
+                  picker="month"
+                  allowEmpty={[true, true]}
+                  placeholder={[t('filter.monthStart'), t('filter.monthEnd')]}
+                />
+              </Space>
             </div>
-            {/* Hàng 1: Các card */}
-            <Row gutter={[24, 24]} style={{ marginBottom: 18 }}>
-              <Col span={24}>
-                <div style={{ height: 'auto' }}>
-                  <StatisticCards />
-                </div>
-              </Col>
-            </Row>
-            {/* box thông báo  */}
-            {statistic && statistic.totalPendingProjects && statistic.totalPendingProjects.current > 0 && (
-              <Alert
-                message={t('alert.pending.message', {
-                  count: statistic.totalPendingProjects.current,
-                  message: t(isCustomer ? 'alert.pending.customer' : 'alert.pending.admin')
-                })}
-                type="warning"
-                showIcon
-                style={{ marginBottom: 10 }}
-              />
-            )}
-
-
-            {/* Hàng 2: Biểu đồ */}
-            {showChart && (
-              <Row gutter={[24, 24]}>
-                <Col span={24}>
-                  <div style={{
-                    borderTop: '1px solid #f0f0f0',
-                    paddingTop: 24
-                  }}>
-                    <div style={{ marginBottom: 16, fontWeight: 500 }}>
-                      {t('progress.title')}
-                    </div>
-                    <ActiveProjectsProgress />
-                  </div>
-                </Col>
-              </Row>
-            )}
             <Table
               columns={columns}
               dataSource={projects}
@@ -779,7 +738,7 @@ const Project = () => {
         onSubmit={handleModalAddSubmit}
         loading={submitLoading}
       />
-    </>
+    </div >
   );
 };
 
