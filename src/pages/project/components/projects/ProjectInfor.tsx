@@ -12,19 +12,40 @@ import {
   NumberOutlined,
   MailOutlined,
   EditOutlined,
-  SwapOutlined,
 } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import { IProject } from '../../interfaces/project.interface';
+import { activeProject, updateProject } from '../../../../services/project/project.service';
+import { useState } from 'react';
+import ModalUpdateProject from './components/ModalUpdateProject';
 
 interface ProjectInforProps {
   project: IProject;
+  onReloadProject?: () => Promise<void>;
+  phasesCount: number;
 }
 
 const { Text } = Typography;
 
-const ProjectInfor: React.FC<ProjectInforProps> = ({ project }) => {
+const ProjectInfor: React.FC<ProjectInforProps> = ({ project, onReloadProject, phasesCount }) => {
   const { t } = useTranslation(['project', 'common']);
+  const [loadingActive, setLoadingActive] = useState(false);
+  const [isModalUpdateProjectOpen, setIsModalUpdateProjectOpen] = useState(false);
+  const [loadingUpdate, setLoadingUpdate] = useState(false);
+  const handleUpdateProject = async (values: any) => {
+    setLoadingUpdate(true);
+    try {
+      await updateProject(project._id, values);
+      if (onReloadProject) {
+        await onReloadProject();
+      }
+      setIsModalUpdateProjectOpen(false); // Đóng modal khi thành công
+    } catch (error) {
+      // Có thể thêm thông báo lỗi ở đây nếu muốn
+    } finally {
+      setLoadingUpdate(false);  
+    }
+  };
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -56,6 +77,34 @@ const ProjectInfor: React.FC<ProjectInforProps> = ({ project }) => {
     }
   };
 
+  const handleActiveProject = async () => {
+    setLoadingActive(true);
+    try {
+      await activeProject(project._id);
+      if (onReloadProject) {
+        await onReloadProject();
+      }
+    } catch (error) {
+      // Có thể thêm thông báo lỗi ở đây nếu muốn
+    } finally {
+      setLoadingActive(false);
+    }
+  };
+
+  const handleMarkAsDone = async () => {
+    try {
+      await updateProject(project._id, {
+        status: 'completed',
+        currentPhase: phasesCount
+      });
+      if (onReloadProject) {
+        await onReloadProject();
+      }
+    } catch (error) {
+      // Có thể thêm thông báo lỗi ở đây nếu muốn
+    }
+  };
+
   return (
     <Card
       title={
@@ -71,22 +120,19 @@ const ProjectInfor: React.FC<ProjectInforProps> = ({ project }) => {
                <Button
                 type="primary"
                 icon={<EditOutlined />}
-              >
+                onClick={() => setIsModalUpdateProjectOpen(true)}
+                loading={loadingUpdate}
+                >
                 {t('project.update')}
               </Button>
               <Button
                 type='primary'
-                icon = {<CheckCircleOutlined/>}
-                style={{ backgroundColor: 'green', borderColor: 'green' }}
+                icon={<CheckCircleOutlined/>}
+                onClick={handleMarkAsDone}
+                disabled={project.status === 'completed' || project.currentPhase < phasesCount}
+                style={project.currentPhase >= phasesCount && project.status !== 'completed' ? { backgroundColor: 'green', borderColor: 'green' } : {}}
               >
                 {t('project.mark_as_complete')}
-              </Button>
-              <Button
-                type='primary'
-                icon = {<SwapOutlined />}
-                style={{ backgroundColor: 'purple', borderColor: 'purple' }}
-              >
-                 {t('project.change_phase')}
               </Button>
           </div>
         ) : (
@@ -94,6 +140,8 @@ const ProjectInfor: React.FC<ProjectInforProps> = ({ project }) => {
             type="primary"
             icon={<CheckCircleOutlined />}
             style={{ backgroundColor: 'gold', borderColor: 'gold' }}
+            loading={loadingActive}
+            onClick={handleActiveProject}
           >
             {t('project.active')}
           </Button>
@@ -227,6 +275,14 @@ const ProjectInfor: React.FC<ProjectInforProps> = ({ project }) => {
           {project.currentPhase}
         </Descriptions.Item>
       </Descriptions>
+      <ModalUpdateProject
+        open={isModalUpdateProjectOpen}
+        onCancel={() => setIsModalUpdateProjectOpen(false)}
+        onSubmit={handleUpdateProject}
+        initialValues={project}
+        loading={loadingUpdate}
+        phasesCount={phasesCount}
+      />
     </Card>
   );
 };

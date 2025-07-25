@@ -40,7 +40,7 @@ const ContentInputForm: React.FC<ContentInputFormProps> = ({
   onClose,
   onSubmit
 }) => {
-  const { t } = useTranslation(['project', 'common']);
+  const { t } = useTranslation(['document', 'common']);
   const [content, setContent] = useState('');
   const [files, setFiles] = useState<FileItem[]>([]);
   const [previewOpen, setPreviewOpen] = useState(false);

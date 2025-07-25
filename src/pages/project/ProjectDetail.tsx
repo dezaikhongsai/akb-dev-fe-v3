@@ -58,13 +58,14 @@ const ProjectDetail = () => {
 
   return (
     <div style={{ padding: '24px' }}>
-      <ProjectInfor project={project.project} />
+      <ProjectInfor project={project.project} onReloadProject={fetchProjectDetail} phasesCount={project.phases.length} />
       <PhaseInProject 
         phases={project.phases} 
         currentPhase={project.project.currentPhase} 
         projectId={pid || ''} 
         onReloadPhases={reloadPhases}
         loadingPhase={loadingPhase}
+        projectStatus={project.project.status}
       />
       <DocumentInproject  />
     </div>

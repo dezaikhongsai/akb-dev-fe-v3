@@ -18,9 +18,10 @@ interface ModalUpdatePhaseProps {
   onClose: () => void;
   onSuccess: () => void;
   phases: IPhase[];
+  initialPage?: number;
 }
 
-const ModalUpdatePhase: React.FC<ModalUpdatePhaseProps> = ({ open, onClose, onSuccess, phases }) => {
+const ModalUpdatePhase: React.FC<ModalUpdatePhaseProps> = ({ open, onClose, onSuccess, phases, initialPage = 0 }) => {
   const { t } = useTranslation(['phase', 'common']);
   const [form] = Form.useForm();
   const [editPhases, setEditPhases] = React.useState<IPhase[]>([]);
@@ -32,10 +33,10 @@ const ModalUpdatePhase: React.FC<ModalUpdatePhaseProps> = ({ open, onClose, onSu
     if (open) {
       setEditPhases(phases.map(p => ({ ...p })));
       setChanged(false);
-      setCurrentPage(1);
+      setCurrentPage(initialPage + 1);
       form.resetFields();
     }
-  }, [open, phases]);
+  }, [open, phases, initialPage]);
 
   const handlePhaseChange = (index: number, value: Partial<IPhase>) => {
     setEditPhases(prev => {

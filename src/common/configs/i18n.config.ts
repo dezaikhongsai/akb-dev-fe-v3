@@ -22,6 +22,8 @@ import viEmailConfig from '../locales/vi/emailConfig.json';
 import jaEmailConfig from '../locales/ja/emailConfig.json';
 import viHome from '../locales/vi/home.json';
 import jaHome from '../locales/ja/home.json';
+import viDocument from '../locales/vi/document.json';
+import jaDocument from '../locales/ja/document.json';
 
 
 
@@ -42,7 +44,8 @@ i18n
         projectDetail: viProjectDetail,
         projectResponse: viProjectResponse,
         emailConfig: viEmailConfig,
-        home: viHome
+        home: viHome,
+        document: viDocument
       },
       ja: {
         common: jaCommon,
@@ -55,7 +58,8 @@ i18n
         projectDetail: jaProjectDetail,
         projectResponse: jaProjectResponse,
         emailConfig: jaEmailConfig,
-        home: jaHome
+        home: jaHome,
+        document: jaDocument
         // login: jaLogin,
       },
     },

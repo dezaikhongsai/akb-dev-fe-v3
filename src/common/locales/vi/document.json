@@ -1,0 +1,61 @@
+{
+  "add": "Thêm tài liệu",
+  "save": "Lưu",
+  "type": "Loại tài liệu",
+  "name": "Tên tài liệu",
+  "contents": "Nội dung",
+  "content": {
+    "add": "Thêm nội dung",
+    "edit": "Chỉnh sửa nội dung",
+    "view": "Xem nội dung",
+    "delete": "Xóa",
+    "delete_confirm_title": "Xác nhận xóa nội dung",
+    "delete_confirm_content": "Bạn có chắc muốn xóa nội dung này không?",
+    "delete_file_confirm_title": "Xác nhận xóa tệp",
+    "delete_file_confirm_content": "Bạn có chắc muốn xóa tệp \"{{fileName}}\" không?",
+    "delete_success": "Xóa thành công",
+    "delete_error": "Xóa thất bại",
+    "update_success": "Cập nhật thành công",
+    "update_error": "Cập nhật thất bại",
+    "duplicate_file_error": "Tệp \"{{fileName}}\" đã tồn tại.",
+    "invalid_file_type": "Loại tệp không hợp lệ.",
+    "file_too_large": "Tệp vượt quá kích thước tối đa {{maxSize}}.",
+    "preview": "Xem trước",
+    "preview_error": "Không thể xem trước tệp.",
+    "preview_not_supported": "Không hỗ trợ xem trước tệp này.",
+    "download": "Tải xuống",
+    "download_error": "Tải tệp thất bại.",
+    "prepare_files_error": "Có lỗi khi chuẩn bị tệp.",
+    "new_file": "Tệp mới",
+    "enter_content": "Nhập nội dung...",
+    "upload_file": "Tải lên tệp",
+    "select_files": "Chọn tệp",
+    "no_files": "Chưa có tệp nào"
+  },
+  "creator": "Người tạo",
+  "created_at": "Ngày tạo",
+  "updated_at": "Ngày cập nhật",
+  "delete_confirm_title": "Xác nhận xóa tài liệu",
+  "delete_confirm_content": "Bạn có chắc muốn xóa tài liệu này không?",
+  "delete_success": "Xóa tài liệu thành công",
+  "delete_error": "Xóa tài liệu thất bại",
+  "status_update_success": "Cập nhật trạng thái thành công",
+  "status_update_error": "Cập nhật trạng thái thất bại",
+  "completed": "Đã hoàn thành",
+  "in_progress": "Đang thực hiện",
+  "tab": {
+    "documents": "Tài liệu",
+    "reports": "Báo cáo",
+    "requests": "Yêu cầu"
+  },
+  "title": "Quản lý tài liệu",
+  "search": {
+    "placeholder": "Tìm kiếm tài liệu..."
+  },
+  "action": {
+    "add_content": "Thêm nội dung",
+    "mark_done": "Đánh dấu hoàn thành",
+    "mark_processing": "Đánh dấu đang thực hiện",
+    "delete": "Xóa"
+  }
+}

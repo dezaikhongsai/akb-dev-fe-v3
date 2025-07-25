@@ -288,7 +288,7 @@ const MainLayout: React.FC = () => {
       {
         title: (
           <span>
-            {'REOPS'}
+            {'AKB RequestOps'}
           </span>
         )
       },

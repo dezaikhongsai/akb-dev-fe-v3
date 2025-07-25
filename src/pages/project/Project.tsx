@@ -17,7 +17,9 @@ import {
   CloseOutlined,
   ArrowUpOutlined,
   ArrowDownOutlined,
-  UnorderedListOutlined
+  UnorderedListOutlined,
+  EyeInvisibleOutlined,
+  EyeOutlined
 } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
 import { Bar } from 'react-chartjs-2';
@@ -629,8 +631,10 @@ const Project = () => {
                 e.currentTarget.style.backgroundColor = '#fff';
                 e.currentTarget.style.color = '#000'; // giữ nguyên màu chữ
               }}
+              icon={showChart ? <EyeInvisibleOutlined /> : <EyeOutlined />} 
             >
               {showChart ? 'Ẩn biểu đồ tiến độ' : 'Hiển thị biểu đồ tiến'}
+              
             </Button>
 
           </Col>

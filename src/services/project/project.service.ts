@@ -19,7 +19,7 @@ export const createProject = async (data: any) => {
 };
 
 export const updateProject = async (id: string, data: any) => {
-  return axiosInstance.put(`/project/update/${id}`, data);
+  return axiosInstance.patch(`/project/update/${id}`, data);
 };
 
 export const deleteProject = async (id: string) => {
@@ -43,3 +43,13 @@ export const getProjectDetail = async (pId : string) => {
     throw error;
   }
 }
+
+export const activeProject = async (pId : string) => {
+  try {
+    const response = await axiosInstance.patch(`/project/active/${pId}`);
+    return response.data;
+  } catch (error : any) {
+    throw new Error(error.response.data.message);
+  }
+}
+
