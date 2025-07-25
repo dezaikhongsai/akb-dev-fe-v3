@@ -1,4 +1,4 @@
-import { Card, Tabs, Table, Space, Typography, Tag, Button, Modal, Row, Col, Input, Dropdown, Pagination, message } from 'antd';
+import { Card, Tabs, Table, Space, Typography, Tag, Button, Modal, Row, Col, Input, Dropdown, Pagination, message, Select } from 'antd';
 import { IDocument } from '../../interfaces/project.interface';
 import {
   ProjectOutlined,
@@ -14,6 +14,7 @@ import {
   MoreOutlined,
   FileAddOutlined,
   WarningFilled,
+  TeamOutlined,
 } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
 import dayjs from 'dayjs';
@@ -27,6 +28,7 @@ import {
   deleteContent, 
   deleteDocument, 
   updateContent,
+  changeIsCompleted,
 } from '../../../../services/document/document.service';
 import ModalContent from './components/ModalContent';
 import type { UploadFile } from 'antd/es/upload/interface';
@@ -75,6 +77,7 @@ const DocumentInproject: React.FC<DocumentInprojectProps> = () => {
   const [isModalAddContentOpen, setIsModalAddContentOpen] = useState(false);
   const [selectedDocument, setSelectedDocument] = useState<IDocument | null>(null);
   const [isModalAddDocumentOpen , setIsModalAddDocumentOpen] = useState(false);
+  const [statusFilter, setStatusFilter] = useState<'all' | 'completed' | 'in_progress'>('all');
   const debouncedSearchTerm = useDebounce(searchTerm);
 
   const fetchDocuments = async () => {
@@ -82,13 +85,17 @@ const DocumentInproject: React.FC<DocumentInprojectProps> = () => {
     
     setLoading(true);
     try {
-      const response = await getDocumentByProjectId(pid, {
+      const params: any = {
         page: currentPage,
         limit: pagination.limit,
         type: currentTab,
         name: debouncedSearchTerm,
         sort: 'createdAt:desc'
-      });
+      };
+      if (statusFilter === 'completed') params.isCompleted = true;
+      else if (statusFilter === 'in_progress') params.isCompleted = false;
+
+      const response = await getDocumentByProjectId(pid, params);
       
       setDocuments(response.data.documents);
       setPagination(response.data.pagination);
@@ -101,7 +108,7 @@ const DocumentInproject: React.FC<DocumentInprojectProps> = () => {
 
   useEffect(() => {
     fetchDocuments();
-  }, [pid, currentPage, currentTab, debouncedSearchTerm]);
+  }, [pid, currentPage, currentTab, debouncedSearchTerm, statusFilter]);
 
   const handleViewContent = (record: IDocument, content: any) => {
     setSelectedContent({
@@ -214,7 +221,18 @@ const DocumentInproject: React.FC<DocumentInprojectProps> = () => {
     });
   };
 
-
+  const handleChangeIsCompleted = async (documentId: string) => {
+    setLoading(true);
+    try {
+      await changeIsCompleted(documentId);
+      message.success(t('document.status_update_success'));
+      fetchDocuments();
+    } catch (error) {
+      message.error(t('document.status_update_error'));
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleModalSuccess = () => {
     setIsModalOpen(false);
@@ -251,6 +269,12 @@ const DocumentInproject: React.FC<DocumentInprojectProps> = () => {
       label: t('document.action.add_content'),
       icon: <FileAddOutlined />,
       onClick: () => handleAddContent(record._id)
+    },
+    {
+      key: 'change_status',
+      label: record.isCompleted ? t('document.action.mark_processing') : t('document.action.mark_done'),
+      icon: record.isCompleted ? <FormOutlined /> : <BarChartOutlined />,
+      onClick: () => handleChangeIsCompleted(record._id)
     },
     {
       key: 'delete',
@@ -322,7 +346,7 @@ const DocumentInproject: React.FC<DocumentInprojectProps> = () => {
       }),
       render: (_, record) => (
         <Space>
-          <UserOutlined />
+          {record.createdBy.role === 'customer' ? <TeamOutlined /> : <UserOutlined />}
           <Text>{record.createdBy.profile.name}</Text>
         </Space>
       )
@@ -391,7 +415,7 @@ const DocumentInproject: React.FC<DocumentInprojectProps> = () => {
   const renderDocumentTable = () => {
     return (
       <div>
-        <Row justify="start" style={{ marginBottom: 16 }}>
+        <Row justify="start" style={{ marginBottom: 16 }} gutter={8}>
           <Col>
             <Input
               placeholder={t('document.search.placeholder')}
@@ -400,7 +424,18 @@ const DocumentInproject: React.FC<DocumentInprojectProps> = () => {
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchTerm(e.target.value)}
               style={{ width: 200 }}
               allowClear
-              
+            />
+          </Col>
+          <Col>
+            <Select
+              value={statusFilter}
+              style={{ width: 160 }}
+              onChange={setStatusFilter}
+              options={[
+                { value: 'all', label: t('common.all') },
+                { value: 'completed', label: t('document.completed') },
+                { value: 'in_progress', label: t('document.in_progress') },
+              ]}
             />
           </Col>
         </Row>
@@ -501,7 +536,7 @@ const DocumentInproject: React.FC<DocumentInprojectProps> = () => {
       >
         <Tabs 
           items={items}
-          defaultActiveKey="document"
+          activeKey={currentTab}
           onChange={handleTabChange}
         />
       </Card>
@@ -571,8 +606,17 @@ const DocumentInproject: React.FC<DocumentInprojectProps> = () => {
         onSuccess={handleModalSuccess}
       />
       <ModalAddDocument
-        open = {isModalAddDocumentOpen}
+        open={isModalAddDocumentOpen}
         onClose={() => setIsModalAddDocumentOpen(false)}
+        projectId={pid || ''}
+        onSuccess={(type) => {
+          setIsModalAddDocumentOpen(false);
+          if (type) {
+            setCurrentTab(type);
+            handleTabChange(type);
+          }
+          fetchDocuments();
+        }}
       />
       </>
   );
