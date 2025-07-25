@@ -4,8 +4,10 @@ import { getProjectDetail } from "../../services/project/project.service";
 import ProjectInfor from "./components/projects/ProjectInfor";
 import DocumentInproject from "./components/documents/DocumentInproject";
 import PhaseInProject from "./components/phases/PhaseInProject";
-import { Spin } from "antd";
+import { Spin, Tabs } from "antd";
 import { IProjectDetailResponse } from "./interfaces/project.interface";
+import { BarChartOutlined, ProjectOutlined } from "@ant-design/icons";
+import ProjectDetailStatistic from "./components/projects/ProjectDetailStatistic";
 
 const ProjectDetail = () => {
   const { pid } = useParams();
@@ -58,16 +60,34 @@ const ProjectDetail = () => {
 
   return (
     <div style={{ padding: '24px' }}>
-      <ProjectInfor project={project.project} onReloadProject={fetchProjectDetail} phasesCount={project.phases.length} />
-      <PhaseInProject 
-        phases={project.phases} 
-        currentPhase={project.project.currentPhase} 
-        projectId={pid || ''} 
-        onReloadPhases={reloadPhases}
-        loadingPhase={loadingPhase}
-        projectStatus={project.project.status}
+      <Tabs
+        items = {[
+          {
+            key: '1',
+            icon: <ProjectOutlined />,
+            label: 'Thông tin dự án',
+            children: 
+            <>
+               <ProjectInfor project={project.project} onReloadProject={fetchProjectDetail} phasesCount={project.phases.length} />
+              <PhaseInProject 
+                phases={project.phases} 
+                currentPhase={project.project.currentPhase} 
+                projectId={pid || ''} 
+                onReloadPhases={reloadPhases}
+                loadingPhase={loadingPhase}
+                projectStatus={project.project.status}
+              />
+              <DocumentInproject  />  
+            </>
+          },
+          {
+            key: '2',
+            icon: <BarChartOutlined />,
+            label: 'Thống kê dự án',
+            children: <ProjectDetailStatistic />
+          },
+        ]}
       />
-      <DocumentInproject  />
     </div>
   )
 }
