@@ -257,7 +257,6 @@ const MainLayout: React.FC = () => {
     ];
   }, [menuConfig, t]);
 
-  // Update breadcrumb based on selected menu
   const getBreadcrumbItems = useCallback(() => {
     let pathSnippets = location.pathname.split('/').filter(Boolean);
 
@@ -292,9 +291,15 @@ const MainLayout: React.FC = () => {
         )
       },
       ...pathSnippets.map((segment, index) => {
-        const url = customNavigateMap[segment] || '/' + pathSnippets.slice(0, index + 1).join('/');
-        const label = breadcrumbMap[segment] || 'Chi tiết dự án';
+        let url;
+        if (segment === 'user-profile') {
+          // Với user-profile, sử dụng path gốc để tạo URL chính xác
+          url = url = location.pathname;;
+        } else {
+          url = customNavigateMap[segment] || '/' + pathSnippets.slice(0, index + 1).join('/');
+        }
 
+        const label = breadcrumbMap[segment] || 'Chi tiết dự án';
         return {
           title: (
             <span onClick={() => navigate(url)} style={{ cursor: 'pointer' }}>
@@ -304,10 +309,8 @@ const MainLayout: React.FC = () => {
         };
       })
     ];
-
     return items;
   }, [location.pathname, navigate]);
-
 
 
 

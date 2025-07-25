@@ -17,7 +17,8 @@ import {
   ArrowUpOutlined,
   ArrowDownOutlined,
   UnorderedListOutlined,
-  BarChartOutlined
+  BarChartOutlined,
+  FileTextOutlined
 } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
 import { Bar } from 'react-chartjs-2';
@@ -318,6 +319,7 @@ const Project = () => {
     }
   ];
 
+  // Thay đổi StatisticCards component
   const StatisticCards = () => {
     const getPercentageChangeColor = (change: number | undefined) => {
       if (change === undefined) return '#000000';
@@ -335,45 +337,55 @@ const Project = () => {
     };
 
     return (
-      // Hàng statistic cards
-      <Space direction="horizontal" size="small" style={{ width: '100%', height: '100%' }}>
+      // Hàng statistic cards - sử dụng flexbox với flex-wrap
+      <div style={{
+        display: 'flex',
+        flexWrap: 'wrap',
+        gap: '12px',
+        width: '100%',
+
+      }}>
         {/* thẻ tổng dự án hiện tại*/}
         <div
           style={{
             background: '#1890ff',
             color: 'white',
             borderRadius: 6,
-            padding: 5,
+            padding: 8,
             height: 70,
-            width: 270,
+            minWidth: 240,
+            flex: '1 1 240px',
+            maxWidth: 280,
             display: 'flex',
             alignItems: 'center',
           }}
         >
-          <div style={{ display: 'flex', alignItems: 'center' }}>
+          <div style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
             {/* Icon bên trái */}
             <div style={{
               backgroundColor: 'white',
-              padding: 10,
+              padding: 8,
               borderRadius: 6,
-              marginRight: 12,
+              marginRight: 10,
+              flexShrink: 0,
             }}>
-              <ProjectOutlined style={{ fontSize: 38, color: '#1890ff' }} />
+              <ProjectOutlined style={{ fontSize: 32, color: '#1890ff' }} />
             </div>
 
             {/* Nội dung bên phải */}
-            <div>
-              <div style={{ fontSize: 15, lineHeight: 1.5, fontWeight: 500 }}>{t('statistic.active')}</div>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div style={{ fontSize: 14, lineHeight: 1.4, fontWeight: 500 }}>{t('statistic.active')}</div>
               <div style={{
-                fontSize: 22,
+                fontSize: 20,
                 fontWeight: 'bold',
                 display: 'flex',
                 alignItems: 'center',
-                gap: 6
+                gap: 4,
+                flexWrap: 'wrap'
               }}>
                 <span>{statistic?.totalActiveProjects.current || 0}</span>
                 <span style={{
-                  fontSize: 12,
+                  fontSize: 11,
                   color: getPercentageChangeColor(statistic?.totalActiveProjects.percentageChange)
                 }}>
                   {renderPercentageChange(statistic?.totalActiveProjects.percentageChange)}
@@ -386,40 +398,44 @@ const Project = () => {
         {/*  Thẻ dự án đang tiến hành */}
         <div
           style={{
-            background: '#52C41A',
+            background: '#ffb302ff',
             color: 'white',
             borderRadius: 6,
-            padding: 5,
+            padding: 8,
             height: 70,
-            width: 270,
+            minWidth: 240,
+            flex: '1 1 240px',
+            maxWidth: 280,
             display: 'flex',
             alignItems: 'center',
           }}
         >
-          <div style={{ display: 'flex', alignItems: 'center' }}>
+          <div style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
             {/* Icon bên trái */}
             <div style={{
               backgroundColor: 'white',
-              padding: 10,
+              padding: 8,
               borderRadius: 6,
-              marginRight: 12,
+              marginRight: 10,
+              flexShrink: 0,
             }}>
-              <ClockCircleOutlined style={{ fontSize: 38, color: '#52C41A' }} />
+              <ClockCircleOutlined style={{ fontSize: 32, color: '#ffb302ff' }} />
             </div>
 
             {/* Nội dung bên phải */}
-            <div>
-              <div style={{ fontSize: 15, lineHeight: 1.5, fontWeight: 500 }}>{t('statistic.processing')}</div>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div style={{ fontSize: 14, lineHeight: 1.4, fontWeight: 500 }}>{t('statistic.processing')}</div>
               <div style={{
-                fontSize: 22,
+                fontSize: 20,
                 fontWeight: 'bold',
                 display: 'flex',
                 alignItems: 'center',
-                gap: 6,
+                gap: 4,
+                flexWrap: 'wrap'
               }}>
                 <span>{statistic?.totalProcessingProjects.current || 0}</span>
                 <span style={{
-                  fontSize: 12,
+                  fontSize: 11,
                   color: getPercentageChangeColor(statistic?.totalProcessingProjects.percentageChange)
                 }}>
                   {renderPercentageChange(statistic?.totalProcessingProjects.percentageChange)}
@@ -432,40 +448,44 @@ const Project = () => {
         {/* thẻ dự án đã hoàn thành */}
         <div
           style={{
-            background: '#ffb302ff',
+            background: '#52C41A',
             color: 'white',
             borderRadius: 6,
-            padding: 5,
+            padding: 8,
             height: 70,
-            width: 270,
+            minWidth: 240,
+            flex: '1 1 240px',
+            maxWidth: 280,
             display: 'flex',
             alignItems: 'center',
           }}
         >
-          <div style={{ display: 'flex', alignItems: 'center' }}>
+          <div style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
             {/* Icon bên trái */}
             <div style={{
               backgroundColor: 'white',
-              padding: 10,
+              padding: 8,
               borderRadius: 6,
-              marginRight: 12,
+              marginRight: 10,
+              flexShrink: 0,
             }}>
-              <CheckCircleFilled style={{ fontSize: 38, color: '#ffb302ff' }} />
+              <CheckCircleFilled style={{ fontSize: 32, color: '#52C41A' }} />
             </div>
 
             {/* Nội dung bên phải */}
-            <div>
-              <div style={{ fontSize: 15, lineHeight: 1.5, fontWeight: 500 }}>{t('statistic.completed')}</div>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div style={{ fontSize: 14, lineHeight: 1.4, fontWeight: 500 }}>{t('statistic.completed')}</div>
               <div style={{
-                fontSize: 22,
+                fontSize: 20,
                 fontWeight: 'bold',
                 display: 'flex',
                 alignItems: 'center',
-                gap: 6
+                gap: 4,
+                flexWrap: 'wrap'
               }}>
                 <span>{statistic?.totalCompletedProjects.current || 0}</span>
                 <span style={{
-                  fontSize: 12,
+                  fontSize: 11,
                   color: getPercentageChangeColor(statistic?.totalCompletedProjects.percentageChange)
                 }}>
                   {renderPercentageChange(statistic?.totalCompletedProjects.percentageChange)}
@@ -474,9 +494,56 @@ const Project = () => {
             </div>
           </div>
         </div>
+        {/* thẻ tài liệu */}
+        <div
+          style={{
+            background: '#ff724fff',
+            color: 'white',
+            borderRadius: 6,
+            padding: 8,
+            height: 70,
+            minWidth: 240,
+            flex: '1 1 240px',
+            maxWidth: 280,
+            display: 'flex',
+            alignItems: 'center',
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+            {/* Icon bên trái */}
+            <div style={{
+              backgroundColor: 'white',
+              padding: 8,
+              borderRadius: 6,
+              marginRight: 10,
+              flexShrink: 0,
+            }}>
+              <FileTextOutlined style={{ fontSize: 32, color: '#ff724fff' }} />
+            </div>
 
-
-      </Space>
+            {/* Nội dung bên phải */}
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div style={{ fontSize: 14, lineHeight: 1.4, fontWeight: 500 }}>{'Số báo cáo đã gửi'}</div>
+              <div style={{
+                fontSize: 20,
+                fontWeight: 'bold',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 4,
+                flexWrap: 'wrap'
+              }}>
+                <span>322</span>
+                <span style={{
+                  fontSize: 11,
+                  color: getPercentageChangeColor(statistic?.totalCompletedProjects.percentageChange)
+                }}>
+                  1.233 tài liệu đã được gửi
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     );
   };
 
@@ -642,65 +709,84 @@ const Project = () => {
             }
 
           >
-            <div style={{ marginBottom: 10, display: 'flex', justifyContent: 'space-between' }}>
-              <div>
-                <Space size="small" wrap>
-                  <Input
-                    placeholder={t('search.placeholder')}
-                    prefix={<SearchOutlined />}
-                    value={searchTerm}
-                    onChange={e => setSearchTerm(e.target.value)}
-                    style={{ width: 200 }}
-                  />
-                  <Select
-                    style={{ width: 120 }}
-                    options={statusOptions}
-                    value={queryParams.status}
-                    onChange={handleStatusChange}
-                    placeholder={t('filter.status')}
-                  />
-                  <Select
-                    style={{ width: 120 }}
-                    options={[
-                      { value: 'desc', label: t('sort.newest') },
-                      { value: 'asc', label: t('sort.oldest') }
-                    ]}
-                    value={queryParams.sort}
-                    onChange={handleSortChange}
-                  />
-                  <RangePicker
-                    onChange={(dates) => handleListDateRangeChange(dates as [Dayjs | null, Dayjs | null] | null)}
-                    value={listDateRange}
-                    format="MM/YYYY"
-                    picker="month"
-                    allowEmpty={[true, true]}
-                    placeholder={[t('filter.monthStart'), t('filter.monthEnd')]}
-                  />
 
-                </Space>
-              </div>
+            <div style={{
+              marginBottom: 10,
+              display: 'flex',
+              justifyContent: 'space-between',
+              flexWrap: 'wrap',
+              gap: '12px',
+              alignItems: 'flex-start'
+            }}>
               <div style={{
                 display: 'flex',
-
+                flexWrap: 'wrap',
+                gap: '8px',
+                alignItems: 'center',
+                flex: '1 1 auto',
+                minWidth: '300px'
               }}>
+                <Input
+                  placeholder={t('search.placeholder')}
+                  prefix={<SearchOutlined />}
+                  value={searchTerm}
+                  onChange={e => setSearchTerm(e.target.value)}
+                  style={{ width: 180, minWidth: 150 }}
+                />
+                <Select
+                  style={{ width: 110, minWidth: 100 }}
+                  options={statusOptions}
+                  value={queryParams.status}
+                  onChange={handleStatusChange}
+                  placeholder={t('filter.status')}
+                />
+                <Select
+                  style={{ width: 110, minWidth: 100 }}
+                  options={[
+                    { value: 'desc', label: t('sort.newest') },
+                    { value: 'asc', label: t('sort.oldest') }
+                  ]}
+                  value={queryParams.sort}
+                  onChange={handleSortChange}
+                />
+                <RangePicker
+                  onChange={(dates) => handleListDateRangeChange(dates as [Dayjs | null, Dayjs | null] | null)}
+                  value={listDateRange}
+                  format="MM/YYYY"
+                  picker="month"
+                  allowEmpty={[true, true]}
+                  placeholder={[t('filter.monthStart'), t('filter.monthEnd')]}
+                  style={{ minWidth: 200 }}
+                />
+              </div>
 
+              <div style={{
+                display: 'flex',
+                gap: '8px',
+                flexShrink: 0,
+              }}>
                 <Button
                   onClick={() => setShowChart(prev => !prev)}
-                  style={{ width: '170px', height: '35px', marginRight: '10px' }}
-                  icon={< BarChartOutlined />}
+                  style={{ width: '160px', height: '32px', minWidth: '140px' }}
+                  icon={<BarChartOutlined />}
                   onMouseEnter={(e) => {
                     e.currentTarget.style.backgroundColor = '#f5f5f5';
-                    e.currentTarget.style.color = '#444746be'; // giữ nguyên màu chữ
+                    e.currentTarget.style.color = '#444746be';
                   }}
                   onMouseLeave={(e) => {
                     e.currentTarget.style.backgroundColor = '#fff';
-                    e.currentTarget.style.color = '#444746be'; // giữ nguyên màu chữ
+                    e.currentTarget.style.color = '#444746be';
                   }}
                 >
                   {showChart ? 'Ẩn biểu đồ tiến độ' : 'Mở biểu đồ tiến độ'}
                 </Button>
 
-                <Button style={{ width: '170px', height: '35px' }} type="primary" icon={< PlusOutlined />} onClick={handleCreateProject}>
+                <Button
+                  style={{ width: '140px', height: '32px', minWidth: '120px' }}
+                  type="primary"
+                  icon={<PlusOutlined />}
+                  onClick={handleCreateProject}
+                >
                   {t('button.create')}
                 </Button>
               </div>

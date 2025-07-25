@@ -1,7 +1,7 @@
 {
   "statistic": {
     "title": "Thống kê dự án",
-    "active": "Dự án đang hoạt động",
+    "active": "Tổng dự án",
     "completed": "Dự án đã hoàn thành",
     "processing": "Dự án đang xử lý",
     "pending": "Dự án đang chờ"
@@ -24,7 +24,7 @@
     "monthEnd": "Tháng kết thúc"
   },
   "search": {
-    "placeholder": "Nhập từ khóa tìm kiếm..."
+    "placeholder": "Nhập từ khóa ..."
   },
   "sort": {
     "newest": "Mới nhất",
