@@ -3,7 +3,7 @@ import { Button, Form, Space, Typography } from 'antd';
 import { Modal } from 'antd/lib';
 import React from 'react'
 import { useTranslation } from 'react-i18next';
-import AddPhaseInput from './AddPhaseInPut';
+import AddPhaseInput from './AddPhaseInput';
 import { createManyPhase } from '../../../../../services/phase/phase.service';
 import { Pagination, message, Spin } from 'antd';
 

@@ -1,4 +1,4 @@
-import { Card, Tabs, Table, Space, Typography, Tag, Button, Modal, Row, Col, Input, Dropdown, Pagination, message, Select } from 'antd';
+import { Card, Tabs, Table, Space, Typography, Tag, Button, Modal, Row, Col, Input, Dropdown, Pagination, message, Select, Alert } from 'antd';
 import { IDocument } from '../../interfaces/project.interface';
 import {
   ProjectOutlined,
@@ -35,11 +35,13 @@ import type { UploadFile } from 'antd/es/upload/interface';
 import ModalAddContent from './components/ModalAddContent';
 import ModalAddDocument from './components/ModalAddDocument';
 
-interface DocumentInprojectProps {}
+interface DocumentInprojectProps {
+  onReloadStatistic?: () => void;
+}
 
 const { Text } = Typography;
 
-const DocumentInproject: React.FC<DocumentInprojectProps> = () => {
+const DocumentInproject: React.FC<DocumentInprojectProps> = ({ onReloadStatistic }) => {
   const { t } = useTranslation(['project', 'common']);
   const { pid } = useParams();
   const [searchTerm, setSearchTerm] = useState('');
@@ -79,6 +81,7 @@ const DocumentInproject: React.FC<DocumentInprojectProps> = () => {
   const [isModalAddDocumentOpen , setIsModalAddDocumentOpen] = useState(false);
   const [statusFilter, setStatusFilter] = useState<'all' | 'completed' | 'in_progress'>('all');
   const debouncedSearchTerm = useDebounce(searchTerm);
+  const pendingCount = documents.filter(doc => !doc.isCompleted).length;
 
   const fetchDocuments = async () => {
     if (!pid) return;
@@ -146,6 +149,7 @@ const DocumentInproject: React.FC<DocumentInprojectProps> = () => {
           await deleteContent(contentId);
           message.success(t('document.content.delete_success'));
           fetchDocuments(); // Refresh data
+          if (onReloadStatistic) onReloadStatistic();
         } catch (error) {
           message.error(t('document.content.delete_error'));
         }
@@ -169,6 +173,7 @@ const DocumentInproject: React.FC<DocumentInprojectProps> = () => {
           await deleteDocument(documentId);
           message.success(t('document.delete_success'));
           fetchDocuments(); // Refresh data
+          if (onReloadStatistic) onReloadStatistic();
         } catch (error) {
           message.error(t('document.delete_error'));
         }
@@ -238,6 +243,7 @@ const DocumentInproject: React.FC<DocumentInprojectProps> = () => {
     setIsModalOpen(false);
     setSuccessMessage(t('document.content.update_success'));
     fetchDocuments();
+    if (onReloadStatistic) onReloadStatistic();
   };
 
   useEffect(() => {
@@ -415,6 +421,25 @@ const DocumentInproject: React.FC<DocumentInprojectProps> = () => {
   const renderDocumentTable = () => {
     return (
       <div>
+        {!loading && (
+          documents.length === 0 ? (
+            <Alert
+              message={t('Chưa có tài liệu được cập nhật')}
+              type="warning"
+              showIcon
+              style={{ marginBottom: 16 }}
+            />
+          ) : (
+            pendingCount > 0 && (
+              <Alert
+                message={t('Bạn có {{count}} tài liệu cần duyệt', { count: pendingCount })}
+                type="info"
+                showIcon
+                style={{ marginBottom: 16 }}
+              />
+            )
+          )
+        )}
         <Row justify="start" style={{ marginBottom: 16 }} gutter={8}>
           <Col>
             <Input
@@ -616,6 +641,7 @@ const DocumentInproject: React.FC<DocumentInprojectProps> = () => {
             handleTabChange(type);
           }
           fetchDocuments();
+          if (onReloadStatistic) onReloadStatistic();
         }}
       />
       </>

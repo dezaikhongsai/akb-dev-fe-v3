@@ -23,6 +23,7 @@ interface ProjectInforProps {
   project: IProject;
   onReloadProject?: () => Promise<void>;
   phasesCount: number;
+  onReloadStatistic?: () => void;
 }
 
 const { Text } = Typography;
@@ -40,6 +41,7 @@ const ProjectInfor: React.FC<ProjectInforProps> = ({ project, onReloadProject, p
         await onReloadProject();
       }
       setIsModalUpdateProjectOpen(false); // Đóng modal khi thành công
+      if (onReloadStatistic) onReloadStatistic();
     } catch (error) {
       // Có thể thêm thông báo lỗi ở đây nếu muốn
     } finally {
@@ -84,6 +86,7 @@ const ProjectInfor: React.FC<ProjectInforProps> = ({ project, onReloadProject, p
       if (onReloadProject) {
         await onReloadProject();
       }
+      if (onReloadStatistic) onReloadStatistic();
     } catch (error) {
       // Có thể thêm thông báo lỗi ở đây nếu muốn
     } finally {
@@ -100,6 +103,7 @@ const ProjectInfor: React.FC<ProjectInforProps> = ({ project, onReloadProject, p
       if (onReloadProject) {
         await onReloadProject();
       }
+      if (onReloadStatistic) onReloadStatistic();
     } catch (error) {
       // Có thể thêm thông báo lỗi ở đây nếu muốn
     }
@@ -288,3 +292,7 @@ const ProjectInfor: React.FC<ProjectInforProps> = ({ project, onReloadProject, p
 };
 
 export default ProjectInfor;
+function onReloadStatistic() {
+  throw new Error('Function not implemented.');
+}
+

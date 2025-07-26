@@ -6,7 +6,7 @@ import DocumentInproject from "./components/documents/DocumentInproject";
 import PhaseInProject from "./components/phases/PhaseInProject";
 import { Spin, Tabs } from "antd";
 import { IProjectDetailResponse } from "./interfaces/project.interface";
-import { BarChartOutlined, ProjectOutlined } from "@ant-design/icons";
+import { BarChartOutlined, FileSearchOutlined, ProjectOutlined } from "@ant-design/icons";
 import ProjectDetailStatistic from "./components/projects/ProjectDetailStatistic";
 
 const ProjectDetail = () => {
@@ -15,6 +15,10 @@ const ProjectDetail = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [loadingPhase, setLoadingPhase] = useState(false);
+  const [statisticReloadKey, setStatisticReloadKey] = useState(0);
+  const [activeTab, setActiveTab] = useState('2');
+
+  const reloadStatistic = () => setStatisticReloadKey(prev => prev + 1);
 
   const reloadPhases = async () => {
     setLoadingPhase(true);
@@ -61,6 +65,11 @@ const ProjectDetail = () => {
   return (
     <div style={{ padding: '24px' }}>
       <Tabs
+        activeKey={activeTab}
+        onChange={key => {
+          setActiveTab(key);
+          if (key === '2') reloadStatistic();
+        }}
         items = {[
           {
             key: '1',
@@ -68,7 +77,7 @@ const ProjectDetail = () => {
             label: 'Thông tin dự án',
             children: 
             <>
-               <ProjectInfor project={project.project} onReloadProject={fetchProjectDetail} phasesCount={project.phases.length} />
+               <ProjectInfor project={project.project} onReloadProject={fetchProjectDetail} phasesCount={project.phases.length} onReloadStatistic={reloadStatistic} />
               <PhaseInProject 
                 phases={project.phases} 
                 currentPhase={project.project.currentPhase} 
@@ -77,14 +86,22 @@ const ProjectDetail = () => {
                 loadingPhase={loadingPhase}
                 projectStatus={project.project.status}
               />
-              <DocumentInproject  />  
+             
             </>
           },
+
           {
             key: '2',
             icon: <BarChartOutlined />,
             label: 'Thống kê dự án',
-            children: <ProjectDetailStatistic />
+            children: <ProjectDetailStatistic reloadKey={statisticReloadKey} />
+          },
+          
+          {
+            key: '3',
+            icon: <FileSearchOutlined />,
+            label: 'Tài liệu',
+            children:  <DocumentInproject onReloadStatistic={reloadStatistic} />  
           },
         ]}
       />

@@ -53,3 +53,11 @@ export const activeProject = async (pId : string) => {
   }
 }
 
+export const projectDetailStatistics = async (pId : string) => {
+  try {
+    const response = await axiosInstance.get(`/project/statistics-detail/${pId}`);
+    return response.data;
+  } catch (error : any) {
+    throw new Error(error.response.data.message);
+  }
+}
