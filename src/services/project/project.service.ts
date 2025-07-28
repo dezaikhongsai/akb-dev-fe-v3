@@ -61,3 +61,12 @@ export const projectDetailStatistics = async (pId : string) => {
     throw new Error(error.response.data.message);
   }
 }
+
+export const statisticsRequestInProject = async (params?: { monthYearStart?: string; monthYearEnd?: string }) => {
+  try {
+    const response = await axiosInstance.get('/project/statistics-request', { params });
+    return response.data;
+  } catch (error : any) {
+    throw new Error(error.response?.data?.message || error.message);
+  }
+}

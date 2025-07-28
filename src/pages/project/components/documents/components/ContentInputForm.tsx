@@ -84,7 +84,7 @@ const ContentInputForm: React.FC<ContentInputFormProps> = ({
       )
     );
     if (duplicateFiles.length > 0) {
-      message.error(t('document.content.duplicate_file_error', { fileName: duplicateFiles[0].name }));
+      message.error(t('content.duplicate_file_error', { fileName: duplicateFiles[0].name }));
       return;
     }
     setFiles(prev => [
@@ -102,15 +102,15 @@ const ContentInputForm: React.FC<ContentInputFormProps> = ({
 
   const handleDeleteFile = (fileId: string, fileName: string) => {
     Modal.confirm({
-      title: t('document.content.delete_file_confirm_title'),
+      title: t('content.delete_file_confirm_title'),
       icon: <WarningFilled style={{ color: '#faad14' }} />,
-      content: t('document.content.delete_file_confirm_content', { fileName }),
+              content: t('content.delete_file_confirm_content', { fileName }),
       okText: t('common.confirm'),
       cancelText: t('common.cancel'),
       okButtonProps: { danger: true, icon: <DeleteOutlined /> },
       onOk: () => {
         setFiles(prev => prev.filter(file => file.uid !== fileId));
-        message.success(t('document.content.delete_success'));
+        message.success(t('content.delete_success'));
       }
     });
   };
@@ -154,10 +154,10 @@ const ContentInputForm: React.FC<ContentInputFormProps> = ({
         setPreviewTitle(file.name);
         setPreviewOpen(true);
       } catch (error) {
-        message.error(t('document.content.preview_error'));
+        message.error(t('content.preview_error'));
       }
     } else {
-      message.info(t('document.content.preview_not_supported'));
+              message.info(t('content.preview_not_supported'));
     }
   };
 
@@ -174,13 +174,13 @@ const ContentInputForm: React.FC<ContentInputFormProps> = ({
         URL.revokeObjectURL(downloadUrl);
       }
     } catch (error) {
-      message.error(t('document.content.download_error'));
+              message.error(t('content.download_error'));
     }
   };
 
   const handleConfirm = () => {
     if (!content.trim()) {
-      message.error(t('document.content.enter_content'));
+              message.error(t('content.enter_content'));
       return;
     }
     setIsSubmitting(true);
@@ -201,7 +201,7 @@ const ContentInputForm: React.FC<ContentInputFormProps> = ({
       title={
         <Space>
           <FileTextOutlined />
-          <Text>{t('document.content.add')}</Text>
+          <Text>{t('content.add')}</Text>
         </Space>
       }
       footer={[
@@ -223,7 +223,7 @@ const ContentInputForm: React.FC<ContentInputFormProps> = ({
       <Input
         value={content}
         onChange={(e) => setContent(e.target.value)}
-        placeholder={t('document.content.enter_content')}
+        placeholder={t('content.enter_content')}
         style={{ width: '100%', marginBottom: 16 }}
         required={true}
       />
@@ -236,7 +236,7 @@ const ContentInputForm: React.FC<ContentInputFormProps> = ({
               (file.type.toLowerCase().includes('pdf') ||
                 file.type.toLowerCase().includes('image') ||
                 /\.(jpg|jpeg|png|gif|pdf)$/i.test(file.name)) && (
-                <Tooltip title={t('document.content.preview')}>
+                                  <Tooltip title={t('content.preview')}>
                   <Button
                     type="text"
                     icon={<EyeOutlined />}
@@ -244,14 +244,14 @@ const ContentInputForm: React.FC<ContentInputFormProps> = ({
                   />
                 </Tooltip>
               ),
-              <Tooltip title={t('document.content.download')}>
+                              <Tooltip title={t('content.download')}>
                 <Button
                   type="text"
                   icon={<DownloadOutlined />}
                   onClick={() => handleDownload(file)}
                 />
               </Tooltip>,
-              <Tooltip title={t('document.content.delete')}>
+                              <Tooltip title={t('content.delete')}>
                 <Button
                   type="text"
                   danger
@@ -267,7 +267,7 @@ const ContentInputForm: React.FC<ContentInputFormProps> = ({
                 <Space>
                   <Text>{file.name}</Text>
                   {file.isNew && (
-                    <Tag color="processing">{t('document.content.new_file')}</Tag>
+                    <Tag color="processing">{t('content.new_file')}</Tag>
                   )}
                 </Space>
               }
@@ -283,12 +283,12 @@ const ContentInputForm: React.FC<ContentInputFormProps> = ({
         fileList={[]}
         beforeUpload={(file) => {
           if (!isValidFileType(file)) {
-            message.error(t('document.content.invalid_file_type'));
+            message.error(t('content.invalid_file_type'));
             return Upload.LIST_IGNORE;
           }
           const maxSize = 50 * 1024 * 1024; // 50MB
           if (file.size > maxSize) {
-            message.error(t('document.content.file_too_large', { maxSize: '50MB' }));
+                          message.error(t('content.file_too_large', { maxSize: '50MB' }));
             return Upload.LIST_IGNORE;
           }
           return false;
@@ -302,7 +302,7 @@ const ContentInputForm: React.FC<ContentInputFormProps> = ({
         <Button type="primary" icon={<UploadOutlined />} style={{ marginTop: 16 }} onClick={() => {
           document.getElementById('file-upload-add')?.click();
         }}>
-          {t('document.content.upload_file')}
+                      {t('content.upload_file')}
         </Button>
       </Upload>
       <Modal

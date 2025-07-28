@@ -156,3 +156,86 @@ export interface IProjectStatistic {
     };
   };
 }
+
+export interface Project {
+  _id: string;
+  name: string;
+  alias: string;
+  pm: {
+    _id: string;
+    profile: {
+      name: string;
+      emailContact: string;
+    };
+  };
+  customer: {
+    _id: string;
+    profile: {
+      name: string;
+      emailContact: string;
+    };
+  };
+  status: 'pending' | 'processing' | 'completed';
+  startDate?: string;
+  endDate?: string;
+  isActive: boolean;
+  currentPhase: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ProjectPhase {
+  _id: string;
+  projectId: string;
+  name: string;
+  startDate: string;
+  endDate: string;
+  isCompleted: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ProjectDetail {
+  project: Project;
+  phases: ProjectPhase[];
+}
+
+export interface IncompleteDocument {
+  _id: string;
+  name: string;
+  type: 'document' | 'report' | 'request';
+  isCompleted: boolean;
+  contents: any[];
+  createdAt: string;
+  updatedAt: string;
+  createdBy: {
+    _id: string;
+    name: string;
+  };
+  updatedBy: {
+    _id: string;
+    name: string;
+  };
+}
+
+export interface ProjectRequestStatistics {
+  projectId: string;
+  projectName: string;
+  projectAlias: string;
+  pm: {
+    _id: string;
+    name: string;
+  };
+  customer: {
+    _id: string;
+    name: string;
+  };
+  totalDocuments: number;
+  incompleteDocuments: number;
+  incompleteDocumentsList: IncompleteDocument[];
+}
+
+export interface StatisticsRequestResponse {
+  success: boolean;
+  data: ProjectRequestStatistics[];
+}

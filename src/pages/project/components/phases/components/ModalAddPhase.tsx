@@ -54,13 +54,13 @@ const ModalAddPhase: React.FC<ModalAddPhaseProps> = ({open , onClose , projectId
         phases: phases.map(p => ({ ...p }))
       };
       await createManyPhase(data);
-      message.success(t('common.saveSuccess'));
+      message.success(t('phase.messages.createSuccess'));
       setLoading(false);
       onSuccess && onSuccess();
       onClose();
     } catch (err: any) {
       setLoading(false);
-      message.error(err.message || t('common.saveFailed'));
+      message.error(err.message || t('phase.messages.createError'));
     }
   };
 
@@ -91,7 +91,7 @@ const ModalAddPhase: React.FC<ModalAddPhaseProps> = ({open , onClose , projectId
         key="close"
         disabled={loading}
         >
-            {t('common.close')}
+            {t('phase.common.close')}
         </Button>,
         <Button
         icon={<SaveOutlined/>}
@@ -100,7 +100,7 @@ const ModalAddPhase: React.FC<ModalAddPhaseProps> = ({open , onClose , projectId
         type="primary"
         loading={loading}
         >
-            {t('common.save')}
+            {t('phase.common.save')}
         </Button>
     ]}
    >

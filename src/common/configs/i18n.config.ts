@@ -24,6 +24,8 @@ import viHome from '../locales/vi/home.json';
 import jaHome from '../locales/ja/home.json';
 import viDocument from '../locales/vi/document.json';
 import jaDocument from '../locales/ja/document.json';
+import viPhase from '../locales/vi/phase.json';
+import jaPhase from '../locales/ja/phase.json';
 
 
 
@@ -45,7 +47,8 @@ i18n
         projectResponse: viProjectResponse,
         emailConfig: viEmailConfig,
         home: viHome,
-        document: viDocument
+        document: viDocument,
+        phase: viPhase
       },
       ja: {
         common: jaCommon,
@@ -59,13 +62,14 @@ i18n
         projectResponse: jaProjectResponse,
         emailConfig: jaEmailConfig,
         home: jaHome,
-        document: jaDocument
+        document: jaDocument,
+        phase: jaPhase
         // login: jaLogin,
       },
     },
     lng: savedLanguage,
     fallbackLng: 'vi',
-    ns: ['common', 'login', 'mainLayout', 'user', 'customer', 'projectRequest', 'project', 'projectDetail', 'projectResponse', 'emailConfig', 'home'], // Định nghĩa các namespace
+    ns: ['common', 'login', 'mainLayout', 'user', 'customer', 'projectRequest', 'project', 'projectDetail', 'projectResponse', 'emailConfig', 'home', 'document', 'phase'], // Định nghĩa các namespace
     defaultNS: 'common', // Namespace mặc định
     interpolation: {
       escapeValue: false,

@@ -58,7 +58,7 @@ const Login: React.FC = () => {
 
         // 5. Chuyển hướng và thông báo thành công
         message.success(t('common:messages.success.login'));
-        navigate('/home');
+        navigate('/projects');
       } else {
         throw new Error(t('common:messages.error.invalid_response'));
       }

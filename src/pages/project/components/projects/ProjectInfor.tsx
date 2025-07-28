@@ -28,8 +28,8 @@ interface ProjectInforProps {
 
 const { Text } = Typography;
 
-const ProjectInfor: React.FC<ProjectInforProps> = ({ project, onReloadProject, phasesCount }) => {
-  const { t } = useTranslation(['project', 'common']);
+const ProjectInfor: React.FC<ProjectInforProps> = ({ project, onReloadProject, phasesCount, onReloadStatistic }) => {
+  const { t } = useTranslation(['project']);
   const [loadingActive, setLoadingActive] = useState(false);
   const [isModalUpdateProjectOpen, setIsModalUpdateProjectOpen] = useState(false);
   const [loadingUpdate, setLoadingUpdate] = useState(false);
@@ -114,7 +114,7 @@ const ProjectInfor: React.FC<ProjectInforProps> = ({ project, onReloadProject, p
       title={
         <Space>
           <ProjectOutlined />
-          {t('project.information')}
+          {t('information')}
         </Space>
       }
       extra = {
@@ -127,7 +127,7 @@ const ProjectInfor: React.FC<ProjectInforProps> = ({ project, onReloadProject, p
                 onClick={() => setIsModalUpdateProjectOpen(true)}
                 loading={loadingUpdate}
                 >
-                {t('project.update')}
+                {t('update')}
               </Button>
               <Button
                 type='primary'
@@ -136,7 +136,7 @@ const ProjectInfor: React.FC<ProjectInforProps> = ({ project, onReloadProject, p
                 disabled={project.status === 'completed' || project.currentPhase < phasesCount}
                 style={project.currentPhase >= phasesCount && project.status !== 'completed' ? { backgroundColor: 'green', borderColor: 'green' } : {}}
               >
-                {t('project.mark_as_complete')}
+                {t('mark_as_complete')}
               </Button>
           </div>
         ) : (
@@ -147,7 +147,7 @@ const ProjectInfor: React.FC<ProjectInforProps> = ({ project, onReloadProject, p
             loading={loadingActive}
             onClick={handleActiveProject}
           >
-            {t('project.active')}
+            {t('active')}
           </Button>
         )}
         
@@ -165,7 +165,7 @@ const ProjectInfor: React.FC<ProjectInforProps> = ({ project, onReloadProject, p
           label={
             <Space>
               <TagOutlined />
-              {t('project.name')}
+              {t('name')}
             </Space>
           }
           span={1}
@@ -177,7 +177,7 @@ const ProjectInfor: React.FC<ProjectInforProps> = ({ project, onReloadProject, p
           label={
             <Space>
               <NumberOutlined />
-              {t('project.alias')}
+              {t('alias')}
             </Space>
           }
           span={1}
@@ -189,7 +189,7 @@ const ProjectInfor: React.FC<ProjectInforProps> = ({ project, onReloadProject, p
           label={
             <Space>
               <UserOutlined />
-              {t('project.pm')}
+              {t('pm')}
             </Space>
           }
           span={1}
@@ -211,7 +211,7 @@ const ProjectInfor: React.FC<ProjectInforProps> = ({ project, onReloadProject, p
           label={
             <Space>
               <UserOutlined />
-              {t('project.customer')}
+              {t('customer')}
             </Space>
           }
           span={1}
@@ -233,7 +233,7 @@ const ProjectInfor: React.FC<ProjectInforProps> = ({ project, onReloadProject, p
           label={
             <Space>
               <CalendarOutlined />
-              {t('project.startDate')}
+              {t('startDate')}
             </Space>
           }
           span={1}
@@ -245,7 +245,7 @@ const ProjectInfor: React.FC<ProjectInforProps> = ({ project, onReloadProject, p
           label={
             <Space>
               <CalendarOutlined />
-              {t('project.endDate')}
+              {t('endDate')}
             </Space>
           }
           span={1}
@@ -257,13 +257,13 @@ const ProjectInfor: React.FC<ProjectInforProps> = ({ project, onReloadProject, p
           label={
             <Space>
               <ClockCircleOutlined />
-              {t('project.status')}
+              {t('status')}
             </Space>
           }
           span={2}
         >
           <Tag color={getStatusColor(project.status)} icon={getStatusIcon(project.status)}>
-            {t(`project.status.${project.status}`)}
+            {t(`statusValues.${project.status}`)}
           </Tag>
         </Descriptions.Item>
 
@@ -271,7 +271,7 @@ const ProjectInfor: React.FC<ProjectInforProps> = ({ project, onReloadProject, p
           label={
             <Space>
               <ClockCircleOutlined />
-              {t('project.currentPhase')}
+              {t('currentPhase')}
             </Space>
           }
           span={2}
@@ -292,7 +292,4 @@ const ProjectInfor: React.FC<ProjectInforProps> = ({ project, onReloadProject, p
 };
 
 export default ProjectInfor;
-function onReloadStatistic() {
-  throw new Error('Function not implemented.');
-}
 

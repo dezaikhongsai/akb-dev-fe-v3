@@ -4,9 +4,7 @@ import Home from '../../pages/home/Home';
 import User from '../../pages/user/User';
 import ProtectedRoute from './ProtectedRoute';
 import MainLayout from '../layouts/MainLayout';
-import Customer from '../../pages/user/Customer';
 import Project from '../../pages/project/Project';
-import ProjectRequest from '../../pages/project/ProjectRequest';
 import EmailConfig from '../../pages/mail/EmailConfig';
 import UserProfile from '../../pages/user/UserProfile';
 import ProjectDetail from '../../pages/project/ProjectDetail';
@@ -29,12 +27,9 @@ const AppRoute = () => {
           </ProtectedRoute>
         }
       >
-        <Route path="home" element={<Home />} />
         <Route path="user" element={<User />} />
         <Route path="user-profile/:uId" element={<UserProfile/>}/>
-        <Route path="customers" element={<Customer/>}/>
         <Route path="projects" element={<Project/>}/>
-        <Route path="requests" element={<ProjectRequest/>}/>
         <Route path="project/:pid" element={<ProjectDetail/>}/>
         <Route path="email-config" element={<EmailConfig/>}/>
         {/* <Route path='system-setting' element= {<Setting/>}/> */}

@@ -52,13 +52,13 @@ const ModalUpdatePhase: React.FC<ModalUpdatePhaseProps> = ({ open, onClose, onSu
       setLoading(true);
       const data = { phases: editPhases };
       await updateManyPhase(data);
-      message.success(t('common.saveSuccess'));
+      message.success(t('phase.messages.updateSuccess'));
       setLoading(false);
       onSuccess && onSuccess();
       onClose();
     } catch (err: any) {
       setLoading(false);
-      message.error(err.message || t('common.saveFailed'));
+      message.error(err.message || t('phase.messages.updateError'));
     }
   };
 
@@ -81,7 +81,7 @@ const ModalUpdatePhase: React.FC<ModalUpdatePhaseProps> = ({ open, onClose, onSu
           key="close"
           disabled={loading}
         >
-          {t('common.close')}
+          {t('phase.common.close')}
         </Button>,
         <Button
           icon={<SaveOutlined />}
@@ -91,7 +91,7 @@ const ModalUpdatePhase: React.FC<ModalUpdatePhaseProps> = ({ open, onClose, onSu
           loading={loading}
           disabled={!changed}
         >
-          {t('common.save')}
+          {t('phase.common.save')}
         </Button>
       ]}
     >

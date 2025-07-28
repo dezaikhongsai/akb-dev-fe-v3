@@ -79,7 +79,7 @@ const ModalContent: React.FC<ModalContentProps> = ({
   onSuccess,
   onContentChange
 }) => {
-  const { t } = useTranslation(['project', 'common']);
+  const { t } = useTranslation(['document', 'common']);
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewUrl, setPreviewUrl] = useState('');
   const [previewTitle, setPreviewTitle] = useState('');
@@ -118,9 +118,9 @@ const ModalContent: React.FC<ModalContentProps> = ({
 
   const handleDeleteFileClick = (fileId: string, fileName: string) => {
     Modal.confirm({
-      title: t('document.content.delete_file_confirm_title'),
+      title: t('content.delete_file_confirm_title'),
       icon: <WarningFilled style={{ color: '#faad14' }} />,
-      content: t('document.content.delete_file_confirm_content', { fileName }),
+              content: t('content.delete_file_confirm_content', { fileName }),
       okText: t('common.confirm'),
       cancelText: t('common.cancel'),
       okButtonProps: { 
@@ -137,10 +137,10 @@ const ModalContent: React.FC<ModalContentProps> = ({
           
           // Chỉ cần cập nhật state, useEffect sẽ xử lý hasChanges
           setCurrentFiles(prev => prev.filter(file => file.uid !== fileId));
-          message.success(t('document.content.delete_success'));
+          message.success(t('content.delete_success'));
         } catch (error) {
           console.error('Error deleting file:', error);
-          message.error(t('document.content.delete_error'));
+                      message.error(t('content.delete_error'));
         }
       }
     });
@@ -192,7 +192,7 @@ const ModalContent: React.FC<ModalContentProps> = ({
       )
     );
     if (duplicateFiles.length > 0) {
-      message.error(t('document.content.duplicate_file_error', { fileName: duplicateFiles[0].name }));
+      message.error(t('content.duplicate_file_error', { fileName: duplicateFiles[0].name }));
       return;
     }
     // Gộp file mới vào currentFiles, đánh dấu isNew
@@ -297,7 +297,7 @@ const ModalContent: React.FC<ModalContentProps> = ({
     } catch (error) {
       setIsSubmitting(false);
       console.error('Error preparing files:', error);
-      message.error(t('document.content.prepare_files_error'));
+              message.error(t('content.prepare_files_error'));
     }
   };
 
@@ -344,10 +344,10 @@ const ModalContent: React.FC<ModalContentProps> = ({
         setPreviewTitle(file.name);
         setPreviewOpen(true);
       } catch (error) {
-        message.error(t('document.content.preview_error'));
+        message.error(t('content.preview_error'));
       }
     } else {
-      message.info(t('document.content.preview_not_supported'));
+      message.info(t('content.preview_not_supported'));
     }
   };
 
@@ -379,7 +379,7 @@ const ModalContent: React.FC<ModalContentProps> = ({
         URL.revokeObjectURL(blobUrl);
       }
     } catch (error) {
-      message.error(t('document.content.download_error'));
+      message.error(t('content.download_error'));
     }
   };
 
@@ -417,7 +417,7 @@ const ModalContent: React.FC<ModalContentProps> = ({
               ) : (
                 <>
                   <Text type="secondary">{editedContent}</Text>
-                  <Tooltip title={t('document.content.edit')}>
+                  <Tooltip title={t('content.edit')}>
                     <Button
                       type="text"
                       icon={<EditOutlined />}
@@ -443,7 +443,7 @@ const ModalContent: React.FC<ModalContentProps> = ({
               document.getElementById('file-upload')?.click();
             }}
           >
-            {t('document.content.upload_file')}
+            {t('content.upload_file')}
           </Button>,
           <Button
             key="confirm"
@@ -460,15 +460,15 @@ const ModalContent: React.FC<ModalContentProps> = ({
           <Space direction="vertical" size={4} style={{ width: '100%' }}>
             <Space>
               <UserOutlined />
-              <Text>{t('document.creator')}: {creator}</Text>
+                                <Text>{t('creator')}: {creator}</Text>
             </Space>
             <Space>
               <CalendarOutlined />
-              <Text>{t('document.created_at')}: {dayjs(createdAt).format('DD/MM/YYYY HH:mm')}</Text>
+                              <Text>{t('created_at')}: {dayjs(createdAt).format('DD/MM/YYYY HH:mm')}</Text>
             </Space>
             <Space>
               <EditOutlined />
-              <Text>{t('document.updated_at')}: {dayjs(updatedAt).format('DD/MM/YYYY HH:mm')}</Text>
+                              <Text>{t('updated_at')}: {dayjs(updatedAt).format('DD/MM/YYYY HH:mm')}</Text>
             </Space>
           </Space>
         </div>
@@ -484,7 +484,7 @@ const ModalContent: React.FC<ModalContentProps> = ({
                 (file.type.toLowerCase().includes('pdf') || 
                  file.type.toLowerCase().includes('image') ||
                  /\.(jpg|jpeg|png|gif|pdf)$/i.test(file.name)) && (
-                  <Tooltip title={t('document.content.preview')}>
+                  <Tooltip title={t('content.preview')}>
                     <Button
                       type="text"
                       icon={<EyeOutlined />}
@@ -492,14 +492,14 @@ const ModalContent: React.FC<ModalContentProps> = ({
                     />
                   </Tooltip>
                 ),
-                <Tooltip title={t('document.content.download')}>
+                <Tooltip title={t('content.download')}>
                   <Button
                     type="text"
                     icon={<DownloadOutlined />}
                     onClick={() => handleDownload(file)}
                   />
                 </Tooltip>,
-                <Tooltip title={t('document.content.delete')}>
+                <Tooltip title={t('content.delete')}>
                   <Button
                     type="text"
                     danger
@@ -515,7 +515,7 @@ const ModalContent: React.FC<ModalContentProps> = ({
                   <Space>
                     <Text>{file.name}</Text>
                     {file.isNew && (
-                      <Tag color="processing">{t('document.content.new_file')}</Tag>
+                      <Tag color="processing">{t('content.new_file')}</Tag>
                     )}
                   </Space>
                 }
@@ -531,13 +531,13 @@ const ModalContent: React.FC<ModalContentProps> = ({
           multiple={false}
           fileList={[]}
           beforeUpload={(file) => {
-            if (!isValidFileType(file)) {
-              message.error(t('document.content.invalid_file_type'));
+                      if (!isValidFileType(file)) {
+            message.error(t('content.invalid_file_type'));
               return Upload.LIST_IGNORE;
             }
             const maxSize = 50 * 1024 * 1024; // 50MB
             if (file.size > maxSize) {
-              message.error(t('document.content.file_too_large', { maxSize: '50MB' }));
+              message.error(t('content.file_too_large', { maxSize: '50MB' }));
               return Upload.LIST_IGNORE;
             }
             return false;

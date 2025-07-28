@@ -31,7 +31,7 @@ interface PhaseInProjectProps {
 const { Text } = Typography;
 
 const PhaseInProject: React.FC<PhaseInProjectProps> = ({ phases, currentPhase , projectId, onReloadPhases, loadingPhase, projectStatus }) => {
-  const { t } = useTranslation(['project', 'common']);
+  const { t } = useTranslation(['project']);
   const [isModalAddPhaseOpen, setIsModalAddPhaseOpen] = useState(false);
   const [isModalUpdatePhaseOpen , setIsModalUpdatePhaseOpen] = useState(false);
   const [deleting, setDeleting] = useState<string | null>(null);
@@ -59,19 +59,19 @@ const PhaseInProject: React.FC<PhaseInProjectProps> = ({ phases, currentPhase , 
 
   const handleDeletePhase = (phaseId: string) => {
     Modal.confirm({
-      title: t('project.confirm_delete_phase'),
-      content: t('project.confirm_delete_phase_content'),
-      okText: t('common.delete'),
+      title: t('confirm_delete_phase'),
+      content: t('confirm_delete_phase_content'),
+      okText: t('delete'),
       okType: 'danger',
-      cancelText: t('common.cancel'),
+      cancelText: t('cancel'),
       onOk: async () => {
         setDeleting(phaseId);
         try {
           await deletePhase(phaseId);
-          message.success(t('project.delete_phase_success'));
+          message.success(t('delete_phase_success'));
           onReloadPhases && onReloadPhases();
         } catch (err: any) {
-          message.error(err.message || t('project.delete_phase_failed'));
+          message.error(err.message || t('delete_phase_failed'));
         } finally {
           setDeleting(null);
         }
@@ -152,13 +152,13 @@ const PhaseInProject: React.FC<PhaseInProjectProps> = ({ phases, currentPhase , 
       title={
         <Space>
           <ProjectOutlined />
-          {t('project.phases')}
+          {t('phases')}
         </Space>
       }
       extra = {
         phases.length > 0 ? (
           <Button type="primary" icon={<EditOutlined />} onClick={handleUpdatePhase}>
-            {t('project.update_phase')}
+            {t('update_phase')}
           </Button>
         ) : (
           <Button 
@@ -166,7 +166,7 @@ const PhaseInProject: React.FC<PhaseInProjectProps> = ({ phases, currentPhase , 
           icon={<PlusOutlined />}
           onClick={handleAddPhase}
           >
-            {t('project.add_phase')}
+            {t('add_phase')}
           </Button>
         )
       }
@@ -203,12 +203,12 @@ const PhaseInProject: React.FC<PhaseInProjectProps> = ({ phases, currentPhase , 
             icon={<PlusOutlined />}
             onClick={handleAddPhase}
           >
-            {t('project.add_one')}
+            {t('add_one')}
           </Button>
         </div>
         </>
       ) : (
-        <Text type="secondary">{t('project.no_phases')}</Text>
+        <Text type="secondary">{t('no_phases')}</Text>
       )}
       <ModalAddPhase
         open={isModalAddPhaseOpen}

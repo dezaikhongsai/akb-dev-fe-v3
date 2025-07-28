@@ -90,7 +90,51 @@
 
         "uploadDocumentSuccess": "Tài liệu đã được tải lên thành công",
         "uploadDocumentError": "Có lỗi xảy ra khi tải lên tài liệu"
+    },
+    "statistics": {
+        "loading": "Đang tải dữ liệu...",
+        "error": "Lỗi",
+        "errorMessage": "Có lỗi xảy ra khi tải dữ liệu",
+        "invalidData": "Dữ liệu không đúng định dạng",
+        "noData": "Thông báo",
+        "noDataMessage": "Không có dữ liệu thống kê",
+        "filter": {
+            "dateRange": "Khoảng thời gian",
+            "startDate": "Tháng bắt đầu",
+            "endDate": "Tháng kết thúc",
+            "reset": "Đặt lại"
+        },
+        "columns": {
+            "stt": "STT",
+            "projectAlias": "Mã dự án",
+            "projectName": "Tên dự án",
+            "pm": "Quản lý dự án",
+            "customer": "Khách hàng",
+            "totalDocuments": "Tổng tài liệu",
+            "incompleteDocuments": "Chưa hoàn thành",
+            "action": "Thao tác"
+        },
+        "documentColumns": {
+            "name": "Tên tài liệu",
+            "type": "Loại",
+            "createdBy": "Người tạo",
+            "updatedBy": "Người cập nhật",
+            "createdAt": "Ngày tạo",
+            "updatedAt": "Ngày cập nhật"
+        },
+        "actions": {
+            "viewDetails": "Xem chi tiết"
+        },
+        "expandable": {
+            "title": "Tài liệu chưa hoàn thành",
+            "noIncompleteDocuments": "Không có tài liệu chưa hoàn thành"
+        },
+        "completionRate": "hoàn thành"
+    },
+    "type_options": {
+        "request": "Yêu cầu",
+        "report": "Báo cáo",
+        "document": "Tài liệu"
     }
-
 
 }

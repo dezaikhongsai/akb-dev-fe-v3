@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Card, Row, Col, Statistic, Typography, Spin } from 'antd';
+import { Card, Row, Col, Statistic, Typography, Spin, Alert } from 'antd';
 import { projectDetailStatistics } from '../../../../services/project/project.service';
 import { useParams } from 'react-router-dom';
 import { Bar } from 'react-chartjs-2';
@@ -11,6 +11,7 @@ import {
   ExclamationCircleOutlined,
   CheckCircleOutlined
 } from '@ant-design/icons';
+import { useTranslation } from 'react-i18next';
 
 Chart.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend);
 
@@ -35,6 +36,7 @@ interface ProjectDetailStatisticProps {
 }
 
 const ProjectDetailStatistic = ({ reloadKey }: ProjectDetailStatisticProps) => {
+  const { t } = useTranslation(['projectDetail']);
   const { pid } = useParams();
   const [stats, setStats] = useState<ProjectStatisticData | null>(null);
   const [loading, setLoading] = useState(false);
@@ -47,32 +49,78 @@ const ProjectDetailStatistic = ({ reloadKey }: ProjectDetailStatisticProps) => {
       .finally(() => setLoading(false));
   }, [pid, reloadKey]);
 
-  if (loading || !stats) return <Spin />;
+  if (loading) return <Spin />;
+
+  // Kiểm tra nếu không có dữ liệu thống kê
+  if (!stats) {
+    return (
+      <Alert
+        message={t('statistics.warning.noData')}
+        description={t('statistics.warning.noDataMessage')}
+        type="warning"
+        showIcon
+        style={{ margin: '24px' }}
+      />
+    );
+  }
+
+  // Kiểm tra nếu không có giai đoạn nào
+  if (!stats.startDateProject || !stats.latestTimePhase || !stats.nowDate) {
+    return (
+      <Alert
+        message={t('statistics.warning.noPhases')}
+        description={t('statistics.warning.noPhasesMessage')}
+        type="warning"
+        showIcon
+        style={{ margin: '24px' }}
+      />
+    );
+  }
 
   // Tính toán các giá trị phần trăm
   const phasePercent = Math.round((stats.currentPhase / stats.totalPhase) * 100);
 
-  const parseDate = (str: string): Date => {
+    const parseDate = (str: string): Date => {
+    if (!str) {
+      throw new Error('Date string is null or undefined');
+    }
     const [d, m, y] = str.split('/').map(Number);
     return new Date(y, m - 1, d);
   };
-  const start = parseDate(stats.startDateProject).getTime();
-  const now = parseDate(stats.nowDate).getTime();
-  const latestPhase = parseDate(stats.latestTimePhase).getTime();
 
-  const totalDuration = latestPhase - start;
-  const nowToLatestDuration = latestPhase - now;
-  const startToNowDuration = now - start;
+  let start: number, now: number, latestPhase: number;
+  let totalDuration: number, nowToLatestDuration: number, startToNowDuration: number;
+  let percentStartToLatest: number, percentNowToLatest: number;
 
-  const percentStartToLatest = totalDuration > 0 ? Math.min(100, Math.round((startToNowDuration / totalDuration) * 100)) : 0;
-  const percentNowToLatest = totalDuration > 0 ? Math.max(0, Math.round((nowToLatestDuration / totalDuration) * 100)) : 0;
+  try {
+    start = parseDate(stats.startDateProject).getTime();
+    now = parseDate(stats.nowDate).getTime();
+    latestPhase = parseDate(stats.latestTimePhase).getTime();
+
+    totalDuration = latestPhase - start;
+    nowToLatestDuration = latestPhase - now;
+    startToNowDuration = now - start;
+
+    percentStartToLatest = totalDuration > 0 ? Math.min(100, Math.round((startToNowDuration / totalDuration) * 100)) : 0;
+    percentNowToLatest = totalDuration > 0 ? Math.max(0, Math.round((nowToLatestDuration / totalDuration) * 100)) : 0;
+  } catch (error) {
+    return (
+      <Alert
+        message={t('statistics.warning.noData')}
+        description={t('statistics.warning.noDataMessage')}
+        type="warning"
+        showIcon
+        style={{ margin: '24px' }}
+      />
+    );
+  }
 
   // Dữ liệu cho Bar chart 3 cột
   const barData = {
     labels: [
-      'Tiến độ giai đoạn',
-      'Thời gian còn lại (hiện tại → kết thúc)',
-      'Thời gian đã qua (bắt đầu → hiện tại)'
+      t('statistics.progress.phaseProgress'),
+      t('statistics.progress.remainingTime'),
+      t('statistics.progress.elapsedTime')
     ],
     datasets: [
       {
@@ -115,52 +163,52 @@ const ProjectDetailStatistic = ({ reloadKey }: ProjectDetailStatisticProps) => {
         <Col span={4}>
           <Card>
             <Statistic
-              title="Tổng tài liệu"
+              title={t('statistics.cards.totalDocuments')}
               value={stats.totalDocument}
-              prefix={<FileTextOutlined />}
+              prefix={<FileTextOutlined style={{ color: 'purple' }}/>}
             />
           </Card>
         </Col>
         <Col span={4}>
           <Card>
             <Statistic
-              title="Tổng báo cáo"
+              title={t('statistics.cards.totalReports')}
               value={stats.totalReport}
-              prefix={<BarChartOutlined />}
+              prefix={<BarChartOutlined style={{ color: 'violet' }}/>}
             />
           </Card>
         </Col>
         <Col span={4}>
           <Card>
             <Statistic
-              title="Tổng yêu cầu"
+              title={t('statistics.cards.totalRequests')}
               value={stats.totalRequest}
-              prefix={<FormOutlined />}
+              prefix={<FormOutlined style={{ color: '#faad14' }}/>}
             />
           </Card>
         </Col>
           <Col span={4}>
           <Card>
             <Statistic
-              title="Tổng yêu cầu đã hoàn thành"
+              title={t('statistics.cards.completedRequests')}
               value={stats.totalDocCompleted || 0}
-              prefix={<CheckCircleOutlined />}
+              prefix={<CheckCircleOutlined style={{ color: '#52c41a' }}/>}
             />
           </Card>
         </Col>
         <Col span={4}>
           <Card>
             <Statistic
-              title="Yêu cầu mới"
+              title={t('statistics.cards.newRequests')}
               value={stats.totalNewRequest || 0}
-              prefix={<ExclamationCircleOutlined />}
+              prefix={<ExclamationCircleOutlined style={{ color: '#1890ff' }}/>}
             />
           </Card>
         </Col>
        
       </Row>
       <Card>
-        <Title level={5}>Tiến độ dự án</Title>
+        <Title level={5}>{t('statistics.progress.title')}</Title>
         <Card
         >
             <Bar data={barData} options={barOptions} height={100} />

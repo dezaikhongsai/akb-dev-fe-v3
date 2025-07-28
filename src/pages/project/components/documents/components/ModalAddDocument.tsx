@@ -1,8 +1,12 @@
-import { ClockCircleOutlined, FileAddOutlined, SaveOutlined, PlusOutlined, DeleteOutlined, LeftOutlined, RightOutlined, UploadOutlined, FileTextOutlined, FileDoneOutlined, FileProtectOutlined, DownloadOutlined } from "@ant-design/icons";
+import { FileAddOutlined, SaveOutlined, PlusOutlined, DeleteOutlined, LeftOutlined, RightOutlined, UploadOutlined, FileTextOutlined, FileDoneOutlined, FileProtectOutlined, DownloadOutlined, CloseOutlined } from "@ant-design/icons";
 import { Button, Modal, Space, Typography, Input, Radio, Form, message, Card, Divider, List, Tooltip } from "antd";
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import { addDocument } from '../../../../../services/document/document.service';
+import SearchBox from '../../../../../common/components/SearchBox';
+import { autoSearchProject } from '../../../../../services/home/home.service';
+import { Project } from '../../../../../common/components/SearchBox';
+import { useDebounce } from '../../../../../common/hooks/useDebounce';
         
 interface IDocumentData {
     document: {
@@ -20,17 +24,12 @@ interface IContentInput {
 }
 
 interface ModalAddDocumentProp {
-    projectId: string;
+    mode : 'in' | 'out',
+    projectId?: string;
     open: boolean;
     onClose: () => void;
     onSuccess?: (type: string) => void;
 }
-
-const typeOptions = [
-    { value: "request", label: "Request", color: "blue", icon: <FileProtectOutlined /> },
-    { value: "report", label: "Report", color: "orange", icon: <FileDoneOutlined /> },
-    { value: "document", label: "Document", color: "green", icon: <FileTextOutlined /> },
-];
 
 const ACCEPTED_FILE_TYPES = {
     'doc': 'application/msword',
@@ -56,13 +55,95 @@ const ModalAddDocument: React.FC<ModalAddDocumentProp> = ({
     onClose,
     onSuccess,
     projectId,
+    mode,
 }) => {
-    const { t } = useTranslation(["project", "common"]);
+    const { t } = useTranslation(["document", "common"]);
+    
+    const typeOptions = [
+        { value: "request", label: t("type_options.request"), color: "blue", icon: <FileProtectOutlined /> },
+        { value: "report", label: t("type_options.report"), color: "orange", icon: <FileDoneOutlined /> },
+        { value: "document", label: t("type_options.document"), color: "green", icon: <FileTextOutlined /> },
+    ];
     const [form] = Form.useForm();
     const [contents, setContents] = useState<IContentInput[]>([{ content: '', fileIndexes: [] }]);
     const [files, setFiles] = useState<File[]>([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [loading, setLoading] = useState(false);
+    const [touched, setTouched] = useState<{[key: string]: boolean}>({});
+
+    // Project search states for mode 'out'
+    const [searchValue, setSearchValue] = useState('');
+    const [searchResults, setSearchResults] = useState<Project[]>([]);
+    const [searchLoading, setSearchLoading] = useState(false);
+    const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+    const debouncedSearchValue = useDebounce(searchValue, 400);
+
+    // Hàm reset form và tất cả state
+    const resetForm = useCallback(() => {
+        // Reset form fields
+        form.resetFields();
+        
+        // Reset all states
+        setContents([{ content: '', fileIndexes: [] }]);
+        setFiles([]);
+        setCurrentPage(1);
+        setSelectedProject(null);
+        setSearchValue('');
+        setSearchResults([]);
+        setLoading(false);
+        setTouched({});
+        
+        // Clear validation errors
+        form.validateFields().catch(() => {});
+    }, [form]);
+
+    // Reset form when modal opens
+    useEffect(() => {
+        if (open) {
+            resetForm();
+        }
+    }, [open, resetForm]);
+
+    // Handle project search
+    useEffect(() => {
+        const fetchSearchResults = async () => {
+            if (!debouncedSearchValue) {
+                setSearchResults([]);
+                return;
+            }
+
+            try {
+                setSearchLoading(true);
+                const response = await autoSearchProject(debouncedSearchValue);
+                setSearchResults(response.data);
+            } catch (error) {
+                console.error('Search error:', error);
+                setSearchResults([]);
+            } finally {
+                setSearchLoading(false);
+            }
+        };
+
+        fetchSearchResults();
+    }, [debouncedSearchValue]);
+
+    // Handle project selection
+    const handleProjectSelect = (project: Project) => {
+        setSelectedProject(project);
+        setSearchValue(project.name);
+        setSearchResults([]);
+        // Set the form field value for validation
+        form.setFieldValue('projectId', project._id);
+        // Mark as touched
+        setTouched(prev => ({ ...prev, projectId: true }));
+        // Clear any validation errors
+        form.validateFields(['projectId']).catch(() => {});
+    };
+
+    // Handle field blur to mark as touched
+    const handleFieldBlur = (fieldName: string) => {
+        setTouched(prev => ({ ...prev, [fieldName]: true }));
+    };
 
     // Xử lý upload file cho content hiện tại
     const handleUploadFiles = (newFiles: File[]) => {
@@ -135,12 +216,10 @@ const ModalAddDocument: React.FC<ModalAddDocumentProp> = ({
         const extension = file.name.split('.').pop()?.toLowerCase() || '';
         const expectedMimeType = ACCEPTED_FILE_TYPES[extension as keyof typeof ACCEPTED_FILE_TYPES];
         if (!expectedMimeType || !(file.type === expectedMimeType || file.type.startsWith('application/') || file.type.startsWith('image/'))) {
-            message.error(t('document.content.invalid_file_type'));
             return false;
         }
         const maxSize = 50 * 1024 * 1024; // 50MB
         if (file.size > maxSize) {
-            message.error(t('document.content.file_too_large', { maxSize: '50MB' }));
             return false;
         }
         return true;
@@ -149,11 +228,19 @@ const ModalAddDocument: React.FC<ModalAddDocumentProp> = ({
     // Khi submit
     const handleSave = async () => {
         try {
+            // Mark all fields as touched when submitting
+            setTouched({
+                projectId: true,
+                type: true,
+                name: true
+            });
+            
             await form.validateFields();
+            
             setLoading(true);
             const data: IDocumentData = {
                 document: {
-                    projectId: projectId,
+                    projectId: mode === 'in' ? projectId! : selectedProject!._id,
                     type: form.getFieldValue('type'),
                     name: form.getFieldValue('name'),
                     contents: contents
@@ -164,15 +251,13 @@ const ModalAddDocument: React.FC<ModalAddDocumentProp> = ({
             formData.append("document", JSON.stringify(data.document));
             files.forEach(file => formData.append("files", file));
             await addDocument(formData);
-            message.success(t("common.success"));
+            message.success(t("add"));
             if (onSuccess) onSuccess(form.getFieldValue('type'));
+            resetForm();
             onClose();
-            setContents([{ content: '', fileIndexes: [] }]);
-            setFiles([]);
-            setCurrentPage(1);
-            form.resetFields();
         } catch (err: any) {
-            message.error(err?.message || t('common.error'));
+            // Don't show error message popup, let form validation handle it
+            console.error('Save error:', err);
         } finally {
             setLoading(false);
         }
@@ -183,18 +268,21 @@ const ModalAddDocument: React.FC<ModalAddDocumentProp> = ({
     return (
         <Modal
             open={open}
-            onCancel={onClose}
+            onCancel={() => {
+                resetForm();
+                onClose();
+            }}
             width={900}
             bodyStyle={{ maxHeight: '60vh', overflow: 'auto' }}
             title={
                 <Space>
                     <FileAddOutlined />
-                    <Typography.Text>{t("document.add")}</Typography.Text>
+                    <Typography.Text>{t("add")}</Typography.Text>
                 </Space>
             }
             footer={[
                 <Button
-                    icon={<ClockCircleOutlined />}
+                    icon={<CloseOutlined />}
                     onClick={onClose}
                     key="close"
                 >
@@ -208,7 +296,7 @@ const ModalAddDocument: React.FC<ModalAddDocumentProp> = ({
                     disabled={contents.length === 0}
                     loading={loading}
                 >
-                    {t("document.save")}
+                    {t("save")}
                 </Button>
             ]}
         >
@@ -218,12 +306,86 @@ const ModalAddDocument: React.FC<ModalAddDocumentProp> = ({
                 initialValues={{ type: "request" }}
                 style={{ marginBottom: 24 }}
             >
+                {/* Project selection for mode 'out' */}
+                {mode === 'out' && (
+                    <Form.Item
+                        label={<Space><FileTextOutlined />{t("project", { ns: "common" })}</Space>}
+                        name="projectId"
+                        validateStatus={touched.projectId && !selectedProject ? 'error' : undefined}
+                        help={touched.projectId && !selectedProject ? t("content.select_project_required") : undefined}
+                        rules={[{ 
+                            required: true, 
+                            validator: (_, _value) => {
+                                if (!selectedProject) {
+                                    return Promise.reject(new Error(t("content.select_project_required")));
+                                }
+                                return Promise.resolve();
+                            }
+                        }]}
+                    >
+                        <div>
+                            <SearchBox
+                                options={searchResults}
+                                placeholder={t("content.search_project")}
+                                value={searchValue}
+                                onChange={setSearchValue}
+                                onSelectProject={handleProjectSelect}
+                                loading={searchLoading}
+                                noDataMessage={t("content.no_projects_found")}
+                                style={{ width: '100%' }}
+                            />
+                            {selectedProject && (
+                                <div style={{ 
+                                    marginTop: 8, 
+                                    padding: 8, 
+                                    backgroundColor: '#f6ffed', 
+                                    border: '1px solid #b7eb8f', 
+                                    borderRadius: 6,
+                                    fontSize: '12px',
+                                    position: 'relative'
+                                }}>
+                                    <Button
+                                        type="text"
+                                        size="small"
+                                        icon={<CloseOutlined />}
+                                        style={{
+                                            position: 'absolute',
+                                            top: 4,
+                                            right: 4,
+                                            color: '#666'
+                                        }}
+                                        onClick={() => {
+                                            setSelectedProject(null);
+                                            setSearchValue('');
+                                            form.setFieldValue('projectId', undefined);
+                                            setTouched(prev => ({ ...prev, projectId: true }));
+                                            // Clear validation errors
+                                            form.validateFields(['projectId']).catch(() => {});
+                                        }}
+                                    />
+                                    <div><strong>{t("content.selected")}:</strong> {selectedProject.name}</div>
+                                    <div style={{ color: '#666' }}>
+                                        {selectedProject.alias} • {selectedProject.pm?.profile.name || 'N/A'}
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    </Form.Item>
+                )}
+                
                 <Form.Item
-                    label={<Space><FileProtectOutlined />{t("document.type")}</Space>}
+                    label={<Space><FileProtectOutlined />{t("type")}</Space>}
                     name="type"
-                    rules={[{ required: true, message: t("document.type") + " is required" }]}
+                    validateStatus={touched.type && !form.getFieldValue('type') ? 'error' : undefined}
+                    help={touched.type && !form.getFieldValue('type') ? t("type") + " is required" : undefined}
+                    rules={[{ required: true, message: t("type") + " is required" }]}
                 >
-                    <Radio.Group optionType="button" buttonStyle="solid" style={{ width: '100%' }}>
+                    <Radio.Group 
+                        optionType="button" 
+                        buttonStyle="solid" 
+                        style={{ width: '100%' }}
+                        onChange={() => setTouched(prev => ({ ...prev, type: true }))}
+                    >
                         {typeOptions.map(opt => (
                             <Radio.Button value={opt.value} key={opt.value} style={{ width: 140, textAlign: 'center', marginRight: 8 }}>
                                 <Space>
@@ -235,21 +397,26 @@ const ModalAddDocument: React.FC<ModalAddDocumentProp> = ({
                     </Radio.Group>
                 </Form.Item>
                 <Form.Item
-                    label={<Space><FileTextOutlined />{t("document.name")}</Space>}
+                    label={<Space><FileTextOutlined />{t("name")}</Space>}
                     name="name"
-                    rules={[{ required: true, message: t("document.name") + " is required" }]}
+                    validateStatus={touched.name && !form.getFieldValue('name') ? 'error' : undefined}
+                    help={touched.name && !form.getFieldValue('name') ? t("name") + " is required" : undefined}
+                    rules={[{ required: true, message: t("name") + " is required" }]}
                 >
-                    <Input placeholder={t("document.name")}/>
+                    <Input 
+                        placeholder={t("name")}
+                        onBlur={() => handleFieldBlur('name')}
+                    />
                 </Form.Item>
             </Form>
-            <Divider orientation="left"><Space><FileTextOutlined />{t("document.contents")}</Space></Divider>
+            <Divider orientation="left"><Space><FileTextOutlined />{t("contents")}</Space></Divider>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}>
                 <Button
                     icon={<PlusOutlined />}
                     type="dashed"
                     onClick={handleAddContent}
                 >
-                    {t("document.content.add")}
+                    {t("content.add")}
                 </Button>
                 <Space>
                     <Button
@@ -270,7 +437,7 @@ const ModalAddDocument: React.FC<ModalAddDocumentProp> = ({
                     title={
                         <Space>
                             <FileTextOutlined />
-                            <Typography.Text strong>{t("document.content")}</Typography.Text>
+                            <Typography.Text strong>{t("content.add")}</Typography.Text>
                             {contents.length > 1 && (
                                 <Button
                                     icon={<DeleteOutlined />}
@@ -288,19 +455,19 @@ const ModalAddDocument: React.FC<ModalAddDocumentProp> = ({
                     <Input.TextArea
                         value={currentContent.content}
                         onChange={e => handleContentChange(e.target.value)}
-                        placeholder={t('document.content.enter_content')}
+                        placeholder={t('content.enter_content')}
                         style={{ marginBottom: 16 }}
                         autoSize={{ minRows: 2, maxRows: 4 }}
                     />
-                    <Divider orientation="left"><Space><UploadOutlined style={{ color: '#722ED1' }} />{t('document.content.files')}</Space></Divider>
+                    <Divider orientation="left"><Space><UploadOutlined style={{ color: '#722ED1' }} />{t('content.files')}</Space></Divider>
                     <List
-                        header={<b>{t('document.content.files')}</b>}
+                        header={<b>{t('content.files')}</b>}
                         dataSource={currentContent.fileIndexes}
-                        locale={{ emptyText: t('document.content.no_files') }}
+                        locale={{ emptyText: t('content.no_files') }}
                         renderItem={idx => (
                             <List.Item
                                 actions={[
-                                    <Tooltip title={t('document.content.download')} key="download">
+                                    <Tooltip title={t('content.download')} key="download">
                                         <Button
                                             type="text"
                                             icon={<DownloadOutlined />}
@@ -319,7 +486,7 @@ const ModalAddDocument: React.FC<ModalAddDocumentProp> = ({
                                             }}
                                         />
                                     </Tooltip>,
-                                    <Tooltip title={t('document.content.delete')} key="delete">
+                                    <Tooltip title={t('content.delete')} key="delete">
                                         <Button
                                             type="text"
                                             danger
@@ -357,7 +524,7 @@ const ModalAddDocument: React.FC<ModalAddDocumentProp> = ({
                         style={{ marginTop: 16, background: '#722ED1', borderColor: '#722ED1' }}
                         onClick={() => document.getElementById('file-upload-inline')?.click()}
                     >
-                        {t('document.content.upload_file')}
+                        {t('content.upload_file')}
                     </Button>
                 </Card>
             )}

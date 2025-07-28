@@ -1,4 +1,4 @@
-import { Table, Pagination, Select, Input, Space, Tag, Dropdown, Button, Modal, Card, Row, Col, Statistic, Skeleton, Alert } from 'antd';
+import { Table, Pagination, Select, Input, Space, Tag, Dropdown, Button, Modal, Card, Row, Col, Statistic, Skeleton, Alert, Tabs } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { useEffect, useState } from 'react';
 import { getUser, deleteUser, getUserStatistic, createUser, updateUserProfile } from '../../services/user/user.service';
@@ -20,13 +20,16 @@ import {
   CheckCircleFilled,
   WarningFilled,
   CloseOutlined,
+  EyeOutlined,
+  EyeInvisibleOutlined,
 } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
-import { Pie } from 'react-chartjs-2';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import ModalUserForm from './components/ModalUserForm';
 import ModalUserDetail from './components/ModalUserDetail';
 import type { UserResponse, UserStatistic, User } from './interfaces/user.interface';
+import CustomerStatistic from './components/CustomerStatistic';
+import PmStatistic from './components/PmStatistic';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -53,7 +56,7 @@ const User = () => {
   const [submitLoading, setSubmitLoading] = useState(false);
   const [detailModalVisible, setDetailModalVisible] = useState(false);
   const [selectedUserDetail, setSelectedUserDetail] = useState<User | null>(null);
-  // const [isClickingAction, setIsClickingAction] = useState(false);
+  const [showTabs, setShowTabs] = useState(true);
 
   const fetchUsers = async () => {
     try {
@@ -338,167 +341,136 @@ const User = () => {
     </Button>
   );
 
-  const roleChartData = {
-    labels: [t('role.admin'), t('role.customer'), t('role.pm')],
-    datasets: [
-      {
-        data: [statistic?.percentAdmin || 0, statistic?.percentCustomer || 0, statistic?.percentPM || 0],
-        backgroundColor: ['#ff4d4f', '#52c41a', '#1890ff'],
-        borderWidth: 0,
-      },
-    ],
-  };
-
-  const chartOptions = {
-    plugins: {
-      legend: {
-        position: 'bottom' as const,
-        labels: {
-          color: '#000000',
-          font: {
-            size: 12
-          }
-        }
-      },
-      tooltip: {
-        callbacks: {
-          label: function(context: any) {
-            return `${context.label}: ${context.raw}%`;
-          }
-        },
-        backgroundColor: '#ffffff',
-        titleColor: '#000000',
-        bodyColor: '#000000',
-        borderColor: '#e6e6e6',
-        borderWidth: 1,
-        padding: 12,
-        boxPadding: 4,
-        bodyFont: {
-          size: 12
-        },
-        titleFont: {
-          size: 13,
-          weight: 'bold' as const
-        }
-      }
-    },
-    responsive: true,
-    maintainAspectRatio: false,
-  };
-
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-6 space-y-6 ">
       <Card className="shadow-sm" title={<Space><TeamOutlined />{t('statistic.title')}</Space>}>
-        <Row gutter={[24, 24]}>
-          {/* Left column - Pie chart */}
-          <Col xs={24} lg={12}>
-            <Card title={t('statistic.roleDistribution')} className="h-full">
+        {/* Alert section */}
+        <div className="mb-6 mt-6" style={{ paddingTop : '6px' }}>
+          {loading ? (
+            <Skeleton active paragraph={{ rows: 1 }} />
+          ) : (
+            statistic?.totalInactiveUser === 0 ? (
+              <Alert
+                message={t('statistic.fullActivation')}
+                type="success"
+                showIcon
+                icon={<CheckCircleFilled />}
+              />
+            ) : (
+              <Alert
+                message={t('statistic.inactiveUsers', { count: statistic?.totalInactiveUser })}
+                type="warning"
+                showIcon
+                icon={<WarningFilled />}
+              />
+            )
+          )}
+        </div>
+
+        {/* Statistics cards - 5 cards in a row */}
+        <Row gutter={[24, 24]} className="mb-6" style={{ paddingTop : '15px' }}>
+          <Col xs={24} sm={12} md={8} lg={4}>
+            <Card className="shadow-sm hover:shadow-md transition-shadow">
               {loading ? (
-                <Skeleton active />
+                <Skeleton active paragraph={false} />
               ) : (
-                <div style={{ height: 300 }}>
-                  <Pie data={roleChartData} options={chartOptions} />
-                </div>
+                <Statistic
+                  title={t('statistic.totalUser')}
+                  value={statistic?.totalUser}
+                  prefix={<TeamOutlined />}
+                />
               )}
             </Card>
           </Col>
 
-          {/* Right column - Statistics cards */}
-          <Col xs={24} lg={12}>
-            <Row gutter={[16, 16]}>
-              <Col xs={24} sm={12}>
-                <Card>
-                  {loading ? (
-                    <Skeleton active paragraph={false} />
-                  ) : (
-                    <Statistic
-                      title={t('statistic.totalUser')}
-                      value={statistic?.totalUser}
-                      prefix={<TeamOutlined />}
-                    />
-                  )}
-                </Card>
-              </Col>
+          <Col xs={24} sm={12} md={8} lg={4}>
+            <Card className="shadow-sm hover:shadow-md transition-shadow">
+              {loading ? (
+                <Skeleton active paragraph={false} />
+              ) : (
+                <Statistic
+                  title={t('statistic.totalCustomer')}
+                  value={statistic?.totalCustomer}
+                  prefix={<UsergroupAddOutlined style={{ color: '#52c41a' }} />}
+                  valueStyle={{ color: '#52c41a' }}
+                />
+              )}
+            </Card>
+          </Col>
 
-              <Col xs={24} sm={12}>
-                <Card>
-                  {loading ? (
-                    <Skeleton active paragraph={false} />
-                  ) : (
-                    <Statistic
-                      title={t('statistic.totalCustomer')}
-                      value={statistic?.totalCustomer}
-                      prefix={<UsergroupAddOutlined style={{ color: '#52c41a' }} />}
-                      valueStyle={{ color: '#52c41a' }}
-                    />
-                  )}
-                </Card>
-              </Col>
+          <Col xs={24} sm={12} md={8} lg={4}>
+            <Card className="shadow-sm hover:shadow-md transition-shadow">
+              {loading ? (
+                <Skeleton active paragraph={false} />
+              ) : (
+                <Statistic
+                  title={t('statistic.totalAdmin')}
+                  value={statistic?.totalAdmin}
+                  prefix={<UserOutlined style={{ color: '#ff4d4f' }} />}
+                  valueStyle={{ color: '#ff4d4f' }}
+                />
+              )}
+            </Card>
+          </Col>
 
-              <Col xs={24} sm={12}>
-                <Card>
-                  {loading ? (
-                    <Skeleton active paragraph={false} />
-                  ) : (
-                    <Statistic
-                      title={t('statistic.totalAdmin')}
-                      value={statistic?.totalAdmin}
-                      prefix={<UserOutlined style={{ color: '#ff4d4f' }} />}
-                      valueStyle={{ color: '#ff4d4f' }}
-                    />
-                  )}
-                </Card>
-              </Col>
+          <Col xs={12} sm={12} md={8} lg={4}>
+            <Card className="shadow-sm hover:shadow-md transition-shadow">
+              {loading ? (
+                <Skeleton active paragraph={false} />
+              ) : (
+                <Statistic
+                  title={t('statistic.totalPM')}
+                  value={statistic?.totalPM}
+                  prefix={<UserSwitchOutlined style={{ color: '#1890ff' }} />}
+                  valueStyle={{ color: '#1890ff' }}
+                />
+              )}
+            </Card>
+          </Col>
 
-              <Col xs={24} sm={12}>
-                <Card>
-                  {loading ? (
-                    <Skeleton active paragraph={false} />
-                  ) : (
-                    <Statistic
-                      title={t('statistic.totalPM')}
-                      value={statistic?.totalPM}
-                      prefix={<UserSwitchOutlined style={{ color: '#1890ff' }} />}
-                      valueStyle={{ color: '#1890ff' }}
-                    />
-                  )}
-                </Card>
-              </Col>
-
-              <Col xs={24}>
-                {loading ? (
-                  <Skeleton active paragraph={{ rows: 1 }} />
-                ) : (
-                  statistic?.totalInactiveUser === 0 ? (
-                    <Alert
-                      message={t('statistic.fullActivation')}
-                      type="success"
-                      showIcon
-                      icon={<CheckCircleFilled />}
-                    />
-                  ) : (
-                    <Alert
-                      message={t('statistic.inactiveUsers', { count: statistic?.totalInactiveUser })}
-                      type="warning"
-                      showIcon
-                      icon={<WarningFilled />}
-                    />
-                  )
-                )}
-              </Col>
-            </Row>
+          
+        </Row>
+        <Row style={{ paddingTop : '10px' }}>
+          <Col xs={24}>
+            <div className="flex justify-between items-center mb-4">
+              <Button
+                type="default"
+                icon={showTabs ? <EyeInvisibleOutlined /> : <EyeOutlined />}
+                onClick={() => setShowTabs(!showTabs)}
+              >
+                {showTabs ? t('action.hide') : t('action.show')}
+              </Button>
+            </div>
+            {showTabs && (
+              <Tabs
+                items={[
+                  {
+                    key: 'customer',
+                    label: t('statistic.customer'),
+                    children: <CustomerStatistic />
+                  },
+                  {
+                    key: 'pm',
+                    label: t('statistic.pm'),
+                    children: <PmStatistic />
+                  }
+                ]}
+              />
+            )}
           </Col>
         </Row>
       </Card>
 
+      <div style={{ paddingTop : '20px' }}>
       <Card 
-        className="shadow-sm" 
+        className="shadow-sm " 
         title={<Space><UserOutlined />{t('table.title')}</Space>}
         extra={<ExtraContent />}
+        style={{ paddingTop : '10px' }}
       >
-        <div className="space-y-6">
-          <Card className="bg-gray-50">
-            <Space size="middle" wrap className="w-full justify-start">
+        <div className="space-y-6">           
+           <div style={{ paddingBottom : '20px' }}>
+           <Space size="middle" wrap className="w-full justify-start" style={{ paddingTop : '10px' }}>
               <Input
                 placeholder={t('search.placeholder')}
                 onChange={(e) => setSearchTerm(e.target.value)}
@@ -534,7 +506,7 @@ const User = () => {
                 allowClear
               />
             </Space>
-          </Card>
+           </div>
 
           <Table
             columns={columns}
@@ -569,6 +541,7 @@ const User = () => {
           />
         </div>
       </Card>
+      </div>
       <ModalUserForm
         open={modalOpen}
         onCancel={() => setModalOpen(false)}

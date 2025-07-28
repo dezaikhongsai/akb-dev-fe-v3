@@ -1,0 +1,67 @@
+{
+  "add": "フェーズを追加",
+  "update": "フェーズを更新",
+  "addPhase": "フェーズを追加",
+  "form": {
+    "name": "フェーズ名",
+    "name.placeholder": "フェーズ名を入力",
+    "description": "説明",
+    "description.placeholder": "説明を入力",
+    "startDate": "開始日",
+    "startDate.placeholder": "開始日を選択"
+  },
+  "validation": {
+    "name": {
+      "required": "フェーズ名を入力してください！"
+    },
+    "startDate": {
+      "required": "開始日を選択してください！"
+    }
+  },
+  "messages": {
+    "createSuccess": "フェーズの作成に成功しました！",
+    "updateSuccess": "フェーズの更新に成功しました！",
+    "createError": "フェーズの作成中にエラーが発生しました！",
+    "updateError": "フェーズの更新中にエラーが発生しました！"
+  },
+  "delete": "削除",
+  "phase" : {
+    "add" : "フェーズを追加",
+    "update" : "フェーズを更新",
+    "addPhase" : "フェーズを追加",
+    "form" : {
+      "name" : "フェーズ名",
+      "name.placeholder" : "フェーズ名を入力",
+      "description" : "説明",
+      "description.placeholder" : "説明を入力",
+      "startDate" : "開始日",
+      "startDate.placeholder" : "開始日を選択"
+    },
+    "validation" : {
+      "name" : {
+        "required" : "フェーズ名を入力してください！"
+      },
+      "startDate" : {
+        "required" : "開始日を選択してください！"
+      }
+    },
+    "messages" : {
+      "createSuccess" : "フェーズの作成に成功しました！",
+      "updateSuccess" : "フェーズの更新に成功しました！",
+      "createError" : "フェーズの作成中にエラーが発生しました！",
+      "updateError" : "フェーズの更新中にエラーが発生しました！"
+    },
+    "delete" : "削除",
+    "common" : {
+      "close" : "閉じる",
+      "save" : "保存"
+    },
+    "document": {
+      "type_options": {
+        "request": "リクエスト",
+        "report": "レポート",
+        "document": "ドキュメント"
+      }
+    }
+  }
+} 

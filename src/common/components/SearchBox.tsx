@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Input, InputRef, Spin, Empty } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
+import { useTranslation } from 'react-i18next';
 
 export interface Project {
   _id: string;
@@ -43,6 +44,7 @@ const SearchBox: React.FC<SearchBoxProps> = ({
   noDataMessage = 'Không có kết quả',
   value
 }) => {
+  const { t } = useTranslation(['common']);
   const [isOpen, setIsOpen] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -257,7 +259,7 @@ const SearchBox: React.FC<SearchBoxProps> = ({
                       >
                         {project.pm && (
                           <div>
-                            Phụ trách: {project.pm.profile.name}
+                            {t('pm.label')}: {project.pm.profile.name}
                           </div>
                         )}
 

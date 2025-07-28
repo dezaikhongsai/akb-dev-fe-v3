@@ -42,7 +42,7 @@ interface DocumentInprojectProps {
 const { Text } = Typography;
 
 const DocumentInproject: React.FC<DocumentInprojectProps> = ({ onReloadStatistic }) => {
-  const { t } = useTranslation(['project', 'common']);
+  const { t } = useTranslation(['document', 'common']);
   const { pid } = useParams();
   const [searchTerm, setSearchTerm] = useState('');
   const [currentTab, setCurrentTab] = useState('document');
@@ -135,9 +135,9 @@ const DocumentInproject: React.FC<DocumentInprojectProps> = ({ onReloadStatistic
 
   const handleDeleteContent = async (contentId: string) => {
     Modal.confirm({
-      title: t('document.content.delete_confirm_title'),
+      title: t('content.delete_confirm_title'),
       icon: <WarningFilled style={{ color: '#faad14' }} />,
-      content: t('document.content.delete_confirm_content'),
+              content: t('content.delete_confirm_content'),
       okText: t('common.confirm'),
       cancelText: t('common.cancel'),
       okButtonProps: { 
@@ -147,11 +147,11 @@ const DocumentInproject: React.FC<DocumentInprojectProps> = ({ onReloadStatistic
       onOk: async () => {
         try {
           await deleteContent(contentId);
-          message.success(t('document.content.delete_success'));
+          message.success(t('content.delete_success'));
           fetchDocuments(); // Refresh data
           if (onReloadStatistic) onReloadStatistic();
         } catch (error) {
-          message.error(t('document.content.delete_error'));
+          message.error(t('content.delete_error'));
         }
       }
     });
@@ -159,9 +159,9 @@ const DocumentInproject: React.FC<DocumentInprojectProps> = ({ onReloadStatistic
 
   const handleDeleteDocument = async (documentId: string) => {
     Modal.confirm({
-      title: t('document.delete_confirm_title'),
+      title: t('delete_confirm_title'),
       icon: <WarningFilled style={{ color: '#faad14' }} />,
-      content: t('document.delete_confirm_content'),
+              content: t('delete_confirm_content'),
       okText: t('common.confirm'),
       cancelText: t('common.cancel'),
       okButtonProps: { 
@@ -171,11 +171,11 @@ const DocumentInproject: React.FC<DocumentInprojectProps> = ({ onReloadStatistic
       onOk: async () => {
         try {
           await deleteDocument(documentId);
-          message.success(t('document.delete_success'));
+          message.success(t('delete_success'));
           fetchDocuments(); // Refresh data
           if (onReloadStatistic) onReloadStatistic();
         } catch (error) {
-          message.error(t('document.delete_error'));
+          message.error(t('delete_error'));
         }
       }
     });
@@ -230,10 +230,10 @@ const DocumentInproject: React.FC<DocumentInprojectProps> = ({ onReloadStatistic
     setLoading(true);
     try {
       await changeIsCompleted(documentId);
-      message.success(t('document.status_update_success'));
+      message.success(t('status_update_success'));
       fetchDocuments();
     } catch (error) {
-      message.error(t('document.status_update_error'));
+      message.error(t('status_update_error'));
     } finally {
       setLoading(false);
     }
@@ -241,7 +241,7 @@ const DocumentInproject: React.FC<DocumentInprojectProps> = ({ onReloadStatistic
 
   const handleModalSuccess = () => {
     setIsModalOpen(false);
-    setSuccessMessage(t('document.content.update_success'));
+    setSuccessMessage(t('content.update_success'));
     fetchDocuments();
     if (onReloadStatistic) onReloadStatistic();
   };
@@ -256,13 +256,13 @@ const DocumentInproject: React.FC<DocumentInprojectProps> = ({ onReloadStatistic
   const getContentActionItems = (record: IDocument, content: any): MenuProps['items'] => [
     {
       key: 'view',
-      label: t('document.content.view'),
+      label: t('content.view'),
       icon: <EyeOutlined />,
       onClick: () => handleViewContent(record, content)
     },
     {
       key: 'delete',
-      label: t('document.content.delete'),
+      label: t('content.delete'),
       icon: <DeleteOutlined />,
       danger: true,
       onClick: () => handleDeleteContent(content._id)
@@ -272,19 +272,19 @@ const DocumentInproject: React.FC<DocumentInprojectProps> = ({ onReloadStatistic
   const getDocumentActionItems = (record: IDocument): MenuProps['items'] => [
     {
       key: 'add_content',
-      label: t('document.action.add_content'),
+      label: t('action.add_content'),
       icon: <FileAddOutlined />,
       onClick: () => handleAddContent(record._id)
     },
     {
       key: 'change_status',
-      label: record.isCompleted ? t('document.action.mark_processing') : t('document.action.mark_done'),
+      label: record.isCompleted ? t('action.mark_processing') : t('action.mark_done'),
       icon: record.isCompleted ? <FormOutlined /> : <BarChartOutlined />,
       onClick: () => handleChangeIsCompleted(record._id)
     },
     {
       key: 'delete',
-      label: t('document.action.delete'),
+      label: t('action.delete'),
       icon: <DeleteOutlined />,
       danger: true,
       onClick: () => handleDeleteDocument(record._id)
@@ -309,7 +309,7 @@ const DocumentInproject: React.FC<DocumentInprojectProps> = ({ onReloadStatistic
       })
     },
     {
-      title: t('document.name'),
+      title: t('name'),
       key: 'name',
       onHeaderCell: () => ({
         style: headerStyle
@@ -322,7 +322,24 @@ const DocumentInproject: React.FC<DocumentInprojectProps> = ({ onReloadStatistic
       )
     },
     {
-      title: t('document.status'),
+      title: t('type'),
+      key: 'type',
+      width: 120,
+      align: 'center',
+      onHeaderCell: () => ({
+        style: headerStyle
+      }),
+      render: (_, record) => (
+        <Tag color={
+          record.type === 'document' ? 'blue' :
+          record.type === 'report' ? 'green' : 'orange'
+        }>
+          {t(`type_options.${record.type}`)}
+        </Tag>
+      )
+    },
+    {
+      title: t('status'),
       key: 'status',
       width: 150,
       align: 'center',
@@ -333,17 +350,17 @@ const DocumentInproject: React.FC<DocumentInprojectProps> = ({ onReloadStatistic
       render: (_, record) => (
         record.isCompleted ? (
           <Tag color="success">
-            {t('document.completed')}
+            {t('completed')}
           </Tag>
         ) : (
           <Tag color="processing">
-            {t('document.in_progress')}
+            {t('in_progress')}
           </Tag>
         )
       )
     },
     {
-      title: t('document.creator'),
+      title: t('creator'),
       key: 'creator',
       width: 200,
       responsive: ['lg'],
@@ -358,7 +375,7 @@ const DocumentInproject: React.FC<DocumentInprojectProps> = ({ onReloadStatistic
       )
     },
     {
-      title: t('document.contents'),
+      title: t('contents'),
       key: 'contents',
       onHeaderCell: () => ({
         style: headerStyle
@@ -387,7 +404,7 @@ const DocumentInproject: React.FC<DocumentInprojectProps> = ({ onReloadStatistic
       )
     },
     {
-      title: t('document.created_at'),
+      title: t('created_at'),
       key: 'createdAt',
       width: 180,
       responsive: ['lg'],
@@ -424,7 +441,7 @@ const DocumentInproject: React.FC<DocumentInprojectProps> = ({ onReloadStatistic
         {!loading && (
           documents.length === 0 ? (
             <Alert
-              message={t('Chưa có tài liệu được cập nhật')}
+              message={t('messages.no_documents')}
               type="warning"
               showIcon
               style={{ marginBottom: 16 }}
@@ -432,7 +449,7 @@ const DocumentInproject: React.FC<DocumentInprojectProps> = ({ onReloadStatistic
           ) : (
             pendingCount > 0 && (
               <Alert
-                message={t('Bạn có {{count}} tài liệu cần duyệt', { count: pendingCount })}
+                message={t('messages.pending_documents', { count: pendingCount })}
                 type="info"
                 showIcon
                 style={{ marginBottom: 16 }}
@@ -443,7 +460,7 @@ const DocumentInproject: React.FC<DocumentInprojectProps> = ({ onReloadStatistic
         <Row justify="start" style={{ marginBottom: 16 }} gutter={8}>
           <Col>
             <Input
-              placeholder={t('document.search.placeholder')}
+              placeholder={t('search.placeholder')}
               prefix={<SearchOutlined />}
               value={searchTerm}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchTerm(e.target.value)}
@@ -458,8 +475,8 @@ const DocumentInproject: React.FC<DocumentInprojectProps> = ({ onReloadStatistic
               onChange={setStatusFilter}
               options={[
                 { value: 'all', label: t('common.all') },
-                { value: 'completed', label: t('document.completed') },
-                { value: 'in_progress', label: t('document.in_progress') },
+                { value: 'completed', label: t('completed') },
+                { value: 'in_progress', label: t('in_progress') },
               ]}
             />
           </Col>
@@ -506,7 +523,7 @@ const DocumentInproject: React.FC<DocumentInprojectProps> = ({ onReloadStatistic
       label: (
         <Space>
           <FileTextOutlined />
-          {t('document.tab.documents')}
+          {t('tab.documents')}
         </Space>
       ),
       children: renderDocumentTable()
@@ -516,7 +533,7 @@ const DocumentInproject: React.FC<DocumentInprojectProps> = ({ onReloadStatistic
       label: (
         <Space>
           <BarChartOutlined />
-          {t('document.tab.reports')}
+          {t('tab.reports')}
         </Space>
       ),
       children: renderDocumentTable()
@@ -526,7 +543,7 @@ const DocumentInproject: React.FC<DocumentInprojectProps> = ({ onReloadStatistic
       label: (
         <Space>
           <FormOutlined />
-          {t('document.tab.requests')}
+          {t('tab.requests')}
         </Space>
       ),
       children: renderDocumentTable()
@@ -545,7 +562,7 @@ const DocumentInproject: React.FC<DocumentInprojectProps> = ({ onReloadStatistic
         title={
           <Space>
             <ProjectOutlined />
-            {t('document.title')}
+            {t('title')}
           </Space>
         }
         extra={
@@ -554,7 +571,7 @@ const DocumentInproject: React.FC<DocumentInprojectProps> = ({ onReloadStatistic
             icon={<PlusOutlined />}
             onClick={handleOpenAddDocument}
           >
-            {t('document.add')}
+            {t('add')}
           </Button>
         }
         style={{ marginBottom: 24 }}
@@ -634,6 +651,7 @@ const DocumentInproject: React.FC<DocumentInprojectProps> = ({ onReloadStatistic
         open={isModalAddDocumentOpen}
         onClose={() => setIsModalAddDocumentOpen(false)}
         projectId={pid || ''}
+        mode='in'
         onSuccess={(type) => {
           setIsModalAddDocumentOpen(false);
           if (type) {

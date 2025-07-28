@@ -12,7 +12,7 @@ const NotFound: React.FC = () => {
       title="404"
       subTitle={t('notFound')}
       extra={
-        <Button type="primary" onClick={() => navigate('/')}>
+        <Button type="primary" onClick={() => navigate('/projects')}>
           {t('backToHomePage')}
         </Button>
       }

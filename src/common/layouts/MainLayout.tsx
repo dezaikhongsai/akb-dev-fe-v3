@@ -15,7 +15,8 @@ import {
   TeamOutlined,
   UserOutlined,
   SettingOutlined,
-  CloseOutlined
+  CloseOutlined,
+  ThunderboltOutlined
 } from '@ant-design/icons';
 import { logout } from '../../services/auth';
 import { useNavigate, Outlet, useLocation } from 'react-router-dom';
@@ -32,6 +33,7 @@ import { autoSearchProject } from '../../services/home/home.service';
 import SearchBox from '../components/SearchBox';
 import Notification from '../components/Notification';
 import type { ItemType } from 'antd/es/menu/interface'; // Correct import for Ant Design types
+import ModalAddDocument from '../../pages/project/components/documents/components/ModalAddDocument';
 
 const { Header, Sider, Content } = Layout;
 
@@ -80,6 +82,7 @@ const MainLayout: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
   const debouncedSearchValue = useDebounce(searchValue, 400);
+  const [openModalAddDocument , setOpenModalAddDocument] = useState(false);
   // Handle click outside to close search results dropdown
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -192,12 +195,7 @@ const MainLayout: React.FC = () => {
   // Convert menuConfig to Ant Design Menu items format with grouping
   const menuItems: ItemType[] = useMemo(() => {
     return [
-      // Home
-      {
-        key: 'home',
-        icon: menuConfig.home.icon,
-        label: menuConfig.home.label,
-      },
+  
       // Project Management Group
       {
         key: 'project-management',
@@ -212,18 +210,6 @@ const MainLayout: React.FC = () => {
         ],
       },
       // Request Management Group
-      {
-        key: 'request-management',
-        icon: menuConfig['request-management'].icon,
-        label: menuConfig['request-management'].label,
-        children: [
-          {
-            key: 'requests',
-            icon: menuConfig['requests'].icon,
-            label: menuConfig['requests'].label,
-          },
-        ],
-      },
       // User Management Group
       {
         key: 'user-management',
@@ -234,11 +220,6 @@ const MainLayout: React.FC = () => {
             key: 'user',
             icon: menuConfig.user.icon,
             label: menuConfig.user.label,
-          },
-          {
-            key: 'customers',
-            icon: menuConfig.customers.icon,
-            label: menuConfig.customers.label,
           },
         ],
       },
@@ -638,6 +619,40 @@ const MainLayout: React.FC = () => {
           <AppFooter />
         </Layout>
       </Layout>
+      
+      {/* Floating Action Button */}
+      <Button
+        type="default"
+        shape="circle"
+        size="small"
+        icon={<ThunderboltOutlined   />}
+        style={{
+          position: 'fixed',
+          bottom: 24,
+          right: 24,
+          width: 56,
+          height: 56,
+          boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
+          zIndex: 1000,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          fontSize: 20
+        }}
+        onClick={() => {
+          // Add your action here
+          console.log('Floating button clicked');
+          setOpenModalAddDocument(true);
+        }}
+      />
+      <ModalAddDocument
+        open={openModalAddDocument}
+        onClose={() => setOpenModalAddDocument(false)}
+        mode='out'
+        onSuccess={() => {
+          setOpenModalAddDocument(false);
+        }}
+      />
     </Layout >
   );
 };

@@ -1,0 +1,60 @@
+{
+  "add": "Thêm giai đoạn",
+  "update": "Cập nhật giai đoạn",
+  "addPhase": "Thêm giai đoạn",
+  "form": {
+    "name": "Tên giai đoạn",
+    "name.placeholder": "Nhập tên giai đoạn",
+    "description": "Mô tả",
+    "description.placeholder": "Nhập mô tả",
+    "startDate": "Ngày bắt đầu",
+    "startDate.placeholder": "Chọn ngày bắt đầu"
+  },
+  "validation": {
+    "name": {
+      "required": "Vui lòng nhập tên giai đoạn!"
+    },
+    "startDate": {
+      "required": "Vui lòng chọn ngày bắt đầu!"
+    }
+  },
+  "messages": {
+    "createSuccess": "Tạo giai đoạn thành công!",
+    "updateSuccess": "Cập nhật giai đoạn thành công!",
+    "createError": "Có lỗi xảy ra khi tạo giai đoạn!",
+    "updateError": "Có lỗi xảy ra khi cập nhật giai đoạn!"
+  },
+  "delete": "Xóa",
+  "phase" : {
+    "add" : "Thêm giai đoạn",
+    "update" : "Cập nhật giai đoạn",
+    "addPhase" : "Thêm giai đoạn",
+    "form" : {
+      "name" : "Tên giai đoạn",
+      "name.placeholder" : "Nhập tên giai đoạn",
+      "description" : "Mô tả",
+      "description.placeholder" : "Nhập mô tả",
+      "startDate" : "Ngày bắt đầu",
+      "startDate.placeholder" : "Chọn ngày bắt đầu"
+    },
+    "validation" : {
+      "name" : {
+        "required" : "Vui lòng nhập tên giai đoạn!"
+      },
+      "startDate" : {
+        "required" : "Vui lòng chọn ngày bắt đầu!"
+      }
+    },
+    "messages" : {
+      "createSuccess" : "Tạo giai đoạn thành công!",
+      "updateSuccess" : "Cập nhật giai đoạn thành công!",
+      "createError" : "Có lỗi xảy ra khi tạo giai đoạn!",
+      "updateError" : "Có lỗi xảy ra khi cập nhật giai đoạn!"
+    },
+    "delete" : "Xóa",
+    "common" : {
+      "close" : "Đóng",
+      "save" : "Lưu"
+    }
+  }
+}

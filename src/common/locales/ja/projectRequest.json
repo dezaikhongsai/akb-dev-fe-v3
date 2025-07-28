@@ -89,6 +89,51 @@
 
         "uploadDocumentSuccess": "ドキュメントが正常にアップロードされました",
         "uploadDocumentError": "ドキュメントのアップロード中にエラーが発生しました"
+    },
+    "statistics": {
+        "loading": "データを読み込み中...",
+        "error": "エラー",
+        "errorMessage": "データの読み込み中にエラーが発生しました",
+        "invalidData": "データ形式が正しくありません",
+        "noData": "通知",
+        "noDataMessage": "統計データがありません",
+        "filter": {
+            "dateRange": "期間",
+            "startDate": "開始月",
+            "endDate": "終了月",
+            "reset": "リセット"
+        },
+        "columns": {
+            "stt": "番号",
+            "projectAlias": "プロジェクトコード",
+            "projectName": "プロジェクト名",
+            "pm": "プロジェクトマネージャー",
+            "customer": "顧客名",
+            "totalDocuments": "総ドキュメント数",
+            "incompleteDocuments": "未完了",
+            "action": "アクション"
+        },
+        "documentColumns": {
+            "name": "ドキュメント名",
+            "type": "タイプ",
+            "createdBy": "作成者",
+            "updatedBy": "更新者",
+            "createdAt": "作成日",
+            "updatedAt": "更新日"
+        },
+        "actions": {
+            "viewDetails": "詳細を見る"
+        },
+        "expandable": {
+            "title": "未完了のドキュメント",
+            "noIncompleteDocuments": "未完了のドキュメントはありません"
+        },
+        "completionRate": "完了"
+    },
+    "type_options": {
+        "request": "リクエスト",
+        "report": "レポート",
+        "document": "ドキュメント"
     }
 
 }

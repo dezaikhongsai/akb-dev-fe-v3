@@ -27,11 +27,6 @@ interface ModalUpdateProjectProps {
   phasesCount: number;
 }
 
-const statusOptions = [
-  { value: 'processing', label: <><SyncOutlined spin /> Processing</> },
-  { value: 'pending', label: <><ClockCircleOutlined /> Pending</> },
-];
-
 const ModalUpdateProject: React.FC<ModalUpdateProjectProps> = ({
   open,
   onCancel,
@@ -41,6 +36,11 @@ const ModalUpdateProject: React.FC<ModalUpdateProjectProps> = ({
   phasesCount
 }) => {
   const { t } = useTranslation(['project', 'common']);
+  
+  const statusOptions = [
+    { value: 'processing', label: <><SyncOutlined spin /> {t('statusValues.processing')}</> },
+    { value: 'pending', label: <><ClockCircleOutlined /> {t('statusValues.pending')}</> },
+  ];
   const [form] = Form.useForm();
   const [isChanged, setIsChanged] = React.useState(false);
 
@@ -89,7 +89,7 @@ const ModalUpdateProject: React.FC<ModalUpdateProjectProps> = ({
       title={
         <Space>
           <EditOutlined />
-          {t('modal.update.title', { ns: 'project', defaultValue: 'Cập nhật dự án' })}
+          {t('modal.update.title')}
         </Space>
       }
       onCancel={onCancel}
@@ -99,7 +99,7 @@ const ModalUpdateProject: React.FC<ModalUpdateProjectProps> = ({
           onClick={onCancel}
           icon={<CloseOutlined />}
         >
-          {t('modal.update.button.cancel', { ns: 'project', defaultValue: 'Hủy' })}
+          {t('modal.update.button.cancel')}
         </Button>,
         <Button
           key="submit"
@@ -109,7 +109,7 @@ const ModalUpdateProject: React.FC<ModalUpdateProjectProps> = ({
           icon={<SaveOutlined />}
           disabled={!isChanged}
         >
-          {t('modal.update.button.update', { ns: 'project', defaultValue: 'Cập nhật' })}
+          {t('modal.update.button.update')}
         </Button>
       ]}
       maskClosable={false}
@@ -123,44 +123,44 @@ const ModalUpdateProject: React.FC<ModalUpdateProjectProps> = ({
       >
         <Form.Item
           name="status"
-          label={t('form.status', { ns: 'project', defaultValue: 'Trạng thái' })}
-          rules={[{ required: true, message: t('validation.status.required', { ns: 'common', defaultValue: 'Vui lòng chọn trạng thái' }) }]}
+          label={t('form.status')}
+          rules={[{ required: true, message: t('validation.status.required', { ns: 'common' }) }]}
         >
-          <Select options={statusOptions} placeholder={t('form.status.placeholder', { ns: 'project', defaultValue: 'Chọn trạng thái' })} />
+          <Select options={statusOptions} placeholder={t('form.status.placeholder')} />
         </Form.Item>
         <Form.Item
           name="currentPhase"
-          label={t('form.currentPhase', { ns: 'project', defaultValue: 'Giai đoạn hiện tại' })}
+          label={t('form.currentPhase')}
           rules={[
-            { required: true, message: t('validation.currentPhase.required', { ns: 'common', defaultValue: 'Vui lòng nhập giai đoạn hiện tại' }) },
-            { type: 'number', min: 1, max: phasesCount, message: t('validation.currentPhase.range', { ns: 'common', defaultValue: `Giai đoạn phải từ 1 đến ${phasesCount}` }) }
+            { required: true, message: t('validation.currentPhase.required', { ns: 'common' }) },
+            { type: 'number', min: 1, max: phasesCount, message: t('validation.currentPhase.range', { ns: 'common', max: phasesCount }) }
           ]}
         >
-          <InputNumber min={1} max={phasesCount} prefix={<SwapOutlined />} style={{ width: '100%' }} placeholder={t('form.currentPhase.placeholder', { ns: 'project', defaultValue: 'Nhập số giai đoạn hiện tại' })} />
+                      <InputNumber min={1} max={phasesCount} prefix={<SwapOutlined />} style={{ width: '100%' }} placeholder={t('form.currentPhase.placeholder')} />
         </Form.Item>
         <Form.Item
           name="startDate"
-          label={t('form.startDate', { ns: 'project', defaultValue: 'Ngày bắt đầu' })}
-          rules={[{ required: true, message: t('validation.startDate.required', { ns: 'common', defaultValue: 'Vui lòng chọn ngày bắt đầu' }) }]}
+          label={t('form.startDate')}
+          rules={[{ required: true, message: t('validation.startDate.required', { ns: 'common' }) }]}
         >
           <DatePicker
             style={{ width: '100%' }}
             format="DD/MM/YYYY"
-            placeholder={t('form.startDate.placeholder', { ns: 'project', defaultValue: 'Chọn ngày bắt đầu' })}
+            placeholder={t('form.startDate.placeholder')}
             prefix={<CalendarOutlined />}
           />
         </Form.Item>
         <Form.Item
           name="endDate"
-          label={t('form.endDate', { ns: 'project', defaultValue: 'Ngày kết thúc' })}
+          label={t('form.endDate')}
           rules={[
-            { required: true, message: t('validation.endDate.required', { ns: 'common', defaultValue: 'Vui lòng chọn ngày kết thúc' }) },
+            { required: true, message: t('validation.endDate.required', { ns: 'common' }) },
             ({ getFieldValue }) => ({
               validator(_, value) {
                 if (!value || !getFieldValue('startDate') || value.isAfter(getFieldValue('startDate'))) {
                   return Promise.resolve();
                 }
-                return Promise.reject(new Error(t('validation.endDate.afterStart', { ns: 'common', defaultValue: 'Ngày kết thúc phải sau ngày bắt đầu' })));
+                return Promise.reject(new Error(t('validation.endDate.afterStart', { ns: 'common' })));
               },
             }),
           ]}
@@ -168,7 +168,7 @@ const ModalUpdateProject: React.FC<ModalUpdateProjectProps> = ({
           <DatePicker
             style={{ width: '100%' }}
             format="DD/MM/YYYY"
-            placeholder={t('form.endDate.placeholder', { ns: 'project', defaultValue: 'Chọn ngày kết thúc' })}
+            placeholder={t('form.endDate.placeholder')}
             prefix={<CalendarOutlined />}
           />
         </Form.Item>
