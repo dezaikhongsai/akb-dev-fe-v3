@@ -15,7 +15,7 @@ import {
   WarningFilled
 } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import type { UploadFile } from 'antd/es/upload/interface';
 
 const { Text } = Typography;
@@ -27,6 +27,7 @@ interface FileItem {
   size?: number;
   isNew?: boolean;
   originFileObj?: File;
+  filepath?: string; // Đường dẫn file trên server
 }
 
 interface ContentInputFormProps {
@@ -136,6 +137,8 @@ const ContentInputForm: React.FC<ContentInputFormProps> = ({
     return <FileOutlined style={{ fontSize: 24, color: '#8C8C8C' }} />;
   };
 
+  const uploadsUrl = import.meta.env.VITE_IS_PROD ? import.meta.env.VITE_API_UPLOAD_PROD : import.meta.env.VITE_API_UPLOAD_URL;
+
   const handlePreview = (file: any) => {
     const isPreviewable = file.type.toLowerCase().includes('pdf') ||
       file.type.toLowerCase().includes('image') ||
@@ -149,7 +152,15 @@ const ContentInputForm: React.FC<ContentInputFormProps> = ({
           setPreviewOpen(true);
           return;
         }
-        // Không có file path thực tế ở đây
+        // Sử dụng uploadsUrl cho file đã upload
+        if (file.filepath) {
+          const fullPath = `${uploadsUrl}/${file.filepath}`;
+          setPreviewUrl(fullPath);
+          setPreviewTitle(file.name);
+          setPreviewOpen(true);
+          return;
+        }
+        // Fallback nếu không có filepath
         setPreviewUrl('');
         setPreviewTitle(file.name);
         setPreviewOpen(true);
@@ -172,6 +183,20 @@ const ContentInputForm: React.FC<ContentInputFormProps> = ({
         link.click();
         document.body.removeChild(link);
         URL.revokeObjectURL(downloadUrl);
+      } else if (file.filepath) {
+        // Sử dụng uploadsUrl cho file đã upload
+        const fullPath = `${uploadsUrl}/${file.filepath}`;
+        const response = await fetch(fullPath);
+        if (!response.ok) throw new Error('Network response was not ok');
+        const blob = await response.blob();
+        const blobUrl = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = blobUrl;
+        link.download = file.name;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(blobUrl);
       }
     } catch (error) {
               message.error(t('content.download_error'));
@@ -192,6 +217,15 @@ const ContentInputForm: React.FC<ContentInputFormProps> = ({
     setIsSubmitting(false);
     onClose();
   };
+
+  // Cleanup object URLs when component unmounts
+  useEffect(() => {
+    return () => {
+      if (previewUrl.startsWith('blob:')) {
+        URL.revokeObjectURL(previewUrl);
+      }
+    };
+  }, [previewUrl]);
 
   return (
     <Modal
@@ -332,7 +366,7 @@ const ContentInputForm: React.FC<ContentInputFormProps> = ({
               }}
               title={previewTitle}
             />
-          ) : (
+          ) : previewTitle.toLowerCase().match(/\.(jpg|jpeg|png|gif|webp)$/i) ? (
             <img
               alt={previewTitle}
               style={{
@@ -344,6 +378,17 @@ const ContentInputForm: React.FC<ContentInputFormProps> = ({
               }}
               src={previewUrl}
             />
+          ) : (
+            <div style={{ 
+              display: 'flex', 
+              justifyContent: 'center', 
+              alignItems: 'center', 
+              height: '100%',
+              flexDirection: 'column'
+            }}>
+              <FileOutlined style={{ fontSize: 48, color: '#8C8C8C', marginBottom: 16 }} />
+              <Text type="secondary">{t('content.preview_not_supported')}</Text>
+            </div>
           )}
         </div>
       </Modal>
