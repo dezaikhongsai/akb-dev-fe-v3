@@ -73,6 +73,7 @@
   "project": "Dự án",
   "common" : {
     "close" : "Đóng",
-    "save" : "Lưu"
+    "save" : "Lưu",
+    "error_occurred": "Đã xảy ra lỗi"
   }
 }

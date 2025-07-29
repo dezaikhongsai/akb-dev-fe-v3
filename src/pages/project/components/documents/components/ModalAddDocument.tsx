@@ -215,13 +215,26 @@ const ModalAddDocument: React.FC<ModalAddDocumentProp> = ({
     const beforeUpload = (file: File) => {
         const extension = file.name.split('.').pop()?.toLowerCase() || '';
         const expectedMimeType = ACCEPTED_FILE_TYPES[extension as keyof typeof ACCEPTED_FILE_TYPES];
-        if (!expectedMimeType || !(file.type === expectedMimeType || file.type.startsWith('application/') || file.type.startsWith('image/'))) {
+        
+        // Check file type
+        if (!expectedMimeType) {
+            message.error(`${file.name} - ${t("content.invalid_file_type")}`);
             return false;
         }
-        const maxSize = 50 * 1024 * 1024; // 50MB
+        
+        // Check MIME type
+        if (!(file.type === expectedMimeType || file.type.startsWith('application/') || file.type.startsWith('image/'))) {
+            message.error(`${file.name} - ${t("content.invalid_file_type")}`);
+            return false;
+        }
+        
+        // Check file size (50MB)
+        const maxSize = 50 * 1024 * 1024;
         if (file.size > maxSize) {
+            message.error(`${file.name} - ${t("content.file_too_large", { maxSize: "50MB" })}`);
             return false;
         }
+        
         return true;
     };
 
@@ -237,6 +250,16 @@ const ModalAddDocument: React.FC<ModalAddDocumentProp> = ({
             
             await form.validateFields();
             
+            // Validate projectId for mode 'in'
+            if (mode === 'in') {
+                if (!projectId || projectId.trim() === '') {
+                    console.error('ProjectId validation failed:', { projectId, mode });
+                    message.error(t("content.project_id_required"));
+                    return;
+                }
+                console.log('ProjectId validation passed:', { projectId, mode });
+            }
+            
             setLoading(true);
             const data: IDocumentData = {
                 document: {
@@ -247,6 +270,16 @@ const ModalAddDocument: React.FC<ModalAddDocumentProp> = ({
                 },
                 files: files
             };
+            
+            console.log('Submitting document data:', {
+                mode,
+                projectId: data.document.projectId,
+                type: data.document.type,
+                name: data.document.name,
+                contentsCount: data.document.contents.length,
+                filesCount: data.files.length
+            });
+            
             const formData = new FormData();
             formData.append("document", JSON.stringify(data.document));
             files.forEach(file => formData.append("files", file));
@@ -256,8 +289,13 @@ const ModalAddDocument: React.FC<ModalAddDocumentProp> = ({
             resetForm();
             onClose();
         } catch (err: any) {
-            // Don't show error message popup, let form validation handle it
+            // Show error message for better debugging
             console.error('Save error:', err);
+            if (err.response?.data?.message) {
+                message.error(err.response.data.message);
+            } else {
+                message.error(t("common.error_occurred"));
+            }
         } finally {
             setLoading(false);
         }
@@ -512,9 +550,17 @@ const ModalAddDocument: React.FC<ModalAddDocumentProp> = ({
                         onChange={e => {
                             const fileList = Array.from(e.target.files || []);
                             const validFiles = fileList.filter(beforeUpload);
+                            const invalidFiles = fileList.filter(file => !beforeUpload(file));
+                            
                             if (validFiles.length > 0) {
                                 handleUploadFiles(validFiles);
+                                message.success(`${validFiles.length} ${t("content.file_upload_success")}`);
                             }
+                            
+                            if (invalidFiles.length > 0) {
+                                console.log(`${invalidFiles.length} files were rejected`);
+                            }
+                            
                             e.target.value = '';
                         }}
                     />

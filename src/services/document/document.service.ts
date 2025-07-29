@@ -92,3 +92,12 @@ export const changeIsCompleted = async (documentId : string) => {
     throw new Error(error.response.data.message);
   }
 }
+
+export const messageDocStatus = async (projectId : string) => {
+  try {
+    const response = await api.get(`/document/message-doc-status/${projectId}`);
+    return response.data;
+  } catch (error: any) {
+    throw new Error(error.response.data.message);
+  }
+}

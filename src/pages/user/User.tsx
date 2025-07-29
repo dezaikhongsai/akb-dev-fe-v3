@@ -30,7 +30,9 @@ import ModalUserDetail from './components/ModalUserDetail';
 import type { UserResponse, UserStatistic, User } from './interfaces/user.interface';
 import CustomerStatistic from './components/CustomerStatistic';
 import PmStatistic from './components/PmStatistic';
-
+import { useSelector } from 'react-redux';
+import { selectAuthUser } from '../../common/stores/auth/authSelector';
+import AccessLimit from '../../common/components/AccessLimit';
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 
@@ -57,8 +59,10 @@ const User = () => {
   const [detailModalVisible, setDetailModalVisible] = useState(false);
   const [selectedUserDetail, setSelectedUserDetail] = useState<User | null>(null);
   const [showTabs, setShowTabs] = useState(true);
+  const currentUser = useSelector(selectAuthUser);
 
   const fetchUsers = async () => {
+    if(currentUser?.role === 'customer') return;
     try {
       setLoading(true);
       const response = await getUser(
@@ -78,6 +82,7 @@ const User = () => {
   };
 
   const fetchStatistic = async () => {
+    if(currentUser?.role === 'customer') return;
     try {
       const response = await getUserStatistic();
       setStatistic(response.data);
@@ -102,6 +107,7 @@ const User = () => {
   };
 
   const handleDelete = async (userId: string) => {
+    if(currentUser?.role === 'customer') return;
     modal.confirm({
       title: t('modal.delete.title'),
       icon: <ExclamationCircleOutlined />,
@@ -125,6 +131,7 @@ const User = () => {
   };
 
   const handleCreateUser = () => {
+    if(currentUser?.role === 'customer') return;
     setSelectedUser(undefined);
     setModalMode('create');
     setModalOpen(true);
@@ -342,7 +349,11 @@ const User = () => {
   );
 
   return (
-    <div className="p-6 space-y-6 ">
+   <>
+   {currentUser?.role === 'customer' ? 
+    <> <AccessLimit/> </> : 
+    <>
+       <div className="p-6 space-y-6 ">
       <Card className="shadow-sm" title={<Space><TeamOutlined />{t('statistic.title')}</Space>}>
         {/* Alert section */}
         <div className="mb-6 mt-6" style={{ paddingTop : '6px' }}>
@@ -557,6 +568,8 @@ const User = () => {
       />
       {contextHolder}
     </div>
+    </> }
+   </>
   );
 };
 

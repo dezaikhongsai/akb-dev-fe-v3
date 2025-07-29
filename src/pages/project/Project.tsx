@@ -54,7 +54,7 @@ ChartJS.register(
 );
 
 const Project = () => {
-  const [showChart, setShowChart] = useState(true);
+  const [showChart, setShowChart] = useState(false);
   const { t } = useTranslation(['project', 'document']);
   const currentUser = useSelector(selectAuthUser);
   const isCustomer = currentUser?.role === 'customer';

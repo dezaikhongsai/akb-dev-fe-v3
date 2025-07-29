@@ -40,6 +40,7 @@
     "files": "Tệp đính kèm",
     "no_files": "Chưa có tệp nào",
     "upload_file": "Tải lên tệp",
+    "file_upload_success": "tệp đã được tải lên thành công",
     "select_files": "Chọn tệp",
     "download": "Tải xuống",
     "preview": "Xem trước",
@@ -61,6 +62,7 @@
     "new_file": "Tệp mới",
     "search_project": "Tìm kiếm dự án...",
     "select_project_required": "Vui lòng chọn một dự án",
+    "project_id_required": "ID dự án là bắt buộc",
     "no_projects_found": "Không tìm thấy dự án nào",
     "selected": "Đã chọn"
   },

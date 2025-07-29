@@ -14,7 +14,6 @@ import {
   EditOutlined,
   TeamOutlined,
   UserOutlined,
-  SettingOutlined,
   CloseOutlined,
   ThunderboltOutlined
 } from '@ant-design/icons';
@@ -31,7 +30,7 @@ import AppFooter from './components/AppFooter';
 import { useDebounce } from '../../common/hooks/useDebounce';
 import { autoSearchProject } from '../../services/home/home.service';
 import SearchBox from '../components/SearchBox';
-import Notification from '../components/Notification';
+// import Notification from '../components/Notification';
 import type { ItemType } from 'antd/es/menu/interface'; // Correct import for Ant Design types
 import ModalAddDocument from '../../pages/project/components/documents/components/ModalAddDocument';
 
@@ -446,7 +445,7 @@ const MainLayout: React.FC = () => {
               />
             </div>
             {/* Ô thông báo */}
-            <Notification />
+            {/* <Notification /> */}
             {/* ô ngôn ngữ */}
             <LanguageSwitcher />
             {/* ô profile */}
@@ -554,7 +553,7 @@ const MainLayout: React.FC = () => {
                   {getAvatarText}
                 </Avatar>
                 <span style={{ fontWeight: 500, color: '#444746' }}>{displayName}</span>
-                <SettingOutlined style={{ color: '#444746' }} />
+                {/* <SettingOutlined style={{ color: '#444746' }} /> */}
               </div>
             </Dropdown>
             {/* Dropdown profile */}

@@ -1,4 +1,5 @@
-import { Card, Tabs, Table, Space, Typography, Tag, Button, Modal, Row, Col, Input, Dropdown, Pagination, message, Select, Alert } from 'antd';
+import { Card, Tabs, Table, Space, Typography, Tag, Button, Modal, Row, Col, Input, Dropdown, Pagination, message, Select, Badge, Spin } from 'antd';
+
 import { IDocument } from '../../interfaces/project.interface';
 import {
   ProjectOutlined,
@@ -29,6 +30,7 @@ import {
   deleteDocument, 
   updateContent,
   changeIsCompleted,
+  messageDocStatus
 } from '../../../../services/document/document.service';
 import ModalContent from './components/ModalContent';
 import type { UploadFile } from 'antd/es/upload/interface';
@@ -49,6 +51,7 @@ const DocumentInproject: React.FC<DocumentInprojectProps> = ({ onReloadStatistic
   const [currentPage, setCurrentPage] = useState(1);
   const [documents, setDocuments] = useState<IDocument[]>([]);
   const [loading, setLoading] = useState(false);
+  const [statusLoading, _setStatusLoading] = useState(false);
   const [pagination, setPagination] = useState({
     total: 0,
     page: 1,
@@ -81,37 +84,120 @@ const DocumentInproject: React.FC<DocumentInprojectProps> = ({ onReloadStatistic
   const [isModalAddDocumentOpen , setIsModalAddDocumentOpen] = useState(false);
   const [statusFilter, setStatusFilter] = useState<'all' | 'completed' | 'in_progress'>('all');
   const debouncedSearchTerm = useDebounce(searchTerm);
-  const pendingCount = documents.filter(doc => !doc.isCompleted).length;
+  const [documentStatus, setDocumentStatus] = useState<any>(null);
+  const [_lastFetchTime, setLastFetchTime] = useState<number>(0);
+  const [lastTabFetchTime, setLastTabFetchTime] = useState<{[key: string]: number}>({});
+  const CACHE_DURATION = 30000; // 30 seconds cache
 
-  const fetchDocuments = async () => {
+  // Combined fetch function with error handling and caching
+  const fetchData = async (showLoading = true, forceRefresh = false) => {
     if (!pid) return;
     
-    setLoading(true);
+    const now = Date.now();
+    const cacheKey = `${currentTab}_${currentPage}_${statusFilter}_${debouncedSearchTerm}`;
+    const lastFetch = lastTabFetchTime[cacheKey] || 0;
+    
+    // Check if we need to refresh (cache expired or forced)
+    if (!forceRefresh && now - lastFetch < CACHE_DURATION) {
+      console.log(`Using cached data for ${currentTab} tab`);
+      return; // Use cached data
+    }
+    
+    logApiCall(forceRefresh ? 'Force Refresh' : 'Fetch', currentTab);
+    
+    if (showLoading) {
+      setLoading(true);
+    }
+    
     try {
-      const params: any = {
-        page: currentPage,
-        limit: pagination.limit,
-        type: currentTab,
-        name: debouncedSearchTerm,
-        sort: 'createdAt:desc'
-      };
-      if (statusFilter === 'completed') params.isCompleted = true;
-      else if (statusFilter === 'in_progress') params.isCompleted = false;
+      // Fetch documents and status in parallel
+      const [documentsResponse, statusResponse] = await Promise.allSettled([
+        getDocumentByProjectId(pid, {
+          page: currentPage,
+          limit: pagination.limit,
+          type: currentTab,
+          name: debouncedSearchTerm,
+          sort: 'createdAt:desc',
+          ...(statusFilter === 'completed' && { isCompleted: true }),
+          ...(statusFilter === 'in_progress' && { isCompleted: false })
+        }),
+        messageDocStatus(pid)
+      ]);
 
-      const response = await getDocumentByProjectId(pid, params);
-      
-      setDocuments(response.data.documents);
-      setPagination(response.data.pagination);
+      // Handle documents response
+      if (documentsResponse.status === 'fulfilled') {
+        setDocuments(documentsResponse.value.data.documents);
+        setPagination(documentsResponse.value.data.pagination);
+      } else {
+        console.error('Error fetching documents:', documentsResponse.reason);
+        message.error(t('common.fetch_error'));
+      }
+
+      // Handle status response
+      if (statusResponse.status === 'fulfilled') {
+        setDocumentStatus(statusResponse.value.data);
+      } else {
+        console.error('Error fetching status:', statusResponse.reason);
+        // Don't show error message for status as it's not critical
+      }
+
+      // Update cache for this specific tab/query combination
+      setLastTabFetchTime(prev => ({
+        ...prev,
+        [cacheKey]: now
+      }));
+      setLastFetchTime(now);
     } catch (error) {
-      console.error('Error fetching documents:', error);
+      console.error('Error in fetchData:', error);
+      message.error(t('common.fetch_error'));
     } finally {
-      setLoading(false);
+      if (showLoading) {
+        setLoading(false);
+      }
     }
   };
 
+  // Debounced version for search
+  const debouncedFetchData = useDebounce(fetchData, 500);
+
+  // Function to force refresh cache
+  // const refreshData = () => {
+  //   setLastFetchTime(0);
+  //   setLastTabFetchTime({}); // Clear all tab cache
+  //   fetchData(true, true);
+  // };
+
+  // Debug function to log API calls
+  const logApiCall = (action: string, tab: string) => {
+    console.log(`API Call - ${action}: ${tab} tab at ${new Date().toLocaleTimeString()}`);
+  };
+
+  // const fetchMessageDocStatus = async () => {
+  //   if (!pid) return;
+    
+  //   setStatusLoading(true);
+  //   try {
+  //     const response = await messageDocStatus(pid);
+  //     setDocumentStatus(response.data);
+  //   } catch (error) {
+  //     console.error('Error fetching message doc status:', error);
+  //   } finally {
+  //     setStatusLoading(false);
+  //   }
+  // }
+
   useEffect(() => {
-    fetchDocuments();
-  }, [pid, currentPage, currentTab, debouncedSearchTerm, statusFilter]);
+    fetchData();
+  }, [pid, currentPage, currentTab, statusFilter]);
+
+  // Use debounced version for search
+  useEffect(() => {
+    if (debouncedSearchTerm !== searchTerm) {
+      debouncedFetchData(false); // Don't show loading for search
+    }
+  }, [debouncedSearchTerm]);
+
+
 
   const handleViewContent = (record: IDocument, content: any) => {
     setSelectedContent({
@@ -148,7 +234,7 @@ const DocumentInproject: React.FC<DocumentInprojectProps> = ({ onReloadStatistic
         try {
           await deleteContent(contentId);
           message.success(t('content.delete_success'));
-          fetchDocuments(); // Refresh data
+          fetchData(true, true); // Force refresh after delete
           if (onReloadStatistic) onReloadStatistic();
         } catch (error) {
           message.error(t('content.delete_error'));
@@ -172,7 +258,7 @@ const DocumentInproject: React.FC<DocumentInprojectProps> = ({ onReloadStatistic
         try {
           await deleteDocument(documentId);
           message.success(t('delete_success'));
-          fetchDocuments(); // Refresh data
+          fetchData(true, true); // Force refresh after delete
           if (onReloadStatistic) onReloadStatistic();
         } catch (error) {
           message.error(t('delete_error'));
@@ -231,7 +317,7 @@ const DocumentInproject: React.FC<DocumentInprojectProps> = ({ onReloadStatistic
     try {
       await changeIsCompleted(documentId);
       message.success(t('status_update_success'));
-      fetchDocuments();
+      fetchData(true, true); // Force refresh after status change
     } catch (error) {
       message.error(t('status_update_error'));
     } finally {
@@ -242,7 +328,7 @@ const DocumentInproject: React.FC<DocumentInprojectProps> = ({ onReloadStatistic
   const handleModalSuccess = () => {
     setIsModalOpen(false);
     setSuccessMessage(t('content.update_success'));
-    fetchDocuments();
+    fetchData(true, true); // Force refresh after update
     if (onReloadStatistic) onReloadStatistic();
   };
 
@@ -438,25 +524,7 @@ const DocumentInproject: React.FC<DocumentInprojectProps> = ({ onReloadStatistic
   const renderDocumentTable = () => {
     return (
       <div>
-        {!loading && (
-          documents.length === 0 ? (
-            <Alert
-              message={t('messages.no_documents')}
-              type="warning"
-              showIcon
-              style={{ marginBottom: 16 }}
-            />
-          ) : (
-            pendingCount > 0 && (
-              <Alert
-                message={t('messages.pending_documents', { count: pendingCount })}
-                type="info"
-                showIcon
-                style={{ marginBottom: 16 }}
-              />
-            )
-          )
-        )}
+      
         <Row justify="start" style={{ marginBottom: 16 }} gutter={8}>
           <Col>
             <Input
@@ -524,6 +592,13 @@ const DocumentInproject: React.FC<DocumentInprojectProps> = ({ onReloadStatistic
         <Space>
           <FileTextOutlined />
           {t('tab.documents')}
+          {statusLoading ? (
+            <Spin size="small" style={{ marginLeft: 8 }} />
+          ) : (
+            (documentStatus?.document || 0) > 0 && (
+              <Badge count={documentStatus?.document || 0} style={{ marginLeft: 8 }} />
+            )
+          )}
         </Space>
       ),
       children: renderDocumentTable()
@@ -534,6 +609,13 @@ const DocumentInproject: React.FC<DocumentInprojectProps> = ({ onReloadStatistic
         <Space>
           <BarChartOutlined />
           {t('tab.reports')}
+          {statusLoading ? (
+            <Spin size="small" style={{ marginLeft: 8 }} />
+          ) : (
+            (documentStatus?.report || 0) > 0 && (
+              <Badge count={documentStatus?.report || 0} style={{ marginLeft: 8 }} />
+            )
+          )}
         </Space>
       ),
       children: renderDocumentTable()
@@ -544,6 +626,13 @@ const DocumentInproject: React.FC<DocumentInprojectProps> = ({ onReloadStatistic
         <Space>
           <FormOutlined />
           {t('tab.requests')}
+          {statusLoading ? (
+            <Spin size="small" style={{ marginLeft: 8 }} />
+          ) : (
+            (documentStatus?.request || 0) > 0 && (
+              <Badge count={documentStatus?.request || 0} style={{ marginLeft: 8 }} />
+            )
+          )}
         </Space>
       ),
       children: renderDocumentTable()
@@ -554,6 +643,19 @@ const DocumentInproject: React.FC<DocumentInprojectProps> = ({ onReloadStatistic
     setCurrentTab(activeKey);
     setCurrentPage(1);
     setSearchTerm('');
+    // Clear cache for the new tab to ensure fresh data
+    setLastTabFetchTime(prev => {
+      const newCache = { ...prev };
+      // Clear cache for all combinations of the new tab
+      Object.keys(newCache).forEach(key => {
+        if (key.startsWith(activeKey + '_')) {
+          delete newCache[key];
+        }
+      });
+      return newCache;
+    });
+    // Immediately fetch data for new tab
+    fetchData(true, true);
   };
 
   return (
@@ -650,7 +752,7 @@ const DocumentInproject: React.FC<DocumentInprojectProps> = ({ onReloadStatistic
       <ModalAddDocument
         open={isModalAddDocumentOpen}
         onClose={() => setIsModalAddDocumentOpen(false)}
-        projectId={pid || ''}
+        projectId={pid || undefined}
         mode='in'
         onSuccess={(type) => {
           setIsModalAddDocumentOpen(false);
@@ -658,7 +760,7 @@ const DocumentInproject: React.FC<DocumentInprojectProps> = ({ onReloadStatistic
             setCurrentTab(type);
             handleTabChange(type);
           }
-          fetchDocuments();
+          fetchData(true, true); 
           if (onReloadStatistic) onReloadStatistic();
         }}
       />

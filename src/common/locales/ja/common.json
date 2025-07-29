@@ -73,6 +73,7 @@
   "project": "プロジェクト",
   "common" : {
     "close" : "閉じる",
-    "save" : "保存"
+    "save" : "保存",
+    "error_occurred": "エラーが発生しました"
   }
 }

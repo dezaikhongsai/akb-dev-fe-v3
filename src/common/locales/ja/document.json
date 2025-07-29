@@ -40,6 +40,7 @@
     "files": "添付ファイル",
     "no_files": "ファイルがありません",
     "upload_file": "ファイルをアップロード",
+    "file_upload_success": "ファイルが正常にアップロードされました",
     "select_files": "ファイルを選択",
     "download": "ダウンロード",
     "preview": "プレビュー",
@@ -61,6 +62,7 @@
     "new_file": "新しいファイル",
     "search_project": "プロジェクトを検索...",
     "select_project_required": "プロジェクトを選択してください",
+    "project_id_required": "プロジェクトIDが必要です",
     "no_projects_found": "プロジェクトが見つかりません",
     "selected": "選択済み"
   },
