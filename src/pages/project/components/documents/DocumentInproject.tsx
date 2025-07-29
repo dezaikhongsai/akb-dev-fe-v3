@@ -1,4 +1,5 @@
-import { Card, Tabs, Table, Space, Typography, Tag, Button, Modal, Row, Col, Input, Dropdown, Pagination, message } from 'antd';
+import { Card, Tabs, Table, Space, Typography, Tag, Button, Modal, Row, Col, Input, Dropdown, Pagination, message, Select, Badge, Spin } from 'antd';
+
 import { IDocument } from '../../interfaces/project.interface';
 import {
   ProjectOutlined,
@@ -14,6 +15,7 @@ import {
   MoreOutlined,
   FileAddOutlined,
   WarningFilled,
+  TeamOutlined,
 } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
 import dayjs from 'dayjs';
@@ -27,24 +29,29 @@ import {
   deleteContent, 
   deleteDocument, 
   updateContent,
+  changeIsCompleted,
+  messageDocStatus
 } from '../../../../services/document/document.service';
 import ModalContent from './components/ModalContent';
 import type { UploadFile } from 'antd/es/upload/interface';
 import ModalAddContent from './components/ModalAddContent';
 import ModalAddDocument from './components/ModalAddDocument';
 
-interface DocumentInprojectProps {}
+interface DocumentInprojectProps {
+  onReloadStatistic?: () => void;
+}
 
 const { Text } = Typography;
 
-const DocumentInproject: React.FC<DocumentInprojectProps> = () => {
-  const { t } = useTranslation(['project', 'common']);
+const DocumentInproject: React.FC<DocumentInprojectProps> = ({ onReloadStatistic }) => {
+  const { t } = useTranslation(['document', 'common']);
   const { pid } = useParams();
   const [searchTerm, setSearchTerm] = useState('');
   const [currentTab, setCurrentTab] = useState('document');
   const [currentPage, setCurrentPage] = useState(1);
   const [documents, setDocuments] = useState<IDocument[]>([]);
   const [loading, setLoading] = useState(false);
+  const [statusLoading, _setStatusLoading] = useState(false);
   const [pagination, setPagination] = useState({
     total: 0,
     page: 1,
@@ -75,33 +82,122 @@ const DocumentInproject: React.FC<DocumentInprojectProps> = () => {
   const [isModalAddContentOpen, setIsModalAddContentOpen] = useState(false);
   const [selectedDocument, setSelectedDocument] = useState<IDocument | null>(null);
   const [isModalAddDocumentOpen , setIsModalAddDocumentOpen] = useState(false);
+  const [statusFilter, setStatusFilter] = useState<'all' | 'completed' | 'in_progress'>('all');
   const debouncedSearchTerm = useDebounce(searchTerm);
+  const [documentStatus, setDocumentStatus] = useState<any>(null);
+  const [_lastFetchTime, setLastFetchTime] = useState<number>(0);
+  const [lastTabFetchTime, setLastTabFetchTime] = useState<{[key: string]: number}>({});
+  const CACHE_DURATION = 30000; // 30 seconds cache
 
-  const fetchDocuments = async () => {
+  // Combined fetch function with error handling and caching
+  const fetchData = async (showLoading = true, forceRefresh = false) => {
     if (!pid) return;
     
-    setLoading(true);
+    const now = Date.now();
+    const cacheKey = `${currentTab}_${currentPage}_${statusFilter}_${debouncedSearchTerm}`;
+    const lastFetch = lastTabFetchTime[cacheKey] || 0;
+    
+    // Check if we need to refresh (cache expired or forced)
+    if (!forceRefresh && now - lastFetch < CACHE_DURATION) {
+      console.log(`Using cached data for ${currentTab} tab`);
+      return; // Use cached data
+    }
+    
+    logApiCall(forceRefresh ? 'Force Refresh' : 'Fetch', currentTab);
+    
+    if (showLoading) {
+      setLoading(true);
+    }
+    
     try {
-      const response = await getDocumentByProjectId(pid, {
-        page: currentPage,
-        limit: pagination.limit,
-        type: currentTab,
-        name: debouncedSearchTerm,
-        sort: 'createdAt:desc'
-      });
-      
-      setDocuments(response.data.documents);
-      setPagination(response.data.pagination);
+      // Fetch documents and status in parallel
+      const [documentsResponse, statusResponse] = await Promise.allSettled([
+        getDocumentByProjectId(pid, {
+          page: currentPage,
+          limit: pagination.limit,
+          type: currentTab,
+          name: debouncedSearchTerm,
+          sort: 'createdAt:desc',
+          ...(statusFilter === 'completed' && { isCompleted: true }),
+          ...(statusFilter === 'in_progress' && { isCompleted: false })
+        }),
+        messageDocStatus(pid)
+      ]);
+
+      // Handle documents response
+      if (documentsResponse.status === 'fulfilled') {
+        setDocuments(documentsResponse.value.data.documents);
+        setPagination(documentsResponse.value.data.pagination);
+      } else {
+        console.error('Error fetching documents:', documentsResponse.reason);
+        message.error(t('common.fetch_error'));
+      }
+
+      // Handle status response
+      if (statusResponse.status === 'fulfilled') {
+        setDocumentStatus(statusResponse.value.data);
+      } else {
+        console.error('Error fetching status:', statusResponse.reason);
+        // Don't show error message for status as it's not critical
+      }
+
+      // Update cache for this specific tab/query combination
+      setLastTabFetchTime(prev => ({
+        ...prev,
+        [cacheKey]: now
+      }));
+      setLastFetchTime(now);
     } catch (error) {
-      console.error('Error fetching documents:', error);
+      console.error('Error in fetchData:', error);
+      message.error(t('common.fetch_error'));
     } finally {
-      setLoading(false);
+      if (showLoading) {
+        setLoading(false);
+      }
     }
   };
 
+  // Debounced version for search
+  const debouncedFetchData = useDebounce(fetchData, 500);
+
+  // Function to force refresh cache
+  // const refreshData = () => {
+  //   setLastFetchTime(0);
+  //   setLastTabFetchTime({}); // Clear all tab cache
+  //   fetchData(true, true);
+  // };
+
+  // Debug function to log API calls
+  const logApiCall = (action: string, tab: string) => {
+    console.log(`API Call - ${action}: ${tab} tab at ${new Date().toLocaleTimeString()}`);
+  };
+
+  // const fetchMessageDocStatus = async () => {
+  //   if (!pid) return;
+    
+  //   setStatusLoading(true);
+  //   try {
+  //     const response = await messageDocStatus(pid);
+  //     setDocumentStatus(response.data);
+  //   } catch (error) {
+  //     console.error('Error fetching message doc status:', error);
+  //   } finally {
+  //     setStatusLoading(false);
+  //   }
+  // }
+
   useEffect(() => {
-    fetchDocuments();
-  }, [pid, currentPage, currentTab, debouncedSearchTerm]);
+    fetchData();
+  }, [pid, currentPage, currentTab, statusFilter]);
+
+  // Use debounced version for search
+  useEffect(() => {
+    if (debouncedSearchTerm !== searchTerm) {
+      debouncedFetchData(false); // Don't show loading for search
+    }
+  }, [debouncedSearchTerm]);
+
+
 
   const handleViewContent = (record: IDocument, content: any) => {
     setSelectedContent({
@@ -125,9 +221,9 @@ const DocumentInproject: React.FC<DocumentInprojectProps> = () => {
 
   const handleDeleteContent = async (contentId: string) => {
     Modal.confirm({
-      title: t('document.content.delete_confirm_title'),
+      title: t('content.delete_confirm_title'),
       icon: <WarningFilled style={{ color: '#faad14' }} />,
-      content: t('document.content.delete_confirm_content'),
+              content: t('content.delete_confirm_content'),
       okText: t('common.confirm'),
       cancelText: t('common.cancel'),
       okButtonProps: { 
@@ -137,10 +233,11 @@ const DocumentInproject: React.FC<DocumentInprojectProps> = () => {
       onOk: async () => {
         try {
           await deleteContent(contentId);
-          message.success(t('document.content.delete_success'));
-          fetchDocuments(); // Refresh data
+          message.success(t('content.delete_success'));
+          fetchData(true, true); // Force refresh after delete
+          if (onReloadStatistic) onReloadStatistic();
         } catch (error) {
-          message.error(t('document.content.delete_error'));
+          message.error(t('content.delete_error'));
         }
       }
     });
@@ -148,9 +245,9 @@ const DocumentInproject: React.FC<DocumentInprojectProps> = () => {
 
   const handleDeleteDocument = async (documentId: string) => {
     Modal.confirm({
-      title: t('document.delete_confirm_title'),
+      title: t('delete_confirm_title'),
       icon: <WarningFilled style={{ color: '#faad14' }} />,
-      content: t('document.delete_confirm_content'),
+              content: t('delete_confirm_content'),
       okText: t('common.confirm'),
       cancelText: t('common.cancel'),
       okButtonProps: { 
@@ -160,10 +257,11 @@ const DocumentInproject: React.FC<DocumentInprojectProps> = () => {
       onOk: async () => {
         try {
           await deleteDocument(documentId);
-          message.success(t('document.delete_success'));
-          fetchDocuments(); // Refresh data
+          message.success(t('delete_success'));
+          fetchData(true, true); // Force refresh after delete
+          if (onReloadStatistic) onReloadStatistic();
         } catch (error) {
-          message.error(t('document.delete_error'));
+          message.error(t('delete_error'));
         }
       }
     });
@@ -214,12 +312,24 @@ const DocumentInproject: React.FC<DocumentInprojectProps> = () => {
     });
   };
 
-
+  const handleChangeIsCompleted = async (documentId: string) => {
+    setLoading(true);
+    try {
+      await changeIsCompleted(documentId);
+      message.success(t('status_update_success'));
+      fetchData(true, true); // Force refresh after status change
+    } catch (error) {
+      message.error(t('status_update_error'));
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleModalSuccess = () => {
     setIsModalOpen(false);
-    setSuccessMessage(t('document.content.update_success'));
-    fetchDocuments();
+    setSuccessMessage(t('content.update_success'));
+    fetchData(true, true); // Force refresh after update
+    if (onReloadStatistic) onReloadStatistic();
   };
 
   useEffect(() => {
@@ -232,13 +342,13 @@ const DocumentInproject: React.FC<DocumentInprojectProps> = () => {
   const getContentActionItems = (record: IDocument, content: any): MenuProps['items'] => [
     {
       key: 'view',
-      label: t('document.content.view'),
+      label: t('content.view'),
       icon: <EyeOutlined />,
       onClick: () => handleViewContent(record, content)
     },
     {
       key: 'delete',
-      label: t('document.content.delete'),
+      label: t('content.delete'),
       icon: <DeleteOutlined />,
       danger: true,
       onClick: () => handleDeleteContent(content._id)
@@ -248,13 +358,19 @@ const DocumentInproject: React.FC<DocumentInprojectProps> = () => {
   const getDocumentActionItems = (record: IDocument): MenuProps['items'] => [
     {
       key: 'add_content',
-      label: t('document.action.add_content'),
+      label: t('action.add_content'),
       icon: <FileAddOutlined />,
       onClick: () => handleAddContent(record._id)
     },
     {
+      key: 'change_status',
+      label: record.isCompleted ? t('action.mark_processing') : t('action.mark_done'),
+      icon: record.isCompleted ? <FormOutlined /> : <BarChartOutlined />,
+      onClick: () => handleChangeIsCompleted(record._id)
+    },
+    {
       key: 'delete',
-      label: t('document.action.delete'),
+      label: t('action.delete'),
       icon: <DeleteOutlined />,
       danger: true,
       onClick: () => handleDeleteDocument(record._id)
@@ -279,7 +395,7 @@ const DocumentInproject: React.FC<DocumentInprojectProps> = () => {
       })
     },
     {
-      title: t('document.name'),
+      title: t('name'),
       key: 'name',
       onHeaderCell: () => ({
         style: headerStyle
@@ -292,7 +408,24 @@ const DocumentInproject: React.FC<DocumentInprojectProps> = () => {
       )
     },
     {
-      title: t('document.status'),
+      title: t('type'),
+      key: 'type',
+      width: 120,
+      align: 'center',
+      onHeaderCell: () => ({
+        style: headerStyle
+      }),
+      render: (_, record) => (
+        <Tag color={
+          record.type === 'document' ? 'blue' :
+          record.type === 'report' ? 'green' : 'orange'
+        }>
+          {t(`type_options.${record.type}`)}
+        </Tag>
+      )
+    },
+    {
+      title: t('status'),
       key: 'status',
       width: 150,
       align: 'center',
@@ -303,17 +436,17 @@ const DocumentInproject: React.FC<DocumentInprojectProps> = () => {
       render: (_, record) => (
         record.isCompleted ? (
           <Tag color="success">
-            {t('document.completed')}
+            {t('completed')}
           </Tag>
         ) : (
           <Tag color="processing">
-            {t('document.in_progress')}
+            {t('in_progress')}
           </Tag>
         )
       )
     },
     {
-      title: t('document.creator'),
+      title: t('creator'),
       key: 'creator',
       width: 200,
       responsive: ['lg'],
@@ -322,13 +455,13 @@ const DocumentInproject: React.FC<DocumentInprojectProps> = () => {
       }),
       render: (_, record) => (
         <Space>
-          <UserOutlined />
+          {record.createdBy.role === 'customer' ? <TeamOutlined /> : <UserOutlined />}
           <Text>{record.createdBy.profile.name}</Text>
         </Space>
       )
     },
     {
-      title: t('document.contents'),
+      title: t('contents'),
       key: 'contents',
       onHeaderCell: () => ({
         style: headerStyle
@@ -357,7 +490,7 @@ const DocumentInproject: React.FC<DocumentInprojectProps> = () => {
       )
     },
     {
-      title: t('document.created_at'),
+      title: t('created_at'),
       key: 'createdAt',
       width: 180,
       responsive: ['lg'],
@@ -391,16 +524,28 @@ const DocumentInproject: React.FC<DocumentInprojectProps> = () => {
   const renderDocumentTable = () => {
     return (
       <div>
-        <Row justify="start" style={{ marginBottom: 16 }}>
+      
+        <Row justify="start" style={{ marginBottom: 16 }} gutter={8}>
           <Col>
             <Input
-              placeholder={t('document.search.placeholder')}
+              placeholder={t('search.placeholder')}
               prefix={<SearchOutlined />}
               value={searchTerm}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchTerm(e.target.value)}
               style={{ width: 200 }}
               allowClear
-              
+            />
+          </Col>
+          <Col>
+            <Select
+              value={statusFilter}
+              style={{ width: 160 }}
+              onChange={setStatusFilter}
+              options={[
+                { value: 'all', label: t('common.all') },
+                { value: 'completed', label: t('completed') },
+                { value: 'in_progress', label: t('in_progress') },
+              ]}
             />
           </Col>
         </Row>
@@ -446,7 +591,14 @@ const DocumentInproject: React.FC<DocumentInprojectProps> = () => {
       label: (
         <Space>
           <FileTextOutlined />
-          {t('document.tab.documents')}
+          {t('tab.documents')}
+          {statusLoading ? (
+            <Spin size="small" style={{ marginLeft: 8 }} />
+          ) : (
+            (documentStatus?.document || 0) > 0 && (
+              <Badge count={documentStatus?.document || 0} style={{ marginLeft: 8 }} />
+            )
+          )}
         </Space>
       ),
       children: renderDocumentTable()
@@ -456,7 +608,14 @@ const DocumentInproject: React.FC<DocumentInprojectProps> = () => {
       label: (
         <Space>
           <BarChartOutlined />
-          {t('document.tab.reports')}
+          {t('tab.reports')}
+          {statusLoading ? (
+            <Spin size="small" style={{ marginLeft: 8 }} />
+          ) : (
+            (documentStatus?.report || 0) > 0 && (
+              <Badge count={documentStatus?.report || 0} style={{ marginLeft: 8 }} />
+            )
+          )}
         </Space>
       ),
       children: renderDocumentTable()
@@ -466,7 +625,14 @@ const DocumentInproject: React.FC<DocumentInprojectProps> = () => {
       label: (
         <Space>
           <FormOutlined />
-          {t('document.tab.requests')}
+          {t('tab.requests')}
+          {statusLoading ? (
+            <Spin size="small" style={{ marginLeft: 8 }} />
+          ) : (
+            (documentStatus?.request || 0) > 0 && (
+              <Badge count={documentStatus?.request || 0} style={{ marginLeft: 8 }} />
+            )
+          )}
         </Space>
       ),
       children: renderDocumentTable()
@@ -477,6 +643,19 @@ const DocumentInproject: React.FC<DocumentInprojectProps> = () => {
     setCurrentTab(activeKey);
     setCurrentPage(1);
     setSearchTerm('');
+    // Clear cache for the new tab to ensure fresh data
+    setLastTabFetchTime(prev => {
+      const newCache = { ...prev };
+      // Clear cache for all combinations of the new tab
+      Object.keys(newCache).forEach(key => {
+        if (key.startsWith(activeKey + '_')) {
+          delete newCache[key];
+        }
+      });
+      return newCache;
+    });
+    // Immediately fetch data for new tab
+    fetchData(true, true);
   };
 
   return (
@@ -485,7 +664,7 @@ const DocumentInproject: React.FC<DocumentInprojectProps> = () => {
         title={
           <Space>
             <ProjectOutlined />
-            {t('document.title')}
+            {t('title')}
           </Space>
         }
         extra={
@@ -494,14 +673,14 @@ const DocumentInproject: React.FC<DocumentInprojectProps> = () => {
             icon={<PlusOutlined />}
             onClick={handleOpenAddDocument}
           >
-            {t('document.add')}
+            {t('add')}
           </Button>
         }
         style={{ marginBottom: 24 }}
       >
         <Tabs 
           items={items}
-          defaultActiveKey="document"
+          activeKey={currentTab}
           onChange={handleTabChange}
         />
       </Card>
@@ -571,8 +750,19 @@ const DocumentInproject: React.FC<DocumentInprojectProps> = () => {
         onSuccess={handleModalSuccess}
       />
       <ModalAddDocument
-        open = {isModalAddDocumentOpen}
+        open={isModalAddDocumentOpen}
         onClose={() => setIsModalAddDocumentOpen(false)}
+        projectId={pid || undefined}
+        mode='in'
+        onSuccess={(type) => {
+          setIsModalAddDocumentOpen(false);
+          if (type) {
+            setCurrentTab(type);
+            handleTabChange(type);
+          }
+          fetchData(true, true); 
+          if (onReloadStatistic) onReloadStatistic();
+        }}
       />
       </>
   );

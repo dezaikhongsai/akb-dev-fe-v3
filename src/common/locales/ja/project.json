@@ -9,7 +9,7 @@
   "progress": {
     "title": "プロジェクトの進捗",
     "time": "時間の進捗",
-    "phase": "フェーズの進捗",
+    "phase": "フェーズ",
     "pm": "プロジェクトマネージャー",
     "customer": "顧客",
     "projects": "プロジェクト"
@@ -30,12 +30,13 @@
     "newest": "最新順",
     "oldest": "古い順"
   },
-  "status": {
+  "statusValues": {
     "completed": "完了",
     "processing": "進行中",
     "pending": "保留中"
   },
   "table": {
+    "title": "プロジェクト一覧",
     "name": "プロジェクト名",
     "alias": "プロジェクトコード",
     "status": "ステータス",
@@ -65,6 +66,13 @@
         "create": "追加",
         "cancel": "キャンセル"
       }
+    },
+    "update": {
+      "title": "プロジェクトの更新",
+      "button": {
+        "update": "更新",
+        "cancel": "キャンセル"
+      }
     }
   },
   "date": {
@@ -85,7 +93,10 @@
     "startDate.placeholder": "開始日を選択",
     "endDate": "終了日",
     "endDate.placeholder": "終了日を選択",
-    "status": "ステータス"
+    "status": "ステータス",
+    "status.placeholder": "ステータスを選択",
+    "currentPhase": "現在のフェーズ",
+    "currentPhase.placeholder": "現在のフェーズ番号を入力"
   },
   "alert": {
     "pending": {
@@ -93,5 +104,37 @@
       "admin": "アクティブ化するには、プロジェクトにアクセスしてステータスを更新してください!",
       "customer": "会社からの承認をお待ちください!"
     }
+  },
+  "information": "プロジェクト情報",
+  "name": "プロジェクト名",
+  "alias": "プロジェクトコード",
+  "pm": "プロジェクトマネージャー",
+  "customer": "顧客",
+  "startDate": "開始日",
+  "endDate": "終了日",
+  "status": "ステータス",
+  "currentPhase": "現在のフェーズ",
+  "update": "更新",
+  "mark_as_complete": "完了としてマーク",
+  "active": "アクティブ化",
+
+  "phases": "プロジェクトフェーズ",
+  "update_phase": "フェーズを更新",
+  "add_phase": "フェーズを追加",
+  "add_one": "1つ追加",
+  "no_phases": "フェーズがありません",
+  "confirm_delete_phase": "フェーズ削除の確認",
+  "confirm_delete_phase_content": "このフェーズを削除してもよろしいですか？",
+  "delete_phase_success": "フェーズの削除が成功しました",
+  "delete_phase_failed": "フェーズの削除中にエラーが発生しました",
+  "delete": "削除",
+  "cancel": "キャンセル",
+  "tabs": {
+    "projectList": "プロジェクト一覧",
+    "requestStatistics": "要求統計"
+  },
+  "chart": {
+    "hideChart": "進捗グラフを非表示",
+    "showChart": "進捗グラフを表示"
   }
 }

@@ -54,3 +54,76 @@ export interface UserProfile {
     percentCustomer: number;
     percentPM: number;
   }
+
+  export interface IProjectStatistics {
+    totalProjects: number;
+    pendingProjects: number;
+    processingProjects: number;
+    completedProjects: number;
+    percentPending: number;
+    percentProcessing: number;
+    percentCompleted: number;
+  }
+
+  export interface ICompletedProject {
+    _id: string;
+    name: string;
+    alias: string;
+    status: 'completed';
+    startDate?: string;
+    endDate?: string;
+    createdAt: string;
+    pm: {
+      _id: string;
+      alias: string;
+      profile?: {
+        name: string;
+      };
+    };
+    customer: {
+      _id: string;
+      alias: string;
+      profile?: {
+        name: string;
+      };
+    };
+  }
+
+  export interface IUserProjectStatistic {
+    user: {
+      _id: string;
+      alias: string;
+      email: string;
+      role: 'admin' | 'customer' | 'pm';
+      profile?: {
+        name: string;
+        emailContact: string;
+        phoneContact: string;
+        companyName?: string;
+        dob?: string;
+        address?: string;
+        note?: string;
+      };
+      createdBy?: {
+        _id: string;
+        email: string;
+        profile?: {
+          name: string;
+        };
+      };
+      updatedBy?: {
+        _id: string;
+        email: string;
+        profile?: {
+          name: string;
+        };
+      };
+    };
+    projectStatistics: IProjectStatistics;
+    completedProjectsList: ICompletedProject[];
+  }
+
+  export interface IStatisticUserProjectResponse {
+    totalUsers: number;
+    statistics: IUserProjectStatistic[];
+  }

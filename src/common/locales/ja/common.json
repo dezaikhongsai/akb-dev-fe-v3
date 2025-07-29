@@ -54,10 +54,26 @@
     "endDate": {
       "required": "終了日を選択してください！",
       "afterStart": "終了日は開始日より後の日付を選択してください！"
+    },
+    "status": {
+      "required": "ステータスを選択してください！"
+    },
+    "currentPhase": {
+      "required": "現在のフェーズを入力してください！",
+      "range": "フェーズは1から{{max}}の間で入力してください！"
     }
   },
   "status": {
     "active": "アクティブ",
     "inactive": "非アクティブ"
+  },
+  "pm": {
+    "label": "担当"
+  },
+  "project": "プロジェクト",
+  "common" : {
+    "close" : "閉じる",
+    "save" : "保存",
+    "error_occurred": "エラーが発生しました"
   }
 }

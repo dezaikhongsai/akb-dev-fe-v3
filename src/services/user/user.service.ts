@@ -53,3 +53,13 @@ export const getUserStatistic = async () => {
         throw new Error(error.response?.data?.message || "Lỗi không xác định");
     }
 }
+
+export const getUserStatisticProject = async (role?: string) => {
+    try {
+        const url = role ? `/user/statistic-project?role=${role}` : '/user/statistic-project';
+        const response = await api.get(url);
+        return response.data;
+    } catch (error: any) {
+        throw new Error(error.response?.data?.message || "Lỗi không xác định");
+    }
+}

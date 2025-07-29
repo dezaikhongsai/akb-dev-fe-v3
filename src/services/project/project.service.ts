@@ -19,7 +19,7 @@ export const createProject = async (data: any) => {
 };
 
 export const updateProject = async (id: string, data: any) => {
-  return axiosInstance.put(`/project/update/${id}`, data);
+  return axiosInstance.patch(`/project/update/${id}`, data);
 };
 
 export const deleteProject = async (id: string) => {
@@ -41,5 +41,32 @@ export const getProjectDetail = async (pId : string) => {
     return response.data;
   } catch (error) {
     throw error;
+  }
+}
+
+export const activeProject = async (pId : string) => {
+  try {
+    const response = await axiosInstance.patch(`/project/active/${pId}`);
+    return response.data;
+  } catch (error : any) {
+    throw new Error(error.response.data.message);
+  }
+}
+
+export const projectDetailStatistics = async (pId : string) => {
+  try {
+    const response = await axiosInstance.get(`/project/statistics-detail/${pId}`);
+    return response.data;
+  } catch (error : any) {
+    throw new Error(error.response.data.message);
+  }
+}
+
+export const statisticsRequestInProject = async (params?: { monthYearStart?: string; monthYearEnd?: string }) => {
+  try {
+    const response = await axiosInstance.get('/project/statistics-request', { params });
+    return response.data;
+  } catch (error : any) {
+    throw new Error(error.response?.data?.message || error.message);
   }
 }

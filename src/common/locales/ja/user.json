@@ -166,7 +166,9 @@
   "action": {
     "create": "新規作成",
     "edit": "編集",
-    "delete": "削除"
+    "delete": "削除",
+    "hide": "非表示",
+    "show": "表示"
   },
   "modal": {
     "delete": {
@@ -247,6 +249,7 @@
     "placeholder": "名前、メール、電話番号で検索..."
   },
   "statistic": {
+    "detail": "詳細統計",
     "title": "ユーザー統計",
     "roleDistribution": "役割分布",
     "totalUser": "総ユーザー数",
@@ -254,7 +257,44 @@
     "totalAdmin": "総管理者数",
     "totalPM": "総PMユーザー数",
     "fullActivation": "全ユーザーがアクティブです",
-    "inactiveUsers": "{{count}}人のユーザーが非アクティブです"
+    "inactiveUsers": "{{count}}人のユーザーが非アクティブです",
+    "customer": "顧客統計",
+    "pm": "プロジェクトマネージャー統計"
+  },
+  "statistics": {
+    "columns": {
+      "stt": "番号",
+      "userAlias": "ユーザーコード",
+      "userName": "ユーザー名",
+      "email": "メールアドレス",
+      "totalProjects": "総プロジェクト数",
+      "pendingProjects": "保留中プロジェクト",
+      "processingProjects": "進行中プロジェクト",
+      "completedProjects": "完了プロジェクト",
+      "progress": "進捗",
+      "action": "アクション"
+    },
+    "completedProjectColumns": {
+      "name": "プロジェクト名",
+      "alias": "プロジェクトコード",
+      "pm": "プロジェクトマネージャー",
+      "customer": "顧客",
+      "startDate": "開始日",
+      "endDate": "終了日",
+      "createdAt": "作成日"
+    },
+    "actions": {
+      "viewDetails": "詳細を表示"
+    },
+    "expandable": {
+      "completedProjects": "完了プロジェクト一覧",
+      "noCompletedProjects": "完了プロジェクトがありません"
+    },
+    "noData": "データがありません",
+    "noDataMessage": "統計データが見つかりません",
+    "error": "エラー",
+    "errorMessage": "データの読み込み中にエラーが発生しました",
+    "invalidData": "無効なデータです"
   },
   "pagination": {
     "total": "全{total}件中の{start}〜{end}件を表示"

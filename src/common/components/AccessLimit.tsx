@@ -2,15 +2,14 @@ import React from 'react';
 import { Button, Result } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-
-const NotFound: React.FC = () => {
+const AccessLimit: React.FC = () => {
   const navigate = useNavigate();
   const [t] = useTranslation('common')
   return (
     <Result
-      status="404"
-      title="404"
-      subTitle={t('notFound')}
+      status="403"
+      title="403"
+      subTitle={t('accessLimit')}
       extra={
         <Button type="primary" onClick={() => navigate('/projects')}>
           {t('backToHomePage')}
@@ -20,4 +19,4 @@ const NotFound: React.FC = () => {
   );
 };
 
-export default NotFound;
+export default AccessLimit;

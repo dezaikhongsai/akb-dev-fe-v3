@@ -54,10 +54,26 @@
     "endDate": {
       "required": "Vui lòng chọn ngày kết thúc!",
       "afterStart": "Ngày kết thúc phải sau ngày bắt đầu!"
+    },
+    "status": {
+      "required": "Vui lòng chọn trạng thái!"
+    },
+    "currentPhase": {
+      "required": "Vui lòng nhập giai đoạn hiện tại!",
+      "range": "Giai đoạn phải từ 1 đến {{max}}!"
     }
   },
   "status": {
     "active": "Hoạt động",
     "inactive": "Không hoạt động"
+  },
+  "pm": {
+    "label": "Phụ trách"
+  },
+  "project": "Dự án",
+  "common" : {
+    "close" : "Đóng",
+    "save" : "Lưu",
+    "error_occurred": "Đã xảy ra lỗi"
   }
 }

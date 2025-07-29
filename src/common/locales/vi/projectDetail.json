@@ -5,7 +5,7 @@
         "title": "Thông tin dự án",
         "alias": "Mã dự án",
         "name": "Tên dự án",
-        "PM": "Quản lý dự án",
+        "pm": "Quản lý dự án",
         "customer": "Khách hàng",
         "status": "Trạng thái",
         "startDate": "Ngày bắt đầu "
@@ -191,5 +191,34 @@
         "updateSuccess": "Cập nhật tài liệu thành công",
         "updateError": "Có lỗi xảy ra khi cập nhật tài liệu",
         "fileSizeError": "File phải nhỏ hơn 10MB!"
+    },
+    "statistics": {
+        "warning": {
+            "title": "Thông báo",
+            "notActivated": "Dự án chưa được kích hoạt",
+            "notActivatedMessage": "Vui lòng duyệt dự án để xem thống kê",
+            "noPhases": "Chưa có giai đoạn nào",
+            "noPhasesMessage": "Vui lòng tạo các giai đoạn để xem thống kê",
+            "noData": "Không có dữ liệu thống kê",
+            "noDataMessage": "Vui lòng thêm thông tin để xem thống kê"
+        },
+        "tabs": {
+            "projectInfo": "Thông tin dự án",
+            "statistics": "Thống kê dự án",
+            "documents": "Tài liệu"
+        },
+        "cards": {
+            "totalDocuments": "Tổng tài liệu",
+            "totalReports": "Tổng báo cáo",
+            "totalRequests": "Tổng yêu cầu",
+            "completedRequests": "Tổng yêu cầu đã hoàn thành",
+            "newRequests": "Yêu cầu mới"
+        },
+        "progress": {
+            "title": "Tiến độ dự án",
+            "phaseProgress": "Tiến độ giai đoạn",
+            "remainingTime": "Thời gian còn lại (hiện tại → kết thúc)",
+            "elapsedTime": "Thời gian đã qua (bắt đầu → hiện tại)"
+        }
     }
 }

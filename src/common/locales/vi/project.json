@@ -9,7 +9,7 @@
   "progress": {
     "title": "Tiến độ dự án",
     "time": "Tiến độ thời gian",
-    "phase": "Tiến độ giai đoạn",
+    "phase": "Giai đoạn",
     "pm": "Quản lý dự án",
     "customer": "Khách hàng",
     "projects": "Dự án"
@@ -30,12 +30,13 @@
     "newest": "Mới nhất",
     "oldest": "Cũ nhất"
   },
-  "status": {
+  "statusValues": {
     "completed": "Đã hoàn thành",
     "processing": "Đang xử lý",
     "pending": "Đang chờ"
   },
   "table": {
+    "title": "Thông tin chung",
     "name": "Tên dự án",
     "alias": "Mã dự án",
     "status": "Trạng thái",
@@ -65,6 +66,13 @@
         "create": "Thêm",
         "cancel": "Hủy"
       }
+    },
+    "update": {
+      "title": "Cập nhật dự án",
+      "button": {
+        "update": "Cập nhật",
+        "cancel": "Hủy"
+      }
     }
   },
   "date": {
@@ -85,7 +93,10 @@
     "startDate.placeholder": "Chọn ngày bắt đầu",
     "endDate": "Ngày kết thúc",
     "endDate.placeholder": "Chọn ngày kết thúc",
-    "status": "Trạng thái"
+    "status": "Trạng thái",
+    "status.placeholder": "Chọn trạng thái",
+    "currentPhase": "Giai đoạn hiện tại",
+    "currentPhase.placeholder": "Nhập số giai đoạn hiện tại"
   },
   "alert": {
     "pending": {
@@ -93,5 +104,38 @@
       "admin": "Nếu muốn kích hoạt, vui lòng truy cập vào dự án và cập nhật trạng thái !",
       "customer": "Vui lòng chờ xác nhận từ phía công ty !"
     }
+  },
+  "information": "Thông tin dự án",
+  "name": "Tên dự án",
+  "alias": "Mã dự án",
+  "pm": "Quản lý dự án",
+  "customer": "Khách hàng",
+  "startDate": "Ngày bắt đầu",
+  "endDate": "Ngày kết thúc",
+  "status": "Trạng thái",
+  "currentPhase": "Giai đoạn hiện tại",
+  "update": "Cập nhật",
+  "mark_as_complete": "Đánh dấu hoàn thành",
+  "active": "Kích hoạt",
+
+  "phases": "Giai đoạn dự án",
+  "update_phase": "Cập nhật giai đoạn",
+  "add_phase": "Thêm giai đoạn",
+  "add_one": "Thêm một",
+  "no_phases": "Chưa có giai đoạn nào",
+  "confirm_delete_phase": "Xác nhận xóa giai đoạn",
+  "confirm_delete_phase_content": "Bạn có chắc chắn muốn xóa giai đoạn này không?",
+  "delete_phase_success": "Xóa giai đoạn thành công",
+  "delete_phase_failed": "Có lỗi xảy ra khi xóa giai đoạn",
+  "delete": "Xóa",
+  "cancel": "Hủy",
+  "tabs": {
+    "projectList": "Danh sách dự án",
+    "requestStatistics": "Thống kê yêu cầu"
+  },
+  "chart": {
+    "hideChart": "Ẩn biểu đồ tiến độ",
+    "showChart": "Hiển thị biểu đồ tiến độ"
   }
+ 
 }

@@ -42,9 +42,9 @@ const ModalAddProject: React.FC<ModalAddProjectProps> = ({
   const isCustomer = currentUser?.role === 'customer';
 
   const statusOptions = [
-    { value: 'completed', label: t('status.completed') },
-    { value: 'processing', label: t('status.processing') },
-    { value: 'pending', label: t('status.pending') }
+            { value: 'completed', label: t('statusValues.completed') },
+        { value: 'processing', label: t('statusValues.processing') },
+        { value: 'pending', label: t('statusValues.pending') }
   ];
 
   const fetchUsers = async (role: 'pm' | 'customer', searchText: string = '') => {

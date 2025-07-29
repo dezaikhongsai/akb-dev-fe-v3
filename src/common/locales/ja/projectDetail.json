@@ -5,7 +5,7 @@
         "title": "プロジェクト情報",
         "alias": "コード",
         "name": "プロジェクト名",
-        "PM": "プロジェクトマネージャー",
+        "pm": "プロジェクトマネージャー",
         "customer": "顧客名",
         "status": "ステータス",
         "startDate": "開始日"
@@ -191,5 +191,34 @@
         "updateSuccess": "資料が正常に更新されました。",
         "updateError": "資料の更新中にエラーが発生しました。",
         "fileSizeError": "ファイルは10MB未満である必要があります！"
+    },
+    "statistics": {
+        "warning": {
+            "title": "通知",
+            "notActivated": "プロジェクトがアクティブ化されていません",
+            "notActivatedMessage": "統計を表示するにはプロジェクトを承認してください",
+            "noPhases": "フェーズがありません",
+            "noPhasesMessage": "統計を表示するにはフェーズを作成してください",
+            "noData": "統計データがありません",
+            "noDataMessage": "統計を表示するには情報を追加してください"
+        },
+        "tabs": {
+            "projectInfo": "プロジェクト情報",
+            "statistics": "プロジェクト統計",
+            "documents": "ドキュメント"
+        },
+        "cards": {
+            "totalDocuments": "総ドキュメント数",
+            "totalReports": "総レポート数",
+            "totalRequests": "総要求数",
+            "completedRequests": "完了した要求数",
+            "newRequests": "新しい要求"
+        },
+        "progress": {
+            "title": "プロジェクトの進捗",
+            "phaseProgress": "フェーズの進捗",
+            "remainingTime": "残り時間（現在→終了）",
+            "elapsedTime": "経過時間（開始→現在）"
+        }
     }
 }

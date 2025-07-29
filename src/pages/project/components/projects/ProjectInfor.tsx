@@ -1,4 +1,4 @@
-import { Card, Descriptions, Tag, Space, Typography } from 'antd';
+import { Card, Descriptions, Tag, Space, Typography, Button } from 'antd';
 import { useTranslation } from 'react-i18next';
 import {
   ProjectOutlined,
@@ -11,18 +11,43 @@ import {
   CloseCircleOutlined,
   NumberOutlined,
   MailOutlined,
+  EditOutlined,
 } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import { IProject } from '../../interfaces/project.interface';
+import { activeProject, updateProject } from '../../../../services/project/project.service';
+import { useState } from 'react';
+import ModalUpdateProject from './components/ModalUpdateProject';
 
 interface ProjectInforProps {
   project: IProject;
+  onReloadProject?: () => Promise<void>;
+  phasesCount: number;
+  onReloadStatistic?: () => void;
 }
 
 const { Text } = Typography;
 
-const ProjectInfor: React.FC<ProjectInforProps> = ({ project }) => {
-  const { t } = useTranslation(['project', 'common']);
+const ProjectInfor: React.FC<ProjectInforProps> = ({ project, onReloadProject, phasesCount, onReloadStatistic }) => {
+  const { t } = useTranslation(['project']);
+  const [loadingActive, setLoadingActive] = useState(false);
+  const [isModalUpdateProjectOpen, setIsModalUpdateProjectOpen] = useState(false);
+  const [loadingUpdate, setLoadingUpdate] = useState(false);
+  const handleUpdateProject = async (values: any) => {
+    setLoadingUpdate(true);
+    try {
+      await updateProject(project._id, values);
+      if (onReloadProject) {
+        await onReloadProject();
+      }
+      setIsModalUpdateProjectOpen(false); // Đóng modal khi thành công
+      if (onReloadStatistic) onReloadStatistic();
+    } catch (error) {
+      // Có thể thêm thông báo lỗi ở đây nếu muốn
+    } finally {
+      setLoadingUpdate(false);  
+    }
+  };
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -54,12 +79,78 @@ const ProjectInfor: React.FC<ProjectInforProps> = ({ project }) => {
     }
   };
 
+  const handleActiveProject = async () => {
+    setLoadingActive(true);
+    try {
+      await activeProject(project._id);
+      if (onReloadProject) {
+        await onReloadProject();
+      }
+      if (onReloadStatistic) onReloadStatistic();
+    } catch (error) {
+      // Có thể thêm thông báo lỗi ở đây nếu muốn
+    } finally {
+      setLoadingActive(false);
+    }
+  };
+
+  const handleMarkAsDone = async () => {
+    try {
+      await updateProject(project._id, {
+        status: 'completed',
+        currentPhase: phasesCount
+      });
+      if (onReloadProject) {
+        await onReloadProject();
+      }
+      if (onReloadStatistic) onReloadStatistic();
+    } catch (error) {
+      // Có thể thêm thông báo lỗi ở đây nếu muốn
+    }
+  };
+
   return (
     <Card
       title={
         <Space>
           <ProjectOutlined />
-          {t('project.information')}
+          {t('information')}
+        </Space>
+      }
+      extra = {
+        <Space>
+          { project.isActive ? (
+          <div style={{ display: 'flex', gap: 8 }}>
+               <Button
+                type="primary"
+                icon={<EditOutlined />}
+                onClick={() => setIsModalUpdateProjectOpen(true)}
+                loading={loadingUpdate}
+                >
+                {t('update')}
+              </Button>
+              <Button
+                type='primary'
+                icon={<CheckCircleOutlined/>}
+                onClick={handleMarkAsDone}
+                disabled={project.status === 'completed' || project.currentPhase < phasesCount}
+                style={project.currentPhase >= phasesCount && project.status !== 'completed' ? { backgroundColor: 'green', borderColor: 'green' } : {}}
+              >
+                {t('mark_as_complete')}
+              </Button>
+          </div>
+        ) : (
+          <Button
+            type="primary"
+            icon={<CheckCircleOutlined />}
+            style={{ backgroundColor: 'gold', borderColor: 'gold' }}
+            loading={loadingActive}
+            onClick={handleActiveProject}
+          >
+            {t('active')}
+          </Button>
+        )}
+        
         </Space>
       }
       style={{ marginBottom: 24 }}
@@ -74,7 +165,7 @@ const ProjectInfor: React.FC<ProjectInforProps> = ({ project }) => {
           label={
             <Space>
               <TagOutlined />
-              {t('project.name')}
+              {t('name')}
             </Space>
           }
           span={1}
@@ -86,7 +177,7 @@ const ProjectInfor: React.FC<ProjectInforProps> = ({ project }) => {
           label={
             <Space>
               <NumberOutlined />
-              {t('project.alias')}
+              {t('alias')}
             </Space>
           }
           span={1}
@@ -98,7 +189,7 @@ const ProjectInfor: React.FC<ProjectInforProps> = ({ project }) => {
           label={
             <Space>
               <UserOutlined />
-              {t('project.pm')}
+              {t('pm')}
             </Space>
           }
           span={1}
@@ -120,7 +211,7 @@ const ProjectInfor: React.FC<ProjectInforProps> = ({ project }) => {
           label={
             <Space>
               <UserOutlined />
-              {t('project.customer')}
+              {t('customer')}
             </Space>
           }
           span={1}
@@ -142,7 +233,7 @@ const ProjectInfor: React.FC<ProjectInforProps> = ({ project }) => {
           label={
             <Space>
               <CalendarOutlined />
-              {t('project.startDate')}
+              {t('startDate')}
             </Space>
           }
           span={1}
@@ -154,7 +245,7 @@ const ProjectInfor: React.FC<ProjectInforProps> = ({ project }) => {
           label={
             <Space>
               <CalendarOutlined />
-              {t('project.endDate')}
+              {t('endDate')}
             </Space>
           }
           span={1}
@@ -166,13 +257,13 @@ const ProjectInfor: React.FC<ProjectInforProps> = ({ project }) => {
           label={
             <Space>
               <ClockCircleOutlined />
-              {t('project.status')}
+              {t('status')}
             </Space>
           }
           span={2}
         >
           <Tag color={getStatusColor(project.status)} icon={getStatusIcon(project.status)}>
-            {t(`project.status.${project.status}`)}
+            {t(`statusValues.${project.status}`)}
           </Tag>
         </Descriptions.Item>
 
@@ -180,7 +271,7 @@ const ProjectInfor: React.FC<ProjectInforProps> = ({ project }) => {
           label={
             <Space>
               <ClockCircleOutlined />
-              {t('project.currentPhase')}
+              {t('currentPhase')}
             </Space>
           }
           span={2}
@@ -188,8 +279,17 @@ const ProjectInfor: React.FC<ProjectInforProps> = ({ project }) => {
           {project.currentPhase}
         </Descriptions.Item>
       </Descriptions>
+      <ModalUpdateProject
+        open={isModalUpdateProjectOpen}
+        onCancel={() => setIsModalUpdateProjectOpen(false)}
+        onSubmit={handleUpdateProject}
+        initialValues={project}
+        loading={loadingUpdate}
+        phasesCount={phasesCount}
+      />
     </Card>
   );
 };
 
 export default ProjectInfor;
+

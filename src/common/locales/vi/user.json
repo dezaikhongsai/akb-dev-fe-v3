@@ -166,7 +166,9 @@
   "action": {
     "create": "Thêm mới",
     "edit": "Chỉnh sửa",
-    "delete": "Xóa"
+    "delete": "Xóa",
+    "hide": "Ẩn",
+    "show": "Hiển thị"
   },
   "modal": {
     "detail": {
@@ -246,6 +248,7 @@
     "placeholder": "Tìm kiếm theo tên, email, số điện thoại..."
   },
   "statistic": {
+    "detail": "Thống kê chi tiết",
     "title": "Thống kê người dùng",
     "roleDistribution": "Phân bố vai trò",
     "totalUser": "Tổng số người dùng",
@@ -253,7 +256,44 @@
     "totalAdmin": "Tổng số quản trị viên",
     "totalPM": "Tổng số quản lý dự án",
     "fullActivation": "Tất cả người dùng đang hoạt động",
-    "inactiveUsers": "Có {{count}} người dùng không hoạt động"
+    "inactiveUsers": "Có {{count}} người dùng không hoạt động",
+    "customer": "Thống kê khách hàng",
+    "pm": "Thống kê quản lý dự án"
+  },
+  "statistics": {
+    "columns": {
+      "stt": "STT",
+      "userAlias": "Mã người dùng",
+      "userName": "Tên người dùng",
+      "email": "Email",
+      "totalProjects": "Tổng dự án",
+      "pendingProjects": "Dự án chờ",
+      "processingProjects": "Dự án đang thực hiện",
+      "completedProjects": "Dự án hoàn thành",
+      "progress": "Tiến độ",
+      "action": "Thao tác"
+    },
+    "completedProjectColumns": {
+      "name": "Tên dự án",
+      "alias": "Mã dự án",
+      "pm": "Quản lý dự án",
+      "customer": "Khách hàng",
+      "startDate": "Ngày bắt đầu",
+      "endDate": "Ngày kết thúc",
+      "createdAt": "Ngày tạo"
+    },
+    "actions": {
+      "viewDetails": "Xem chi tiết"
+    },
+    "expandable": {
+      "completedProjects": "Danh sách dự án hoàn thành",
+      "noCompletedProjects": "Không có dự án hoàn thành"
+    },
+    "noData": "Không có dữ liệu",
+    "noDataMessage": "Không tìm thấy dữ liệu thống kê",
+    "error": "Lỗi",
+    "errorMessage": "Có lỗi xảy ra khi tải dữ liệu",
+    "invalidData": "Dữ liệu không hợp lệ"
   },
   "pagination": {
     "total": "{start}-{end} trên tổng số {total} bản ghi"
