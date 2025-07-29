@@ -1,8 +1,8 @@
 import { SaveOutlined, QuestionCircleOutlined } from '@ant-design/icons';
-import { Card, Form, Input, Select, Switch, Button, message, Spin, Space } from 'antd';
+import { Card, Form, Input, Select, Switch, Button, message, Spin } from 'antd';
 import { useState, useEffect, useMemo } from 'react';
 import { createEmailConfig, getEmailConfig, updateEmailConfig } from '../../services/mail/mail.service';
-import { selectAuthUser, selectUserProfile } from '../../common/stores/auth/authSelector';
+import { selectUserProfile } from '../../common/stores/auth/authSelector';
 import { useSelector } from 'react-redux';
 import GmailTutorial from './components/GmailTutorial';
 import { useTranslation } from 'react-i18next';
@@ -54,7 +54,7 @@ const EmailConfig = () => {
   const [mailConfig, setMailConfig] = useState<MailConfig | null>(null);
   const [isTutorialOpen, setIsTutorialOpen] = useState(false);
   const [initialValues, setInitialValues] = useState<FormValues | null>(null);
-  const user = useSelector(selectAuthUser);
+  // const user = useSelector(selectAuthUser);
   const profile = useSelector(selectUserProfile);
 
   // Watch all form fields
@@ -141,11 +141,11 @@ const EmailConfig = () => {
   };
 
   const onFinish = async (values: any) => {
-    const loadingMessage = message.loading({
-      content: mailConfig ? t('emailConfig.message.onUpdateConfig') : t('emailConfig.message.onCreateNewConfig'),
-      key: 'mailConfigAction',
-      duration: 0,
-    });
+    // const loadingMessage = message.loading({
+    //   content: mailConfig ? t('emailConfig.message.onUpdateConfig') : t('emailConfig.message.onCreateNewConfig'),
+    //   key: 'mailConfigAction',
+    //   duration: 0,
+    // });
 
     try {
       setLoading(true);
