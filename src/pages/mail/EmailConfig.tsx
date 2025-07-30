@@ -1,5 +1,5 @@
 import { SaveOutlined, QuestionCircleOutlined } from '@ant-design/icons';
-import { Card, Form, Input, Select, Switch, Button, message, Spin } from 'antd';
+import { Card, Form, Input, Select, Switch, Button, message, Spin, Alert } from 'antd';
 import { useState, useEffect, useMemo } from 'react';
 import { createEmailConfig, getEmailConfig, updateEmailConfig } from '../../services/mail/mail.service';
 import { selectUserProfile } from '../../common/stores/auth/authSelector';
@@ -223,6 +223,30 @@ const EmailConfig = () => {
             {t('emailConfig.form.createAppPasswordGuide')}
           </Button>
         </div>
+        <div style={{paddingTop : 10 , paddingBottom : 10}}>
+          
+        {/* Alert Messages */}
+        {mailConfig ? (
+          // Mode cập nhật (có initialValue)
+          !mailConfig.isActive && (
+            <Alert
+              message={t('emailConfig.alert.activateConfigMessage')}
+              type="info"
+              showIcon
+              className="mb-4"
+            />
+          )
+        ) : (
+          // Mode tạo mới (không có initialValue)
+          <Alert
+            message={t('emailConfig.alert.setupConfigMessage')}
+            type="warning"
+            showIcon
+            className="mb-4"
+          />
+        )}
+        </div>
+
         <Form
           form={form}
           layout="vertical"

@@ -205,7 +205,7 @@
         "tabs": {
             "projectInfo": "プロジェクト情報",
             "statistics": "プロジェクト統計",
-            "documents": "ドキュメント"
+            "documents": "要求"
         },
         "cards": {
             "totalDocuments": "総ドキュメント数",

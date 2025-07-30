@@ -28,6 +28,10 @@
             "passwordDescription": "Nếu sử dụng dịch vụ Gmail, mật khẩu là mật khẩu ứng dụng (App Password)",
             "senderNameRequired": "Vui lòng nhập tên người gửi",
             "hostRequired": "Vui lòng nhập host"
+        },
+        "alert": {
+            "activateConfigMessage": "Bạn có thể kích bật cấu hình mail để có thông tin nhanh nhất",
+            "setupConfigMessage": "Bạn có thể cấu hình mail theo hướng dẫn"
         }
     },
     "gmailAppPasswordTutorial": {
