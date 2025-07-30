@@ -17,6 +17,7 @@ import {
 import { useTranslation } from 'react-i18next';
 import { useState, useEffect } from 'react';
 import type { UploadFile } from 'antd/es/upload/interface';
+import { displayFileName } from '../../../../../common/utils/fileName.util';
 
 const { Text } = Typography;
 
@@ -137,7 +138,7 @@ const ContentInputForm: React.FC<ContentInputFormProps> = ({
     return <FileOutlined style={{ fontSize: 24, color: '#8C8C8C' }} />;
   };
 
-  const uploadsUrl = import.meta.env.VITE_IS_PROD ? import.meta.env.VITE_API_UPLOAD_PROD : import.meta.env.VITE_API_UPLOAD_URL;
+  const uploadsUrl = import.meta.env.VITE_IS_PROD === 'true' ? import.meta.env.VITE_API_UPLOAD_PROD : import.meta.env.VITE_API_UPLOAD_URL;
 
   const handlePreview = (file: any) => {
     const isPreviewable = file.type.toLowerCase().includes('pdf') ||
@@ -299,7 +300,7 @@ const ContentInputForm: React.FC<ContentInputFormProps> = ({
               avatar={getFileIcon(file.type)}
               title={
                 <Space>
-                  <Text>{file.name}</Text>
+                  <Text>{displayFileName(file.name)}</Text>
                   {file.isNew && (
                     <Tag color="processing">{t('content.new_file')}</Tag>
                   )}
