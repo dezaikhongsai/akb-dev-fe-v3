@@ -1,5 +1,5 @@
 import { FileAddOutlined, SaveOutlined, PlusOutlined, DeleteOutlined, LeftOutlined, RightOutlined, UploadOutlined, FileTextOutlined, FileDoneOutlined, FileProtectOutlined, DownloadOutlined, CloseOutlined } from "@ant-design/icons";
-import { Button, Modal, Space, Typography, Input, Radio, Form, message, Card, Divider, List, Tooltip } from "antd";
+import { Button, Modal, Space, Typography, Input, Radio, Form, message, Card, Divider, List, Tooltip, Alert } from "antd";
 import React, { useState, useEffect, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import { addDocument } from '../../../../../services/document/document.service';
@@ -408,12 +408,12 @@ const ModalAddDocument: React.FC<ModalAddDocumentProp> = ({
                         label={<Space><FileTextOutlined />{t("project", { ns: "common" })}</Space>}
                         name="projectId"
                         validateStatus={touched.projectId && !selectedProject ? 'error' : undefined}
-                        help={touched.projectId && !selectedProject ? t("content.select_project_required") : undefined}
+                        help={touched.projectId && !selectedProject ? <div style={{ marginTop: 8 }}><Alert message={t("content.select_project_required")} type="warning" showIcon/></div> : undefined}
                         rules={[{ 
                             required: true, 
                             validator: (_, _value) => {
                                 if (!selectedProject) {
-                                    return Promise.reject(new Error(t("content.select_project_required")));
+                                    return Promise.reject(<div style={{ marginTop: 8 }}><Alert message={t("content.select_project_required")} type="warning" showIcon/></div>);
                                 }
                                 return Promise.resolve();
                             }
@@ -497,7 +497,7 @@ const ModalAddDocument: React.FC<ModalAddDocumentProp> = ({
                     name="name"
                     validateStatus={touched.name && !form.getFieldValue('name') ? 'error' : undefined}
                     help={touched.name && !form.getFieldValue('name') ? t("name") + " is required" : undefined}
-                    rules={[{ required: true, message: t("name") + " is required" }]}
+                    // rules={[{ required: true, message: t("name") + " is required" }]}
                 >
                     <Input 
                         placeholder={t("name")}
