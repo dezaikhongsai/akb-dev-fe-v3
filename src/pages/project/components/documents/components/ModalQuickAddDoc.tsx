@@ -8,7 +8,7 @@ import { autoSearchProject } from '../../../../../services/home/home.service';
 import { Project } from '../../../../../common/components/SearchBox';
 import { useDebounce } from '../../../../../common/hooks/useDebounce';
 import { displayFileName } from '../../../../../common/utils/fileName.util';
-// import { getProjectDetail } from '../../../../../services/project/project.service';
+import { getProjectDetail } from '../../../../../services/project/project.service';
         
 interface IDocumentData {
     document: {
@@ -25,7 +25,7 @@ interface IContentInput {
     fileIndexes: number[];
 }
 
-interface ModalAddDocumentProp {
+interface ModalQuickAddDocProp {
     mode : 'in' | 'out',
     projectId?: string;
     open: boolean;
@@ -52,7 +52,7 @@ const ACCEPTED_FILE_TYPES = {
 };
 const ACCEPTED_FILE_EXTENSIONS = Object.keys(ACCEPTED_FILE_TYPES).map(ext => `.${ext}`).join(',');
 
-const ModalAddDocument: React.FC<ModalAddDocumentProp> = ({
+const ModalQuickAddDoc: React.FC<ModalQuickAddDocProp> = ({
     open,
     onClose,
     onSuccess,
@@ -85,8 +85,8 @@ const ModalAddDocument: React.FC<ModalAddDocumentProp> = ({
     const debouncedSearchValue = useDebounce(searchValue, 400);
 
     // Project info state for mode 'in'
-    // const [projectInfo, setProjectInfo] = useState<Project | null>(null);
-    // const [projectLoading, setProjectLoading] = useState(false);
+    const [projectInfo, setProjectInfo] = useState<Project | null>(null);
+    const [projectLoading, setProjectLoading] = useState(false);
 
     // Thêm key để force remount input file khi mode hoặc modal mở
     const [inputFileKey, setInputFileKey] = useState(0);
@@ -99,11 +99,11 @@ const ModalAddDocument: React.FC<ModalAddDocumentProp> = ({
         setFiles([]);
         setCurrentPage(1);
         setSelectedProject(null);
-        // setProjectInfo(null); // Không cần nữa
+        setProjectInfo(null);
         setSearchValue('');
         setSearchResults([]);
         setLoading(false);
-        // setProjectLoading(false); // Không cần nữa
+        setProjectLoading(false);
         setTouched({});
         // Force remount input file bằng cách đổi key
         setInputFileKey(prev => prev + 1);
@@ -113,54 +113,47 @@ const ModalAddDocument: React.FC<ModalAddDocumentProp> = ({
     // Reset form khi modal mở hoặc mode thay đổi
     // useEffect(() => {
     //     if (open) {
-    //         console.log('[DEBUG] ModalAddDocument: resetForm called for open/mode change', { open, mode });
-    //         // Chỉ reset khi thực sự cần thiết
-    //         if (files.length > 0 || contents.length > 1 || contents[0]?.content || selectedProject || searchValue) {
-    //             console.log('[DEBUG] ModalAddDocument: State not empty, resetting form');
-    //             resetForm();
-    //         } else {
-    //             console.log('[DEBUG] ModalAddDocument: State already clean, skipping reset');
-    //         }
-    //     }
-    // }, [open, mode, resetForm, files.length, contents.length, selectedProject, searchValue]);
-
-    // Đảm bảo khi đóng modal, state cũng được reset
-    // useEffect(() => {
-    //     if (!open) {
-    //         console.log('[LOG] useEffect: open changed to FALSE, resetForm will be called');
     //         resetForm();
     //     }
-    //     // eslint-disable-next-line react-hooks/exhaustive-deps
-    // }, [open]);
+    // }, [open, mode, resetForm]);
+
+    // Đảm bảo khi đóng modal, state cũng được reset
+    useEffect(() => {
+        if (!open) {
+            console.log('[LOG] useEffect: open changed to FALSE, resetForm will be called');
+            resetForm();
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [open]);
 
     // Fetch project info for mode 'in'
-    // useEffect(() => {
-    //     const fetchProjectInfo = async () => {
-    //         if (open && mode === 'in' && projectId) {
-    //             try {
-    //                 setProjectLoading(true);
-    //                 const response = await getProjectDetail(projectId);
-    //                 // Transform the response to match Project interface
-    //                 const projectData = response.data.project;
-    //                 const transformedProject: Project = {
-    //                     _id: projectData._id,
-    //                     name: projectData.name,
-    //                     alias: projectData.alias,
-    //                     pm: projectData.pm,
-    //                     customer: projectData.customer
-    //                 };
-    //                 setProjectInfo(transformedProject);
-    //             } catch (error) {
-    //                 console.error('Error fetching project info:', error);
-    //                 message.error(t("content.error_fetching_project"));
-    //             } finally {
-    //                 setProjectLoading(false);
-    //             }
-    //         }
-    //     };
+    useEffect(() => {
+        const fetchProjectInfo = async () => {
+            if (open && mode === 'in' && projectId) {
+                try {
+                    setProjectLoading(true);
+                    const response = await getProjectDetail(projectId);
+                    // Transform the response to match Project interface
+                    const projectData = response.data.project;
+                    const transformedProject: Project = {
+                        _id: projectData._id,
+                        name: projectData.name,
+                        alias: projectData.alias,
+                        pm: projectData.pm,
+                        customer: projectData.customer
+                    };
+                    setProjectInfo(transformedProject);
+                } catch (error) {
+                    console.error('Error fetching project info:', error);
+                    message.error(t("content.error_fetching_project"));
+                } finally {
+                    setProjectLoading(false);
+                }
+            }
+        };
 
-    //     fetchProjectInfo();
-    // }, [open, mode, projectId, t]);
+        fetchProjectInfo();
+    }, [open, mode, projectId, t]);
 
     // Handle project search
     useEffect(() => {
@@ -242,7 +235,6 @@ const ModalAddDocument: React.FC<ModalAddDocumentProp> = ({
 
     // Xử lý upload file cho content hiện tại
     const handleUploadFiles = (newFiles: File[]) => {
-        console.log('[DEBUG] ModalAddDocument: handleUploadFiles called', { newFilesCount: newFiles.length, currentFilesCount: files.length });
         // Ensure all files are properly formatted
         const formattedFiles = newFiles.map(ensureFileFormat);
         setFiles(prevFiles => {
@@ -365,11 +357,15 @@ const ModalAddDocument: React.FC<ModalAddDocumentProp> = ({
                     message.error(t("content.project_id_required"));
                     return;
                 }
-                console.log('ProjectId validation passed:', { projectId, mode });
+                if (!projectInfo) {
+                    console.error('Project info not loaded:', { projectId, mode });
+                    message.error(t("content.project_not_found"));
+                    return;
+                }
+                console.log('ProjectId validation passed:', { projectId, mode, projectInfo });
             }
             
             setLoading(true);
-            const filesToSubmit = filesRef.current.length > 0 ? filesRef.current : files;
             const data: IDocumentData = {
                 document: {
                     projectId: mode === 'in' ? projectId! : selectedProject!._id,
@@ -377,7 +373,7 @@ const ModalAddDocument: React.FC<ModalAddDocumentProp> = ({
                     name: form.getFieldValue('name'),
                     contents: contents
                 },
-                files: filesToSubmit
+                files: filesRef.current // luôn lấy files mới nhất từ ref
             };
             
             console.log('Submitting document data:', {
@@ -386,9 +382,7 @@ const ModalAddDocument: React.FC<ModalAddDocumentProp> = ({
                 type: data.document.type,
                 name: data.document.name,
                 contentsCount: data.document.contents.length,
-                filesCount: data.files.length,
-                filesRefCount: filesRef.current.length,
-                stateFilesCount: files.length
+                filesCount: data.files.length
             });
             
             // Log toàn bộ state trước khi submit
@@ -399,7 +393,7 @@ const ModalAddDocument: React.FC<ModalAddDocumentProp> = ({
             formData.append("document", JSON.stringify(data.document));
             
             // Log tên file trước khi gửi và đảm bảo format đúng cho multipart/form-data
-            filesToSubmit.forEach((file, index) => {
+            filesRef.current.forEach((file, index) => {
                 console.log(`[LOG] File ${index + 1} name:`, file.name);
                 console.log(`[LOG] File ${index + 1} type:`, file.type);
                 console.log(`[LOG] File ${index + 1} size:`, file.size);
@@ -443,13 +437,6 @@ const ModalAddDocument: React.FC<ModalAddDocumentProp> = ({
     };
 
     const currentContent = contents[currentPage - 1];
-    
-    console.log('[DEBUG] ModalAddDocument: currentContent', { 
-        currentContent, 
-        currentPage, 
-        contentsLength: contents.length,
-        filesLength: files.length 
-    });
 
     return (
         <Modal
@@ -494,22 +481,22 @@ const ModalAddDocument: React.FC<ModalAddDocumentProp> = ({
                 layout="vertical"
                 initialValues={{ type: "request" }}
                 style={{ marginBottom: 24 }}
-                key={`a`}
+                key={`form-quick-add-document-${mode}`}
             >
                 {/* Project selection for mode 'out' and display for mode 'in' */}
                 <Form.Item
                     label={<Space><FileTextOutlined />{t("project", { ns: "common" })}</Space>}
                     name="projectId"
-                    validateStatus={touched.projectId && ((mode === 'out' && !selectedProject) || (mode === 'in' && !projectId)) ? 'error' : undefined}
-                    help={touched.projectId && ((mode === 'out' && !selectedProject) || (mode === 'in' && !projectId)) ? <div style={{ marginTop: 8 }}><Alert message={t("content.select_project_required")} type="warning" showIcon/></div> : undefined}
+                    validateStatus={touched.projectId && ((mode === 'out' && !selectedProject) || (mode === 'in' && !projectInfo)) ? 'error' : undefined}
+                    help={touched.projectId && ((mode === 'out' && !selectedProject) || (mode === 'in' && !projectInfo)) ? <div style={{ marginTop: 8 }}><Alert message={t("content.select_project_required")} type="warning" showIcon/></div> : undefined}
                     rules={[{ 
                         required: true, 
                         validator: (_, _value) => {
                             if (mode === 'out' && !selectedProject) {
                                 return Promise.reject(<div style={{ marginTop: 8 }}><Alert message={t("content.select_project_required")} type="warning" showIcon/></div>);
                             }
-                            if (mode === 'in' && !projectId) {
-                                return Promise.reject(<div style={{ marginTop: 8 }}><Alert message={t("content.project_id_required")} type="warning" showIcon/></div>);
+                            if (mode === 'in' && !projectInfo) {
+                                return Promise.reject(<div style={{ marginTop: 8 }}><Alert message={t("content.project_not_found")} type="warning" showIcon/></div>);
                             }
                             return Promise.resolve();
                         }
@@ -566,21 +553,47 @@ const ModalAddDocument: React.FC<ModalAddDocumentProp> = ({
                             </>
                         ) : (
                             // Mode 'in' - Display project info (read-only)
-                            // <div>
-                            //     <div style={{ 
-                            //         padding: 8, 
-                            //         backgroundColor: '#f0f9ff', 
-                            //         border: '1px solid #91d5ff', 
-                            //         borderRadius: 6,
-                            //         fontSize: '12px'
-                            //     }}>
-                            //         <div><strong>{t("content.current_project")}:</strong> {projectId}</div>
-                            //         <div style={{ color: '#1890ff', fontSize: '11px', marginTop: 4 }}>
-                            //             <FileTextOutlined /> {t("content.read_only_mode")}
-                            //         </div>
-                            //     </div>
-                            // </div>
-                            <></>
+                            <div>
+                                {projectLoading ? (
+                                    <div style={{ 
+                                        padding: 16, 
+                                        textAlign: 'center',
+                                        backgroundColor: '#fafafa',
+                                        border: '1px solid #d9d9d9',
+                                        borderRadius: 6
+                                    }}>
+                                        <Typography.Text type="secondary">{t("content.loading_project")}</Typography.Text>
+                                    </div>
+                                ) : projectInfo ? (
+                                    <div style={{ 
+                                        marginTop: 8, 
+                                        padding: 8, 
+                                        backgroundColor: '#f0f9ff', 
+                                        border: '1px solid #91d5ff', 
+                                        borderRadius: 6,
+                                        fontSize: '12px'
+                                    }}>
+                                        <div><strong>{t("content.current_project")}:</strong> {projectInfo.name}</div>
+                                        <div style={{ color: '#666' }}>
+                                            {projectInfo.alias} • {projectInfo.pm?.profile.name || 'N/A'}
+                                        </div>
+                                        <div style={{ color: '#1890ff', fontSize: '11px', marginTop: 4 }}>
+                                            <FileTextOutlined /> {t("content.read_only_mode")}
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <div style={{ 
+                                        padding: 8, 
+                                        backgroundColor: '#fff2e8', 
+                                        border: '1px solid #ffbb96', 
+                                        borderRadius: 6,
+                                        fontSize: '12px',
+                                        color: '#d46b08'
+                                    }}>
+                                        <Typography.Text type="warning">{t("content.project_not_found")}</Typography.Text>
+                                    </div>
+                                )}
+                            </div>
                         )}
                     </div>
                 </Form.Item>
@@ -676,52 +689,44 @@ const ModalAddDocument: React.FC<ModalAddDocumentProp> = ({
                         header={<b>{t('content.files')}</b>}
                         dataSource={currentContent.fileIndexes}
                         locale={{ emptyText: t('content.no_files') }}
-                        renderItem={idx => {
-                            console.log('[DEBUG] ModalAddDocument: Rendering file item', { 
-                                idx, 
-                                fileIndexes: currentContent.fileIndexes,
-                                filesLength: files.length,
-                                file: files[idx] 
-                            });
-                            return (
-                                <List.Item
-                                    actions={[
-                                        <Tooltip title={t('content.download')} key="download">
-                                            <Button
-                                                type="text"
-                                                icon={<DownloadOutlined />}
-                                                onClick={() => {
-                                                    const file = files[idx];
-                                                    if (file) {
-                                                        const url = URL.createObjectURL(file);
-                                                        const link = document.createElement('a');
-                                                        link.href = url;
-                                                        link.download = file.name;
-                                                        document.body.appendChild(link);
-                                                        link.click();
-                                                        document.body.removeChild(link);
-                                                        URL.revokeObjectURL(url);
-                                                    }
-                                                }}
-                                            />
-                                        </Tooltip>,
-                                        <Tooltip title={t('content.delete')} key="delete">
-                                            <Button
-                                                type="text"
-                                                danger
-                                                icon={<DeleteOutlined />}
-                                                onClick={() => handleDeleteFile(idx)}
-                                            />
-                                        </Tooltip>
-                                    ]}
-                                >
-                                    <List.Item.Meta
-                                        avatar={<UploadOutlined style={{ color: '#722ED1' }} />}
-                                        title={<span>{files[idx] ? displayFileName(files[idx].name) : ''}</span>}
-                                    />
-                                </List.Item>
-                            );
-                        }}
+                        renderItem={idx => (
+                            <List.Item
+                                actions={[
+                                    <Tooltip title={t('content.download')} key="download">
+                                        <Button
+                                            type="text"
+                                            icon={<DownloadOutlined />}
+                                            onClick={() => {
+                                                const file = files[idx];
+                                                if (file) {
+                                                    const url = URL.createObjectURL(file);
+                                                    const link = document.createElement('a');
+                                                    link.href = url;
+                                                    link.download = file.name;
+                                                    document.body.appendChild(link);
+                                                    link.click();
+                                                    document.body.removeChild(link);
+                                                    URL.revokeObjectURL(url);
+                                                }
+                                            }}
+                                        />
+                                    </Tooltip>,
+                                    <Tooltip title={t('content.delete')} key="delete">
+                                        <Button
+                                            type="text"
+                                            danger
+                                            icon={<DeleteOutlined />}
+                                            onClick={() => handleDeleteFile(idx)}
+                                        />
+                                    </Tooltip>
+                                ]}
+                            >
+                                <List.Item.Meta
+                                    avatar={<UploadOutlined style={{ color: '#722ED1' }} />}
+                                    title={<span>{files[idx] ? displayFileName(files[idx].name) : ''}</span>}
+                                />
+                            </List.Item>
+                        )}
                     />
                     <input
                         key={inputFileKey}
@@ -729,7 +734,7 @@ const ModalAddDocument: React.FC<ModalAddDocumentProp> = ({
                         multiple
                         accept={ACCEPTED_FILE_EXTENSIONS}
                         style={{ display: 'none' }}
-                        id={`file-upload-modal-add-${mode}`}
+                        id={`file-upload-modal-quick-${mode}`}
                         onChange={e => {
                             const fileList = Array.from(e.target.files || []);
                             const validFiles = fileList.filter(beforeUpload);
@@ -754,7 +759,7 @@ const ModalAddDocument: React.FC<ModalAddDocumentProp> = ({
                         type="primary"
                         icon={<UploadOutlined />}
                         style={{ marginTop: 16, background: '#722ED1', borderColor: '#722ED1' }}
-                        onClick={() => document.getElementById(`file-upload-modal-add-${mode}`)?.click()}
+                        onClick={() => document.getElementById(`file-upload-modal-quick-${mode}`)?.click()}
                     >
                         {t('content.upload_file')}
                     </Button>
@@ -764,4 +769,4 @@ const ModalAddDocument: React.FC<ModalAddDocumentProp> = ({
     );
 };
 
-export default ModalAddDocument;
+export default ModalQuickAddDoc;

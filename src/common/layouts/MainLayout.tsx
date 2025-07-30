@@ -33,9 +33,10 @@ import { autoSearchProject } from '../../services/home/home.service';
 import SearchBox from '../components/SearchBox';
 // import Notification from '../components/Notification';
 import type { ItemType } from 'antd/es/menu/interface'; // Correct import for Ant Design types
-import ModalAddDocument from '../../pages/project/components/documents/components/ModalAddDocument';
+import ModalQuickAddDoc from '../../pages/project/components/documents/components/ModalQuickAddDoc';
 import ModalAddProject from '../../pages/project/components/projects/ModalAddProject';
 import { createProject } from '../../services/project/project.service';
+// import ModalQuickAddDoc from '../../pages/project/components/documents/components/ModalQuickAddDoc';
 
 const { Header, Sider, Content } = Layout;
 
@@ -834,13 +835,18 @@ const MainLayout: React.FC = () => {
       </div>
 
       {/* Modals */}
-      <ModalAddDocument
+      <ModalQuickAddDoc
         open={openModalAddDocument}
         onClose={() => setOpenModalAddDocument(false)}
         mode='out'
         onSuccess={handleModalAddDocumentSuccess}
       />
-      
+      {/* <ModalQuickAddDoc 
+         open={openModalAddDocument}
+         onClose={() => setOpenModalAddDocument(false)}
+         mode='out'
+         onSuccess={handleModalAddDocumentSuccess}
+      /> */}
       <ModalAddProject
         open={openModalAddProject}
         onCancel={() => setOpenModalAddProject(false)}

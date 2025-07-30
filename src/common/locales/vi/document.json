@@ -66,7 +66,12 @@
     "select_project_required": "Vui lòng chọn một dự án",
     "project_id_required": "ID dự án là bắt buộc",
     "no_projects_found": "Không tìm thấy dự án nào",
-    "selected": "Đã chọn"
+    "selected": "Đã chọn",
+    "current_project": "Dự án hiện tại",
+    "read_only_mode": "Chế độ chỉ đọc",
+    "loading_project": "Đang tải thông tin dự án...",
+    "project_not_found": "Không tìm thấy dự án",
+    "error_fetching_project": "Có lỗi xảy ra khi tải thông tin dự án"
   },
   "type_options": {
     "request": "Yêu cầu",
