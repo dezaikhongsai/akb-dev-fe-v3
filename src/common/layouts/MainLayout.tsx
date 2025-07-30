@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react'; // Import useCallback
-import { Layout, Menu, Avatar, Button, Dropdown, Breadcrumb, Modal } from 'antd';
+import { Layout, Menu, Avatar, Button, Dropdown, Breadcrumb, Modal, Tooltip } from 'antd';
 import {
   MenuUnfoldOutlined,
   ProjectOutlined,
@@ -295,7 +295,7 @@ const MainLayout: React.FC = () => {
       {
         title: (
           <span>
-            {'AKB RequestOps'}
+            {'AKB Quản lý yêu cầu'}
           </span>
         )
       },
@@ -729,14 +729,15 @@ const MainLayout: React.FC = () => {
           transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
           pointerEvents: fabExpanded ? 'auto' : 'none'
         }}>
+          <Tooltip title={t('quick_add_document')}>
           <Button
             type="primary"
             shape="circle"
-            size="large"
+            size="middle"
             icon={<FileAddOutlined />}
             style={{
-              width: 56,
-              height: 56,
+              width:  45,
+              height: 45,
               boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
               display: 'flex',
               alignItems: 'center',
@@ -762,14 +763,16 @@ const MainLayout: React.FC = () => {
             }}
             title={t('quick_add_document')}
           />
-          <Button
+          </Tooltip>
+         <Tooltip title={t('quick_add_project')}>
+         <Button
             type="primary"
             shape="circle"
-            size="large"
+            size="small"
             icon={<ProjectOutlined />}
             style={{
-              width: 56,
-              height: 56,
+              width: 45,
+              height: 45,
               boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
               display: 'flex',
               alignItems: 'center',
@@ -795,17 +798,18 @@ const MainLayout: React.FC = () => {
             }}
             title={t('quick_add_project')}
           />
+         </Tooltip>
         </div>
         
         {/* Main FAB */}
         <Button
           type="primary"
           shape="circle"
-          size="large"
+          size="small"
           icon={fabExpanded ? <CloseOutlined /> : <PlusOutlined />}
           style={{
-            width: 56,
-            height: 56,
+            width: 45,
+            height: 45,
             boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
             display: 'flex',
             alignItems: 'center',
