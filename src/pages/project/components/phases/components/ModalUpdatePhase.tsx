@@ -67,7 +67,7 @@ const ModalUpdatePhase: React.FC<ModalUpdatePhaseProps> = ({ open, onClose, onSu
       open={open}
       onCancel={onClose}
       width={1000}
-      bodyStyle={{ maxHeight: '60vh', overflow: 'auto' }}
+                  styles={{ body: { maxHeight: '60vh', overflow: 'auto' } }}
       title={
         <Space>
           <EditOutlined />

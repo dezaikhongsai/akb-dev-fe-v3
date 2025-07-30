@@ -22,6 +22,7 @@ import { useState, useEffect } from 'react';
 import type { UploadFile } from 'antd/es/upload/interface';
 import type { RcFile } from 'antd/es/upload';
 import dayjs from 'dayjs';
+import { displayFileName } from '../../../../../common/utils/fileName.util';
 
 const { Text } = Typography;
 
@@ -513,7 +514,7 @@ const ModalContent: React.FC<ModalContentProps> = ({
                 avatar={getFileIcon(file.type)}
                 title={
                   <Space>
-                    <Text>{file.name}</Text>
+                    <Text>{displayFileName(file.name)}</Text>
                     {file.isNew && (
                       <Tag color="processing">{t('content.new_file')}</Tag>
                     )}

@@ -11,6 +11,9 @@ import {
 } from '@ant-design/icons';
 import { downloadFile } from '../../services/document/document.service';
 import { Tooltip } from 'antd/lib';
+import { displayFileName } from '../utils/fileName.util';
+
+const { Text } = Typography;
 
 interface FileTextProps {
   originalName: string;
@@ -103,7 +106,7 @@ const FileText: React.FC<FileTextProps> = ({ originalName, filePath, fileType })
     <>
       <Space>
         {getFileIcon()}
-        <Typography.Text>{originalName}</Typography.Text>
+        <Text>{displayFileName(originalName)}</Text>
         <Space size="small">
           <Tooltip title="Tải xuống">
             <Button

@@ -21,6 +21,7 @@ import { useTranslation } from 'react-i18next';
 import { useState } from 'react';
 import type { UploadFile } from 'antd/es/upload/interface';
 import { addContent } from '../../../../../services/document/document.service';
+import { displayFileName } from '../../../../../common/utils/fileName.util';
 
 const { Text } = Typography;
 
@@ -335,7 +336,7 @@ const ModalAddContent: React.FC<ModalAddContentProps> = ({
               avatar={getFileIcon(file.type)}
               title={
                 <Space>
-                  <Text>{file.name}</Text>
+                  <Text>{displayFileName(file.name)}</Text>
                   {file.isNew && (
                     <Tag color="processing">{t('content.new_file')}</Tag>
                   )}

@@ -7,6 +7,7 @@ import SearchBox from '../../../../../common/components/SearchBox';
 import { autoSearchProject } from '../../../../../services/home/home.service';
 import { Project } from '../../../../../common/components/SearchBox';
 import { useDebounce } from '../../../../../common/hooks/useDebounce';
+import { displayFileName } from '../../../../../common/utils/fileName.util';
         
 interface IDocumentData {
     document: {
@@ -145,17 +146,57 @@ const ModalAddDocument: React.FC<ModalAddDocumentProp> = ({
         setTouched(prev => ({ ...prev, [fieldName]: true }));
     };
 
+    // Utility function to ensure files are properly formatted for multipart/form-data
+    const ensureFileFormat = (file: File): File => {
+        // Ensure filename is properly encoded for multipart/form-data
+        const originalName = file.name;
+        let safeName = originalName;
+        
+        // Try to decode if it's already encoded
+        try {
+            const decoded = decodeURIComponent(originalName);
+            if (decoded !== originalName) {
+                safeName = decoded;
+            }
+        } catch {
+            // If decode fails, keep original name
+        }
+        
+        // Ensure the filename is properly encoded for multipart/form-data
+        // This helps prevent browser from double-encoding the filename
+        const blob = file.slice(0, file.size, file.type);
+        
+        // Create a new File with the correct name encoding
+        const newFile = new File([blob], safeName, { 
+            type: file.type,
+            lastModified: file.lastModified
+        });
+        
+        // Log the file details for debugging
+        console.log('File processing:', {
+            originalName,
+            safeName,
+            fileType: file.type,
+            fileSize: file.size
+        });
+        
+        return newFile;
+    };
+
     // Xử lý upload file cho content hiện tại
     const handleUploadFiles = (newFiles: File[]) => {
+        // Ensure all files are properly formatted
+        const formattedFiles = newFiles.map(ensureFileFormat);
+        
         setFiles(prevFiles => {
             const startIdx = prevFiles.length;
-            const newFileIndexes = newFiles.map((_, idx) => startIdx + idx);
+            const newFileIndexes = formattedFiles.map((_, idx) => startIdx + idx);
             setContents(prevContents => prevContents.map((c, idx) =>
                 idx === currentPage - 1
                     ? { ...c, fileIndexes: [...c.fileIndexes, ...newFileIndexes] }
                     : c
             ));
-            return [...prevFiles, ...newFiles];
+            return [...prevFiles, ...formattedFiles];
         });
     };
 
@@ -282,7 +323,24 @@ const ModalAddDocument: React.FC<ModalAddDocumentProp> = ({
             
             const formData = new FormData();
             formData.append("document", JSON.stringify(data.document));
-            files.forEach(file => formData.append("files", file));
+            
+            // Log tên file trước khi gửi và đảm bảo format đúng cho multipart/form-data
+            files.forEach((file, index) => {
+                console.log(`File ${index + 1} name:`, file.name);
+                console.log(`File ${index + 1} name (encoded):`, encodeURIComponent(file.name));
+                console.log(`File ${index + 1} type:`, file.type);
+                console.log(`File ${index + 1} size:`, file.size);
+                
+                // Ensure file is properly formatted for multipart/form-data
+                const formattedFile = ensureFileFormat(file);
+                
+                // Log the final filename that will be sent
+                console.log(`File ${index + 1} final name:`, formattedFile.name);
+                
+                // Thêm file vào FormData với tên được encode đúng cách
+                formData.append("files", formattedFile, formattedFile.name);
+            });
+            
             await addDocument(formData);
             message.success(t("add"));
             if (onSuccess) onSuccess(form.getFieldValue('type'));
@@ -311,7 +369,7 @@ const ModalAddDocument: React.FC<ModalAddDocumentProp> = ({
                 onClose();
             }}
             width={900}
-            bodyStyle={{ maxHeight: '60vh', overflow: 'auto' }}
+            styles={{ body: { maxHeight: '60vh', overflow: 'auto' } }}
             title={
                 <Space>
                     <FileAddOutlined />
@@ -536,7 +594,7 @@ const ModalAddDocument: React.FC<ModalAddDocumentProp> = ({
                             >
                                 <List.Item.Meta
                                     avatar={<UploadOutlined style={{ color: '#722ED1' }} />}
-                                    title={<span>{files[idx]?.name}</span>}
+                                    title={<span>{files[idx] ? displayFileName(files[idx].name) : ''}</span>}
                                 />
                             </List.Item>
                         )}
@@ -553,8 +611,11 @@ const ModalAddDocument: React.FC<ModalAddDocumentProp> = ({
                             const invalidFiles = fileList.filter(file => !beforeUpload(file));
                             
                             if (validFiles.length > 0) {
-                                handleUploadFiles(validFiles);
-                                message.success(`${validFiles.length} ${t("content.file_upload_success")}`);
+                                // Ensure files are properly formatted for multipart/form-data
+                                const formattedFiles = validFiles.map(ensureFileFormat);
+                                
+                                handleUploadFiles(formattedFiles);
+                                message.success(`${formattedFiles.length} ${t("content.file_upload_success")}`);
                             }
                             
                             if (invalidFiles.length > 0) {

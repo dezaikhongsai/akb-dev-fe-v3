@@ -103,6 +103,12 @@ const DocumentInproject: React.FC<DocumentInprojectProps> = ({ onReloadStatistic
       return; // Use cached data
     }
     
+    // Update cache timestamp before making the request to prevent race conditions
+    setLastTabFetchTime(prev => ({
+      ...prev,
+      [cacheKey]: now
+    }));
+    
     logApiCall(forceRefresh ? 'Force Refresh' : 'Fetch', currentTab);
     
     if (showLoading) {
@@ -141,11 +147,7 @@ const DocumentInproject: React.FC<DocumentInprojectProps> = ({ onReloadStatistic
         // Don't show error message for status as it's not critical
       }
 
-      // Update cache for this specific tab/query combination
-      setLastTabFetchTime(prev => ({
-        ...prev,
-        [cacheKey]: now
-      }));
+      // Cache already updated before the request
       setLastFetchTime(now);
     } catch (error) {
       console.error('Error in fetchData:', error);
@@ -157,8 +159,7 @@ const DocumentInproject: React.FC<DocumentInprojectProps> = ({ onReloadStatistic
     }
   };
 
-  // Debounced version for search
-  const debouncedFetchData = useDebounce(fetchData, 500);
+  // Debounced version for search - removed as it's handled by useDebounce hook
 
   // Function to force refresh cache
   // const refreshData = () => {
@@ -188,14 +189,7 @@ const DocumentInproject: React.FC<DocumentInprojectProps> = ({ onReloadStatistic
 
   useEffect(() => {
     fetchData();
-  }, [pid, currentPage, currentTab, statusFilter]);
-
-  // Use debounced version for search
-  useEffect(() => {
-    if (debouncedSearchTerm !== searchTerm) {
-      debouncedFetchData(false); // Don't show loading for search
-    }
-  }, [debouncedSearchTerm]);
+  }, [pid, currentPage, currentTab, statusFilter, debouncedSearchTerm]);
 
 
 
