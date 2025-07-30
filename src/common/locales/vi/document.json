@@ -1,9 +1,11 @@
 {
-  "title": "Tài liệu dự án",
-  "add": "Thêm tài liệu",
-  "save": "Lưu tài liệu",
-  "type": "Loại tài liệu",
-  "name": "Tên tài liệu",
+  "title": "Yêu cầu dự án",
+  "add": "Thêm yêu cầu",
+  "add_new_request": "Thêm yêu cầu mới",
+  "add_quick_request": "Thêm yêu cầu nhanh",
+  "save": "Lưu yêu cầu",
+  "type": "Loại yêu cầu",
+  "name": "Tên yêu cầu",
   "contents": "Nội dung",
   "status": "Trạng thái",
   "creator": "Người tạo",
@@ -23,12 +25,12 @@
     "add_content": "Thêm nội dung",
     "mark_done": "Đánh dấu hoàn thành",
     "mark_processing": "Đánh dấu đang xử lý",
-    "delete": "Xóa tài liệu"
+    "delete": "Xóa yêu cầu"
   },
-  "delete_confirm_title": "Xác nhận xóa tài liệu",
-  "delete_confirm_content": "Bạn có chắc chắn muốn xóa tài liệu này không?",
-  "delete_success": "Xóa tài liệu thành công!",
-  "delete_error": "Có lỗi xảy ra khi xóa tài liệu!",
+  "delete_confirm_title": "Xác nhận xóa yêu cầu",
+  "delete_confirm_content": "Bạn có chắc chắn muốn xóa yêu cầu này không?",
+  "delete_success": "Xóa yêu cầu thành công!",
+  "delete_error": "Có lỗi xảy ra khi xóa yêu cầu!",
   "status_update_success": "Cập nhật trạng thái thành công!",
   "status_update_error": "Có lỗi xảy ra khi cập nhật trạng thái!",
   "content": {
@@ -72,12 +74,14 @@
     "document": "Tài liệu"
   },
   "messages": {
-    "no_documents": "Chưa có tài liệu được cập nhật",
-    "pending_documents": "Bạn có {{count}} tài liệu cần duyệt"
+    "no_documents": "Chưa có yêu cầu được cập nhật",
+    "pending_documents": "Bạn có {{count}} yêu cầu cần duyệt"
   },
   "common": {
     "close": "Đóng",
     "confirm": "Xác nhận",
-    "all": "Tất cả"
+    "all": "Tất cả",
+    "actions" : "Thao tác",
+    "delete" : "Xóa"
   }
 }

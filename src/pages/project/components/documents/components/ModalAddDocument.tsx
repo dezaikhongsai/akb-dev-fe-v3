@@ -373,7 +373,9 @@ const ModalAddDocument: React.FC<ModalAddDocumentProp> = ({
             title={
                 <Space>
                     <FileAddOutlined />
-                    <Typography.Text>{t("add")}</Typography.Text>
+                    <Typography.Text>
+                        {mode === 'in' ? t("add_new_request") : t("add_quick_request")}
+                    </Typography.Text>
                 </Space>
             }
             footer={[

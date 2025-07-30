@@ -1,9 +1,11 @@
 {
-  "title": "プロジェクト文書",
-  "add": "文書を追加",
-  "save": "文書を保存",
-  "type": "文書タイプ",
-  "name": "文書名",
+  "title": "プロジェクト要求",
+  "add": "要求を追加",
+  "add_new_request": "新しい要求を追加",
+  "add_quick_request": "クイック要求を追加",
+  "save": "要求を保存",
+  "type": "要求タイプ",
+  "name": "要求名",
   "contents": "内容",
   "status": "ステータス",
   "creator": "作成者",
@@ -78,6 +80,8 @@
   "common": {
     "close": "閉じる",
     "confirm": "確認",
-    "all": "すべて"
+    "all": "すべて",
+    "actions" : "アクション",
+    "delete" : "削除"
   }
 }

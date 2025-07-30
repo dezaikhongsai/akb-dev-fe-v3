@@ -28,6 +28,10 @@
             "passwordDescription": "Gmailサービスを使用する場合、パスワードはアプリパスワードです",
             "senderNameRequired": "送信者名を入力してください",
             "hostRequired": "ホストを入力してください"
+        },
+        "alert": {
+            "activateConfigMessage": "メール設定を有効にして、最新の情報を素早く取得できます",
+            "setupConfigMessage": "ガイドに従ってメール設定を行うことができます"
         }
     },
     "gmailAppPasswordTutorial": {
