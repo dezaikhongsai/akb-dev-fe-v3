@@ -1,6 +1,8 @@
 import axios, { type AxiosInstance, type InternalAxiosRequestConfig, type AxiosResponse, type AxiosError } from 'axios';
 import Cookies from 'js-cookie';
 import i18n from './i18n.config';
+import { logout as logoutRedux } from '../stores/auth/authSlice';
+import { store } from '../stores/store';
 
 const isProd = import.meta.env.VITE_IS_PROD === 'true';
 const getBaseURL = () => {
@@ -42,8 +44,14 @@ const processQueue = (error: AxiosError | null, token: string | null = null) => 
 
 // Helper function to handle logout
 const handleLogout = () => {
+  // Clear cookies
   Cookies.remove('accessToken', { path: '/' });
   Cookies.remove('refreshToken', { path: '/' });
+  
+  // Clear Redux store
+  store.dispatch(logoutRedux());
+  
+  // Redirect to login
   window.location.href = '/login';
 };
 
@@ -117,8 +125,8 @@ api.interceptors.response.use(
         if (accessToken) {
           Cookies.set('accessToken', accessToken, {
             path: '/',
-            secure: true,
-            sameSite: 'strict'
+            secure: false, // Thay đổi từ true thành false cho localhost
+            sameSite: 'lax' // Thay đổi từ 'strict' thành 'lax' cho localhost
           });
           originalRequest.headers = {
             ...originalRequest.headers,

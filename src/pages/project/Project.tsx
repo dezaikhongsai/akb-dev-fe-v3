@@ -466,9 +466,7 @@ const Project = () => {
       // Refresh project list
       fetchProjects();
       // Refresh statistics after creating a new project only if on statistics tab
-      if (activeTab === '1') {
-        fetchStatistic();
-      }
+       fetchStatistic();
       // Cập nhật trạng thái hasPendingProjects sau khi tạo dự án mới
       // (fetchProjects sẽ tự động cập nhật hasPendingProjects)
     } catch (error) {

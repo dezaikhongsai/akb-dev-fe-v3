@@ -19,6 +19,7 @@ const Login: React.FC = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const isProd = import.meta.env.VITE_IS_PROD === 'true';
 
   const onFinish = async (values: LoginForm) => {
     setLoading(true);
@@ -37,16 +38,23 @@ const Login: React.FC = () => {
         Cookies.set('accessToken', accessToken, { 
           expires: 7,
           path: '/',
-          secure: true,
-          sameSite: 'strict'
+          secure: isProd, // Thay đổi từ true thành false cho localhost
+          sameSite: isProd ? 'strict' : 'lax' // Thay đổi từ 'strict' thành 'lax' cho localhost
         });
 
         Cookies.set('refreshToken', refreshToken, {
           expires: 7,
           path: '/',
-          secure: true,
-          sameSite: 'strict',
-          httpOnly: true
+          secure: isProd  , // Thay đổi từ true thành false cho localhost
+          sameSite: isProd ? 'strict' : 'lax' // Thay đổi từ 'strict' thành 'lax' cho localhost
+        });
+
+        // Debug logging
+        console.log('🍪 Login Cookie Debug:', {
+          accessTokenSet: Cookies.get('accessToken') ? 'SUCCESS' : 'FAILED',
+          refreshTokenSet: Cookies.get('refreshToken') ? 'SUCCESS' : 'FAILED',
+          allCookies: document.cookie,
+          timestamp: new Date().toISOString()
         });
 
         // 4. Update redux store with complete user data
@@ -58,6 +66,10 @@ const Login: React.FC = () => {
 
         // 5. Chuyển hướng và thông báo thành công
         message.success(t('common:messages.success.login'));
+        
+        // Đảm bảo Redux được update hoàn toàn trước khi navigate
+        // Sử dụng Promise để đảm bảo state được update
+        await new Promise(resolve => setTimeout(resolve, 200));
         navigate('/projects');
       } else {
         throw new Error(t('common:messages.error.invalid_response'));

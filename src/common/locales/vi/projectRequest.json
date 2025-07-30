@@ -110,8 +110,8 @@
             "projectName": "Tên dự án",
             "pm": "Quản lý dự án",
             "customer": "Khách hàng",
-            "totalDocuments": "Tổng tài liệu",
-            "incompleteDocuments": "Chưa hoàn thành",
+            "totalDocuments": "Tổng yêu cầu",
+            "incompleteDocuments": "Yêu cầu chưa hoàn thành",
             "action": "Thao tác"
         },
         "documentColumns": {

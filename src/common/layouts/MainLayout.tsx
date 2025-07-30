@@ -15,14 +15,15 @@ import {
   TeamOutlined,
   UserOutlined,
   CloseOutlined,
-  ThunderboltOutlined
+  PlusOutlined,
+  FileAddOutlined
 } from '@ant-design/icons';
 import { logout } from '../../services/auth';
 import { useNavigate, Outlet, useLocation } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import { useDispatch, useSelector } from 'react-redux';
-import { logout as logoutRedux } from '../../common/stores/auth/authSlice';
-import { selectAuthUser } from '../../common/stores/auth/authSelector';
+import { logout as logoutRedux, updateToken } from '../../common/stores/auth/authSlice';
+import { selectAuthUser, selectAuthToken } from '../../common/stores/auth/authSelector';
 import { message } from 'antd';
 import { useTranslation } from 'react-i18next';
 import LanguageSwitcher from '../components/LanguageSwitcher';
@@ -33,6 +34,8 @@ import SearchBox from '../components/SearchBox';
 // import Notification from '../components/Notification';
 import type { ItemType } from 'antd/es/menu/interface'; // Correct import for Ant Design types
 import ModalAddDocument from '../../pages/project/components/documents/components/ModalAddDocument';
+import ModalAddProject from '../../pages/project/components/projects/ModalAddProject';
+import { createProject } from '../../services/project/project.service';
 
 const { Header, Sider, Content } = Layout;
 
@@ -81,7 +84,31 @@ const MainLayout: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
   const debouncedSearchValue = useDebounce(searchValue, 400);
-  const [openModalAddDocument , setOpenModalAddDocument] = useState(false);
+  const [openModalAddDocument, setOpenModalAddDocument] = useState(false);
+  const [openModalAddProject, setOpenModalAddProject] = useState(false);
+  const [fabExpanded, setFabExpanded] = useState(false);
+  const [submitLoading, setSubmitLoading] = useState(false);
+  const [refreshKey, setRefreshKey] = useState(0);
+  const reduxToken = useSelector(selectAuthToken);
+
+  // Sync Redux store with cookies when component mounts
+  useEffect(() => {
+    const cookieToken = Cookies.get('accessToken');
+    
+    console.log('🔄 MainLayout Token Sync:', {
+      cookieToken: cookieToken ? 'EXISTS' : 'MISSING',
+      reduxToken: reduxToken ? 'EXISTS' : 'MISSING',
+      currentPath: location.pathname,
+      timestamp: new Date().toISOString()
+    });
+    
+    // If we have cookie token but no Redux token, sync them
+    if (cookieToken && !reduxToken) {
+      console.log('🔄 Syncing Redux token with cookie token');
+      dispatch(updateToken({ accessToken: cookieToken }));
+    }
+  }, [dispatch, reduxToken]);
+
   // Handle click outside to close search results dropdown
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -383,6 +410,65 @@ const MainLayout: React.FC = () => {
     const index = str.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0) % colors.length;
     return colors[index];
   }, [user]);
+
+  const handleModalAddProjectSubmit = async (values: any) => {
+    try {
+      setSubmitLoading(true);
+      const response = await createProject(values);
+      console.log('Project created:', response);
+      setOpenModalAddProject(false);
+      message.success(t('common:messages.success.project_created'));
+      
+      // Refresh content based on current location
+      if (location.pathname.includes('/projects')) {
+        // If on projects list page, refresh content to show new project
+        setRefreshKey(prev => prev + 1);
+      } else if (location.pathname.includes('/project/')) {
+        // If on project detail page, redirect to projects list to see new project
+        navigate('/projects');
+      }
+      // For other pages, just close the modal without refresh
+    } catch (error) {
+      console.error('Error creating project:', error);
+      message.error(t('common:messages.error.project_creation_failed'));
+    } finally {
+      setSubmitLoading(false);
+    }
+  };
+
+  const handleModalAddDocumentSuccess = (_type: string) => {
+    setOpenModalAddDocument(false);
+    message.success(t('common:messages.success.addDocument'));
+    
+    // Refresh content based on current location
+    if (location.pathname.includes('/project/')) {
+      // If on project detail page, refresh content to show new document
+      setRefreshKey(prev => prev + 1);
+    } else if (location.pathname.includes('/projects')) {
+      // If on projects list page, refresh content to update any document counts
+      setRefreshKey(prev => prev + 1);
+    }
+    // For other pages, just close the modal without refresh
+  };
+
+  // Handle click outside to close FAB
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const fabContainer = document.getElementById('fab-container');
+      if (fabContainer && !fabContainer.contains(event.target as Node)) {
+        setFabExpanded(false);
+      }
+    };
+
+    if (fabExpanded) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [fabExpanded]);
+
   return (
     <Layout style={{ minHeight: '100vh' }}>
       {/* Thanh Header */}
@@ -613,46 +699,151 @@ const MainLayout: React.FC = () => {
             minHeight: 'calc(100vh - 240px)', // Adjusted for breadcrumb and tabs
             boxShadow: '0 1px 2px rgba(0, 0, 0, 0.03)',
           }}>
-            <Outlet />
+            <Outlet key={refreshKey} />
           </Content>
           <AppFooter />
         </Layout>
       </Layout>
       
-      {/* Floating Action Button */}
-      <Button
-        type="default"
-        shape="circle"
-        size="small"
-        icon={<ThunderboltOutlined   />}
+      {/* Floating Action Button with Sub-buttons */}
+      <div 
+        id="fab-container"
         style={{
           position: 'fixed',
           bottom: 24,
           right: 24,
-          width: 56,
-          height: 56,
-          boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
           zIndex: 1000,
           display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          fontSize: 20
+          flexDirection: 'column',
+          alignItems: 'flex-end',
+          gap: 16
         }}
-        onClick={() => {
-          // Add your action here
-          console.log('Floating button clicked');
-          setOpenModalAddDocument(true);
-        }}
-      />
+      >
+        {/* Sub-buttons */}
+        <div style={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 16,
+          opacity: fabExpanded ? 1 : 0,
+          transform: fabExpanded ? 'translateY(0)' : 'translateY(20px)',
+          transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+          pointerEvents: fabExpanded ? 'auto' : 'none'
+        }}>
+          <Button
+            type="primary"
+            shape="circle"
+            size="large"
+            icon={<FileAddOutlined />}
+            style={{
+              width: 56,
+              height: 56,
+              boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: 20,
+              backgroundColor: '#52c41a',
+              borderColor: '#52c41a',
+              transform: fabExpanded ? 'scale(1)' : 'scale(0.8)',
+              transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+              cursor: 'pointer'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = fabExpanded ? 'scale(1.1)' : 'scale(0.8)';
+              e.currentTarget.style.boxShadow = '0 6px 16px rgba(0, 0, 0, 0.2)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = fabExpanded ? 'scale(1)' : 'scale(0.8)';
+              e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.15)';
+            }}
+            onClick={() => {
+              setOpenModalAddDocument(true);
+              setFabExpanded(false);
+            }}
+            title={t('quick_add_document')}
+          />
+          <Button
+            type="primary"
+            shape="circle"
+            size="large"
+            icon={<ProjectOutlined />}
+            style={{
+              width: 56,
+              height: 56,
+              boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: 20,
+              backgroundColor: '#1890ff',
+              borderColor: '#1890ff',
+              transform: fabExpanded ? 'scale(1)' : 'scale(0.8)',
+              transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+              cursor: 'pointer'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = fabExpanded ? 'scale(1.1)' : 'scale(0.8)';
+              e.currentTarget.style.boxShadow = '0 6px 16px rgba(0, 0, 0, 0.2)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = fabExpanded ? 'scale(1)' : 'scale(0.8)';
+              e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.15)';
+            }}
+            onClick={() => {
+              setOpenModalAddProject(true);
+              setFabExpanded(false);
+            }}
+            title={t('quick_add_project')}
+          />
+        </div>
+        
+        {/* Main FAB */}
+        <Button
+          type="primary"
+          shape="circle"
+          size="large"
+          icon={fabExpanded ? <CloseOutlined /> : <PlusOutlined />}
+          style={{
+            width: 56,
+            height: 56,
+            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontSize: 20,
+            backgroundColor: fabExpanded ? '#ff4d4f' : '#722ed1',
+            borderColor: fabExpanded ? '#ff4d4f' : '#722ed1',
+            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+            transform: fabExpanded ? 'rotate(45deg)' : 'rotate(0deg)',
+            cursor: 'pointer'
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.transform = fabExpanded ? 'rotate(45deg) scale(1.1)' : 'rotate(0deg) scale(1.1)';
+            e.currentTarget.style.boxShadow = '0 6px 16px rgba(0, 0, 0, 0.2)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.transform = fabExpanded ? 'rotate(45deg) scale(1)' : 'rotate(0deg) scale(1)';
+            e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.15)';
+          }}
+          onClick={() => setFabExpanded(!fabExpanded)}
+        />
+      </div>
+
+      {/* Modals */}
       <ModalAddDocument
         open={openModalAddDocument}
         onClose={() => setOpenModalAddDocument(false)}
         mode='out'
-        onSuccess={() => {
-          setOpenModalAddDocument(false);
-        }}
+        onSuccess={handleModalAddDocumentSuccess}
       />
-    </Layout >
+      
+      <ModalAddProject
+        open={openModalAddProject}
+        onCancel={() => setOpenModalAddProject(false)}
+        onSubmit={handleModalAddProjectSubmit}
+        loading={submitLoading}
+      />
+    </Layout>
   );
 };
 

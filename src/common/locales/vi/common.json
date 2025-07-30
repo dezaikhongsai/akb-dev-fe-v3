@@ -35,7 +35,11 @@
       "approveProject": "Phê duyệt dự án thành công!",
       "createUser": "Tạo người dùng thành công!",
       "updateUser": "Cập nhật người dùng thành công!",
-      "deleteUser": "Xóa người dùng thành công!"
+      "deleteUser": "Xóa người dùng thành công!",
+      "project_created": "Tạo dự án thành công!"
+    },
+    "error": {
+      "project_creation_failed": "Tạo dự án thất bại!"
     }
   },
   "validation": {

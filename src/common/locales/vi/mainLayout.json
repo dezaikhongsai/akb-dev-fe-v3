@@ -33,5 +33,7 @@
     "contact_email": "Email liên hệ",
     "role": "Vai trò",
     "edit_profile": "Thông tin cá nhân"
-  }
+  },
+  "quick_add_document": "Thêm tài liệu nhanh",
+  "quick_add_project": "Thêm dự án nhanh"
 }

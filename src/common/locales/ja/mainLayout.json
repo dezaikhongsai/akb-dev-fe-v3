@@ -33,5 +33,7 @@
     "contact_email": "連絡先メール",
     "role": "役割",
     "edit_profile": "個人情報"
-  }
+  },
+  "quick_add_document": "ドキュメントを素早く追加",
+  "quick_add_project": "プロジェクトを素早く追加"
 }
