@@ -63,7 +63,7 @@ const ModalAddContent: React.FC<ModalAddContentProps> = ({
   const [previewUrl, setPreviewUrl] = useState('');
   const [previewTitle, setPreviewTitle] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const URL_UPLOAD = import.meta.env.VITE_API_UPLOAD_URL;
+  const URL_UPLOAD = import.meta.env.VITE_IS_PROD === 'true' ? import.meta.env.VITE_API_UPLOAD_PROD : import.meta.env.VITE_API_UPLOAD_URL;
 
   const ACCEPTED_FILE_TYPES = {
     'doc': 'application/msword',

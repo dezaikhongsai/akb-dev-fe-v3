@@ -88,7 +88,7 @@ const ModalContent: React.FC<ModalContentProps> = ({
   const [editedContent, setEditedContent] = useState(contentName);
   const [currentFiles, setCurrentFiles] = useState(initialFiles);
   const [deletedFileIds, setDeletedFileIds] = useState<string[]>([]);
-  const URL_UPLOAD = import.meta.env.VITE_API_UPLOAD_URL;
+  const URL_UPLOAD = import.meta.env.VITE_IS_PROD === 'true' ? import.meta.env.VITE_API_UPLOAD_PROD : import.meta.env.VITE_API_UPLOAD_URL;
   // const [hasChanges, setHasChanges] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
