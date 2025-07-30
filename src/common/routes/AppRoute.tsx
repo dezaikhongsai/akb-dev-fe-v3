@@ -1,6 +1,5 @@
 import { Routes, Route } from 'react-router-dom';
 import Login from '../../pages/login/Login';
-import Home from '../../pages/home/Home';
 import User from '../../pages/user/User';
 import ProtectedRoute from './ProtectedRoute';
 import MainLayout from '../layouts/MainLayout';
@@ -34,7 +33,6 @@ const AppRoute = () => {
         <Route path="email-config" element={<EmailConfig/>}/>
         {/* <Route path='system-setting' element= {<Setting/>}/> */}
         {/* Thêm các route con khác tại đây */}
-        <Route index element={<Home />} />
       </Route>
       {/* Redirect không tìm thấy */}
       <Route path="*" element={<NotFound />} />
