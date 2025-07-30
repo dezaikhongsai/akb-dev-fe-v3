@@ -66,7 +66,12 @@
     "select_project_required": "プロジェクトを選択してください",
     "project_id_required": "プロジェクトIDが必要です",
     "no_projects_found": "プロジェクトが見つかりません",
-    "selected": "選択済み"
+    "selected": "選択済み",
+    "current_project": "現在のプロジェクト",
+    "read_only_mode": "読み取り専用モード",
+    "loading_project": "プロジェクト情報を読み込み中...",
+    "project_not_found": "プロジェクトが見つかりません",
+    "error_fetching_project": "プロジェクト情報の取得中にエラーが発生しました"
   },
   "type_options": {
     "request": "リクエスト",
