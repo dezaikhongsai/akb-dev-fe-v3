@@ -150,7 +150,7 @@ const MainLayout: React.FC = () => {
   }, []);
 
   const handleResultClick = useCallback((project: Project) => {
-    navigate(`/project/${project._id}`);
+    navigate(`/projects/${project._id}`);
     setSearchValue('');
     setSearchResults([]);
   }, [navigate]);
