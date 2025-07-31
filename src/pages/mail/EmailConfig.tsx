@@ -197,7 +197,7 @@ const EmailConfig = () => {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center h-screen">
+      <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh'}}>
         <Spin size="large" />
       </div>
     );
