@@ -274,7 +274,7 @@ const ProjectRequest = () => {
 
   const handleViewDetails = (project: ProjectRequestStatistics) => {
     // Navigate đến tab Documents (tab 3) khi click xem chi tiết
-    navigate(`/project/${project.projectId}?tab=3`);
+    navigate(`/projects/${project.projectId}?tab=3`);
   };
 
   const getActionItems = (record: ProjectRequestStatistics): MenuProps['items'] => [

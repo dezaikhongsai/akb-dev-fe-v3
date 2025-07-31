@@ -450,7 +450,7 @@ const Project = () => {
   };
 
   const handleDetail = (record: IProject) => {
-    navigate(`/project/${record._id}`);
+    navigate(`/projects/${record._id}`);
   };
 
   const handleCreateProject = () => {

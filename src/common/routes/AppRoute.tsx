@@ -29,7 +29,7 @@ const AppRoute = () => {
         <Route path="user" element={<User />} />
         <Route path="user-profile/:uId" element={<UserProfile/>}/>
         <Route path="projects" element={<Project/>}/>
-        <Route path="project/:pid" element={<ProjectDetail/>}/>
+        <Route path="projects/:pid" element={<ProjectDetail/>}/>
         <Route path="email-config" element={<EmailConfig/>}/>
         {/* <Route path='system-setting' element= {<Setting/>}/> */}
         {/* Thêm các route con khác tại đây */}

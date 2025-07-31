@@ -94,7 +94,7 @@ const ProjectDetail = () => {
   }
 
   return (
-    <div style={{ padding: '24px' }}>
+    <div style={{ }}>
       <Tabs
         activeKey={activeTab}
         onChange={key => {
