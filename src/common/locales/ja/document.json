@@ -92,6 +92,7 @@
     "confirm": "確認",
     "all": "すべて",
     "actions" : "アクション",
-    "delete" : "削除"
+    "delete" : "削除",
+    "cancel": "キャンセル"
   }
 }

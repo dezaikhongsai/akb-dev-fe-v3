@@ -36,7 +36,9 @@
       "createUser": "ユーザーの作成に成功しました！",
       "updateUser": "ユーザーの更新に成功しました！",
       "deleteUser": "ユーザーの削除に成功しました！",
-      "project_created": "プロジェクトの作成に成功しました！"
+      "project_created": "プロジェクトの作成に成功しました！",
+      "createEmailConfig": "メール設定の作成に成功しました！",
+      "updateEmailConfig": "メール設定の更新に成功しました！"
     },
     "error": {
       "project_creation_failed": "プロジェクトの作成に失敗しました！"
