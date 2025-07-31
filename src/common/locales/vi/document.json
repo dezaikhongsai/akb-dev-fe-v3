@@ -71,7 +71,12 @@
     "read_only_mode": "Chế độ chỉ đọc",
     "loading_project": "Đang tải thông tin dự án...",
     "project_not_found": "Không tìm thấy dự án",
-    "error_fetching_project": "Có lỗi xảy ra khi tải thông tin dự án"
+    "error_fetching_project": "Có lỗi xảy ra khi tải thông tin dự án",
+    "project_information": "Thông tin dự án",
+    "project_name": "Tên dự án",
+    "project_alias": "Mã dự án",
+    "project_manager": "Quản lý dự án",
+    "customer": "Khách hàng"
   },
   "type_options": {
     "request": "Yêu cầu",
