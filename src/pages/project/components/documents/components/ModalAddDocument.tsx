@@ -1,14 +1,13 @@
 import { FileAddOutlined, SaveOutlined, PlusOutlined, DeleteOutlined, LeftOutlined, RightOutlined, UploadOutlined, FileTextOutlined, FileDoneOutlined, FileProtectOutlined, DownloadOutlined, CloseOutlined } from "@ant-design/icons";
-import { Button, Modal, Space, Typography, Input, Radio, Form, message, Card, Divider, List, Tooltip, Alert } from "antd";
+import { Button, Modal, Space, Typography, Input, Radio, Form, message, Card, Divider, List, Tooltip } from "antd";
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { addDocument } from '../../../../../services/document/document.service';
-import SearchBox from '../../../../../common/components/SearchBox';
 import { autoSearchProject } from '../../../../../services/home/home.service';
 import { Project } from '../../../../../common/components/SearchBox';
 import { useDebounce } from '../../../../../common/hooks/useDebounce';
 import { displayFileName } from '../../../../../common/utils/fileName.util';
-// import { getProjectDetail } from '../../../../../services/project/project.service';
+import { getProjectDetail } from '../../../../../services/project/project.service';
         
 interface IDocumentData {
     document: {
@@ -79,14 +78,14 @@ const ModalAddDocument: React.FC<ModalAddDocumentProp> = ({
 
     // Project search states for mode 'out'
     const [searchValue, setSearchValue] = useState('');
-    const [searchResults, setSearchResults] = useState<Project[]>([]);
-    const [searchLoading, setSearchLoading] = useState(false);
+    const [_searchResults, setSearchResults] = useState<Project[]>([]);
+    const [_searchLoading, setSearchLoading] = useState(false);
     const [selectedProject, setSelectedProject] = useState<Project | null>(null);
     const debouncedSearchValue = useDebounce(searchValue, 400);
 
     // Project info state for mode 'in'
-    // const [projectInfo, setProjectInfo] = useState<Project | null>(null);
-    // const [projectLoading, setProjectLoading] = useState(false);
+    const [projectInfo, setProjectInfo] = useState<Project | null>(null);
+    const [projectLoading, setProjectLoading] = useState(false);
 
     // Thêm key để force remount input file khi mode hoặc modal mở
     const [inputFileKey, setInputFileKey] = useState(0);
@@ -110,57 +109,33 @@ const ModalAddDocument: React.FC<ModalAddDocumentProp> = ({
         form.validateFields().catch(() => {});
     }, [form]);
 
-    // Reset form khi modal mở hoặc mode thay đổi
-    // useEffect(() => {
-    //     if (open) {
-    //         console.log('[DEBUG] ModalAddDocument: resetForm called for open/mode change', { open, mode });
-    //         // Chỉ reset khi thực sự cần thiết
-    //         if (files.length > 0 || contents.length > 1 || contents[0]?.content || selectedProject || searchValue) {
-    //             console.log('[DEBUG] ModalAddDocument: State not empty, resetting form');
-    //             resetForm();
-    //         } else {
-    //             console.log('[DEBUG] ModalAddDocument: State already clean, skipping reset');
-    //         }
-    //     }
-    // }, [open, mode, resetForm, files.length, contents.length, selectedProject, searchValue]);
+    useEffect(() => {
+        const fetchProjectInfo = async () => {
+            if (open && mode === 'in' && projectId) {
+                try {
+                    setProjectLoading(true);
+                    const response = await getProjectDetail(projectId);
+                    // Transform the response to match Project interface
+                    const projectData = response.data.project;
+                    const transformedProject: Project = {
+                        _id: projectData._id,
+                        name: projectData.name,
+                        alias: projectData.alias,
+                        pm: projectData.pm,
+                        customer: projectData.customer
+                    };
+                    setProjectInfo(transformedProject);
+                } catch (error) {
+                    console.error('Error fetching project info:', error);
+                    message.error(t("content.error_fetching_project"));
+                } finally {
+                    setProjectLoading(false);
+                }
+            }
+        };
 
-    // Đảm bảo khi đóng modal, state cũng được reset
-    // useEffect(() => {
-    //     if (!open) {
-    //         console.log('[LOG] useEffect: open changed to FALSE, resetForm will be called');
-    //         resetForm();
-    //     }
-    //     // eslint-disable-next-line react-hooks/exhaustive-deps
-    // }, [open]);
-
-    // Fetch project info for mode 'in'
-    // useEffect(() => {
-    //     const fetchProjectInfo = async () => {
-    //         if (open && mode === 'in' && projectId) {
-    //             try {
-    //                 setProjectLoading(true);
-    //                 const response = await getProjectDetail(projectId);
-    //                 // Transform the response to match Project interface
-    //                 const projectData = response.data.project;
-    //                 const transformedProject: Project = {
-    //                     _id: projectData._id,
-    //                     name: projectData.name,
-    //                     alias: projectData.alias,
-    //                     pm: projectData.pm,
-    //                     customer: projectData.customer
-    //                 };
-    //                 setProjectInfo(transformedProject);
-    //             } catch (error) {
-    //                 console.error('Error fetching project info:', error);
-    //                 message.error(t("content.error_fetching_project"));
-    //             } finally {
-    //                 setProjectLoading(false);
-    //             }
-    //         }
-    //     };
-
-    //     fetchProjectInfo();
-    // }, [open, mode, projectId, t]);
+        fetchProjectInfo();
+    }, [open, mode, projectId, t]);
 
     // Handle project search
     useEffect(() => {
@@ -186,18 +161,7 @@ const ModalAddDocument: React.FC<ModalAddDocumentProp> = ({
     }, [debouncedSearchValue]);
 
     // Handle project selection
-    const handleProjectSelect = (project: Project) => {
-        setSelectedProject(project);
-        setSearchValue(project.name);
-        setSearchResults([]);
-        // Set the form field value for validation
-        form.setFieldValue('projectId', project._id);
-        // Mark as touched
-        setTouched(prev => ({ ...prev, projectId: true }));
-        // Clear any validation errors
-        form.validateFields(['projectId']).catch(() => {});
-    };
-
+    
     // Handle field blur to mark as touched
     const handleFieldBlur = (fieldName: string) => {
         setTouched(prev => ({ ...prev, [fieldName]: true }));
@@ -489,6 +453,55 @@ const ModalAddDocument: React.FC<ModalAddDocumentProp> = ({
             ]}
             destroyOnHidden={true}
         >
+            {/* Project Information Display */}
+            {mode === 'in' && (
+                <Card 
+                    size="small" 
+                    style={{ marginBottom: 16, backgroundColor: '#f8f9fa' }}
+                    title={
+                        <Space>
+                            <FileTextOutlined style={{ color: '#1890ff' }} />
+                            <Typography.Text strong>{t("content.project_information")}</Typography.Text>
+                        </Space>
+                    }
+                >
+                    {projectLoading ? (
+                        <div style={{ textAlign: 'center', padding: '20px' }}>
+                            <Typography.Text type="secondary">{t("content.loading_project")}</Typography.Text>
+                        </div>
+                    ) : projectInfo ? (
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                                <Typography.Text strong style={{ minWidth: 80 }}>{t("content.project_name")}:</Typography.Text>
+                                <Typography.Text>{projectInfo.name}</Typography.Text>
+                            </div>
+                            {projectInfo.alias && (
+                                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                                    <Typography.Text strong style={{ minWidth: 80 }}>{t("content.project_alias")}:</Typography.Text>
+                                    <Typography.Text type="secondary">{projectInfo.alias}</Typography.Text>
+                                </div>
+                            )}
+                            {projectInfo.pm && (
+                                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                                    <Typography.Text strong style={{ minWidth: 80 }}>{t("content.project_manager")}:</Typography.Text>
+                                    <Typography.Text>{projectInfo.pm.profile.name}</Typography.Text>
+                                </div>
+                            )}
+                            {projectInfo.customer && (
+                                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                                    <Typography.Text strong style={{ minWidth: 80 }}>{t("content.customer")}:</Typography.Text>
+                                    <Typography.Text>{projectInfo.customer.profile.name}</Typography.Text>
+                                </div>
+                            )}
+                        </div>
+                    ) : (
+                        <div style={{ textAlign: 'center', padding: '20px' }}>
+                            <Typography.Text type="secondary">{t("content.project_not_found")}</Typography.Text>
+                        </div>
+                    )}
+                </Card>
+            )}
+
             <Form
                 form={form}
                 layout="vertical"
@@ -496,94 +509,6 @@ const ModalAddDocument: React.FC<ModalAddDocumentProp> = ({
                 style={{ marginBottom: 24 }}
                 key={`a`}
             >
-                {/* Project selection for mode 'out' and display for mode 'in' */}
-                <Form.Item
-                    label={<Space><FileTextOutlined />{t("project", { ns: "common" })}</Space>}
-                    name="projectId"
-                    validateStatus={touched.projectId && ((mode === 'out' && !selectedProject) || (mode === 'in' && !projectId)) ? 'error' : undefined}
-                    help={touched.projectId && ((mode === 'out' && !selectedProject) || (mode === 'in' && !projectId)) ? <div style={{ marginTop: 8 }}><Alert message={t("content.select_project_required")} type="warning" showIcon/></div> : undefined}
-                    rules={[{ 
-                        required: true, 
-                        validator: (_, _value) => {
-                            if (mode === 'out' && !selectedProject) {
-                                return Promise.reject(<div style={{ marginTop: 8 }}><Alert message={t("content.select_project_required")} type="warning" showIcon/></div>);
-                            }
-                            if (mode === 'in' && !projectId) {
-                                return Promise.reject(<div style={{ marginTop: 8 }}><Alert message={t("content.project_id_required")} type="warning" showIcon/></div>);
-                            }
-                            return Promise.resolve();
-                        }
-                    }]}
-                >
-                    <div>
-                        {mode === 'out' ? (
-                            <>
-                                <SearchBox
-                                    options={searchResults}
-                                    placeholder={t("content.search_project")}
-                                    value={searchValue}
-                                    onChange={setSearchValue}
-                                    onSelectProject={handleProjectSelect}
-                                    loading={searchLoading}
-                                    noDataMessage={t("content.no_projects_found")}
-                                    style={{ width: '100%' }}
-                                />
-                                {selectedProject && (
-                                    <div style={{ 
-                                        marginTop: 8, 
-                                        padding: 8, 
-                                        backgroundColor: '#f6ffed', 
-                                        border: '1px solid #b7eb8f', 
-                                        borderRadius: 6,
-                                        fontSize: '12px',
-                                        position: 'relative'
-                                    }}>
-                                        <Button
-                                            type="text"
-                                            size="small"
-                                            icon={<CloseOutlined />}
-                                            style={{
-                                                position: 'absolute',
-                                                top: 4,
-                                                right: 4,
-                                                color: '#666'
-                                            }}
-                                            onClick={() => {
-                                                setSelectedProject(null);
-                                                setSearchValue('');
-                                                form.setFieldValue('projectId', undefined);
-                                                setTouched(prev => ({ ...prev, projectId: true }));
-                                                // Clear validation errors
-                                                form.validateFields(['projectId']).catch(() => {});
-                                            }}
-                                        />
-                                        <div><strong>{t("content.selected")}:</strong> {selectedProject.name}</div>
-                                        <div style={{ color: '#666' }}>
-                                            {selectedProject.alias} • {selectedProject.pm?.profile.name || 'N/A'}
-                                        </div>
-                                    </div>
-                                )}
-                            </>
-                        ) : (
-                            // Mode 'in' - Display project info (read-only)
-                            // <div>
-                            //     <div style={{ 
-                            //         padding: 8, 
-                            //         backgroundColor: '#f0f9ff', 
-                            //         border: '1px solid #91d5ff', 
-                            //         borderRadius: 6,
-                            //         fontSize: '12px'
-                            //     }}>
-                            //         <div><strong>{t("content.current_project")}:</strong> {projectId}</div>
-                            //         <div style={{ color: '#1890ff', fontSize: '11px', marginTop: 4 }}>
-                            //             <FileTextOutlined /> {t("content.read_only_mode")}
-                            //         </div>
-                            //     </div>
-                            // </div>
-                            <></>
-                        )}
-                    </div>
-                </Form.Item>
                 
                 <Form.Item
                     label={<Space><FileProtectOutlined />{t("type")}</Space>}

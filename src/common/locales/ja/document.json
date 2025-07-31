@@ -71,7 +71,12 @@
     "read_only_mode": "読み取り専用モード",
     "loading_project": "プロジェクト情報を読み込み中...",
     "project_not_found": "プロジェクトが見つかりません",
-    "error_fetching_project": "プロジェクト情報の取得中にエラーが発生しました"
+    "error_fetching_project": "プロジェクト情報の取得中にエラーが発生しました",
+    "project_information": "プロジェクト情報",
+    "project_name": "プロジェクト名",
+    "project_alias": "プロジェクトエイリアス",
+    "project_manager": "プロジェクトマネージャー",
+    "customer": "顧客"
   },
   "type_options": {
     "request": "リクエスト",
